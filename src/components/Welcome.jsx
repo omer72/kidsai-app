@@ -81,6 +81,12 @@ export function WelcomeScreen({ onStart, fullscreen }) {
         }}>
           Already a member? <span style={{ color: tokens.ink, fontWeight: 600 }}>Sign in</span>
         </div>
+        <div style={{
+          textAlign: 'center', marginTop: 18, padding: '0 12px',
+          fontFamily: tokens.sans, fontSize: 11, lineHeight: 1.5, color: tokens.ink3,
+        }}>
+          Kidsit AI offers reflective guidance, not medical or psychological advice. It does not diagnose or treat any condition. For clinical concerns about your child, please consult a qualified professional.
+        </div>
       </div>
     </div>
   );
