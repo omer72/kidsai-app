@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Kidsit AI · App Store screenshot mockups</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #2E5BFF;
+    --primaryInk: #1838B3;
+    --primarySoft: #E6EEFB;
+    --bg: #F4EFE6;
+    --ink: #1A1814;
+    --ink2: #5C5650;
+    --ink3: #918A82;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Inter', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #2a2a2a; font-family: var(--sans); color: var(--ink); padding: 40px 0; }
+  .stage { width: 645px; height: 1398px; margin: 0 auto 40px; position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4); overflow: hidden; }
+  .stage::after {
+    content: ''; position: absolute; left: 50%; bottom: 12px;
+    transform: translateX(-50%); width: 60px; height: 4px;
+    background: rgba(255,255,255,0.3); border-radius: 4px;
+  }
+  /* Each page is half-size for editor preview; export will be at 100% scale */
+
+  .gradient-warm  { background: linear-gradient(160deg, #F4EFE6 0%, #FFF 40%, #E6EEFB 100%); }
+  .gradient-blue  { background: linear-gradient(180deg, #E6EEFB 0%, #FFF 50%, #F4EFE6 100%); }
+  .gradient-ink   { background: linear-gradient(180deg, #1A1814 0%, #2E5BFF 100%); }
+  .gradient-soft  { background: linear-gradient(140deg, #FFF 0%, #E6EEFB 60%, #F4EFE6 100%); }
+  .gradient-bold  { background: linear-gradient(160deg, #2E5BFF 0%, #1838B3 100%); }
+
+  .headline-area { padding: 60px 50px 0; text-align: center; }
+  .headline { font-family: var(--serif); font-weight: 500; font-size: 56px;
+    line-height: 1.05; letter-spacing: -1.5px; color: var(--ink); }
+  .headline em { font-style: italic; color: var(--primary); font-weight: 500; }
+  .headline.light { color: #fff; }
+  .headline.light em { color: #A7C8FF; }
+  .subhead { font-family: var(--sans); font-weight: 500; font-size: 19px;
+    color: var(--ink2); margin-top: 16px; line-height: 1.45; }
+  .subhead.light { color: rgba(255,255,255,0.85); }
+
+  .phone-wrap { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); }
+  .phone {
+    width: 360px; height: 760px; background: #111; border-radius: 50px;
+    padding: 8px; box-shadow: 0 16px 36px rgba(0,0,0,0.25);
+    position: relative;
+  }
+  .phone::before {
+    content: ''; position: absolute; top: 18px; left: 50%; transform: translateX(-50%);
+    width: 100px; height: 28px; background: #000; border-radius: 22px; z-index: 2;
+  }
+  .phone-screen {
+    width: 100%; height: 100%; border-radius: 42px; overflow: hidden;
+    background: var(--bg);
+  }
+  .phone-screen img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .placeholder {
+    width: 100%; height: 100%; display: flex; align-items: center;
+    justify-content: center; flex-direction: column; gap: 12px;
+    background: var(--bg); color: var(--ink3); padding: 40px; text-align: center;
+    font-size: 14px; line-height: 1.5;
+  }
+  .placeholder b { color: var(--ink2); font-size: 16px; }
+  .placeholder code { font-family: 'JetBrains Mono', monospace; background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+
+  .label-bar { color: #fff; font-family: var(--sans); font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; text-align: center; padding: 6px 12px; background: rgba(0,0,0,0.6);
+    border-radius: 4px; display: inline-block; margin: 0 auto 20px; }
+
+  .export-tip {
+    color: #aaa; font-family: var(--sans); font-size: 13px;
+    text-align: center; margin: 0 auto 40px; max-width: 645px;
+    line-height: 1.6; padding: 0 20px;
+  }
+  .export-tip code { background: #444; color: #fff; padding: 2px 6px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; }
+</style>
+</head>
+<body>
+
+<div class="export-tip">
+  Each panel below is rendered at <code>645×1398</code> (½ scale of Apple's 6.7″ size, <code>1290×2796</code>).<br/>
+  To export at App Store resolution: open this file, take a full-element screenshot of each <code>.stage</code> at 2× zoom (Chrome DevTools → ⋮ → "Capture node screenshot").<br/>
+  Drop your raw app screenshots into <code>marketing/shots/01.png</code> … <code>05.png</code> — they'll appear inside the phone frames automatically.
+</div>
+
+<!-- ───────────── 1 · Welcome / hook ───────────── -->
+<div class="stage gradient-warm">
+  <div class="headline-area">
+    <div class="headline">
+      Parenting is hard.<br/>
+      <em>You don't have</em><br/>
+      <em>to do it alone.</em>
+    </div>
+    <div class="subhead">Warm, science-backed guidance the moment you need it.</div>
+  </div>
+  <div class="phone-wrap" style="bottom: -260px;">
+    <div class="phone">
+      <div class="phone-screen">
+        <img src="shots/01.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
+        <div class="placeholder" style="display:none">
+          <b>Add shots/01.png</b>
+          Welcome screen — the hero with "Parenting is hard. You don't have to do it alone."
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ───────────── 2 · Speak the moment ───────────── -->
+<div class="stage gradient-soft">
+  <div class="headline-area">
+    <div class="headline">
+      Whisper what<br/>
+      just happened.
+    </div>
+    <div class="subhead">Voice in. Clarity out. About 10 seconds.</div>
+  </div>
+  <div class="phone-wrap" style="bottom: -260px;">
+    <div class="phone">
+      <div class="phone-screen">
+        <img src="shots/02.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
+        <div class="placeholder" style="display:none">
+          <b>Add shots/02.png</b>
+          Home screen — kid selector at top, big mic button. Tap-and-hold-recording-state ideal.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ───────────── 3 · The response (the magic) ───────────── -->
+<div class="stage gradient-blue">
+  <div class="headline-area">
+    <div class="headline">
+      A kinder<br/>
+      <em>second look.</em>
+    </div>
+    <div class="subhead">Not a lecture. Not a label. Three things you can actually try.</div>
+  </div>
+  <div class="phone-wrap" style="bottom: -260px;">
+    <div class="phone">
+      <div class="phone-screen">
+        <img src="shots/03.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
+        <div class="placeholder" style="display:none">
+          <b>Add shots/03.png</b>
+          Response screen — title, summary, "Try this next time" with three items.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ───────────── 4 · Per-kid memory / patterns ───────────── -->
+<div class="stage gradient-warm">
+  <div class="headline-area">
+    <div class="headline">
+      Patterns become<br/>
+      <em>visible.</em>
+    </div>
+    <div class="subhead">A coach that remembers what works for <em style="font-style: italic; color: var(--primary);">your</em> child.</div>
+  </div>
+  <div class="phone-wrap" style="bottom: -260px;">
+    <div class="phone">
+      <div class="phone-screen">
+        <img src="shots/04.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
+        <div class="placeholder" style="display:none">
+          <b>Add shots/04.png</b>
+          History tab — a few moments listed with the patterns header at top.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ───────────── 5 · Trial / value prop ───────────── -->
+<div class="stage gradient-bold">
+  <div class="headline-area">
+    <div class="label-bar">7-DAY FREE TRIAL · CANCEL ANYTIME</div>
+    <div class="headline light">
+      The full Kidsit AI,<br/>
+      <em>at your fingertips.</em>
+    </div>
+    <div class="subhead light">Unlimited kids · unlimited moments · private by design.</div>
+  </div>
+  <div class="phone-wrap" style="bottom: -260px;">
+    <div class="phone">
+      <div class="phone-screen">
+        <img src="shots/05.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
+        <div class="placeholder" style="display:none">
+          <b>Add shots/05.png</b>
+          Paywall — plan picker visible, "Start 7-day free trial" CTA.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
