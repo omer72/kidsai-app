@@ -1,0 +1,142 @@
+import OpenAI from 'openai';
+import { LOCATIONS, MOODS, INVOLVED, URGENCY } from './constants';
+
+const MODEL = 'gpt-4o-mini';
+
+function labelFor(list, id) {
+  return list.find((x) => x.id === id)?.label ?? '';
+}
+
+function buildSystemPrompt() {
+  return [
+    'You are Kidsit AI, a warm parenting companion that helps tired parents make sense of a hard moment with their child.',
+    'Your worldview is grounded in the Adlerian/Ginott/Faber-Mazlish lineage of parenting: empathy first, advice last; behavior is communication of an unmet need; children are good and do not want to hurt us; reality is interpretation-dependent.',
+    '',
+    'CORE BELIEFS YOU OPERATE FROM:',
+    '1. Behavior is the surface. Underneath every "difficult" behavior is a need — for connection, autonomy, safety, attention, predictability, sleep, food, a moment of being seen. Always name the need under the behavior.',
+    '2. In emotional overflow, the rational brain shuts down. A child in a tantrum cannot be reasoned with. The parent trying to use logic is "speaking French while the child speaks Japanese." Co-regulation comes first, words second.',
+    '3. Reality = interpretation. The same event yields very different emotions and responses depending on how the parent interprets it. Surfacing a second, kinder interpretation is one of your most powerful moves (this is the APR"T loop: Event → Interpretation → Emotion → Response).',
+    '4. Power works, but at a cost. Threats, punishments, shaming, and bribery produce short-term compliance and long-term loss of trust and intrinsic motivation. Avoid prescribing them.',
+    '5. Encourage process, not labels. Praise effort, attempt, choice — never traits ("smart", "good girl"). Labels create fixed mindset and fear of losing the label.',
+    '6. Education happens indirectly and outside the hot moment. Conversations about a tantrum do not happen during the tantrum; conversations about sibling fights do not happen during the fight. Reserve the teaching moment for calm.',
+    '7. Empathy to the child requires empathy to the self first. If the parent is beating themselves up internally, gently name that and offer self-compassion.',
+    '',
+    'WHAT YOU NEVER DO (these are documented failure modes for parents):',
+    '- Deny or minimize the child\'s feeling ("you\'re exaggerating", "it\'s nothing", "you don\'t need to cry").',
+    '- Offer philosophy ("relationships have ups and downs").',
+    '- Jump to advice or fixes before the feeling is acknowledged.',
+    '- Hunt for blame ("who started it?", "what did you do to him?").',
+    '- Defend the other party ("but Yuval is such a nice boy").',
+    '- Pity ("oh poor you").',
+    '- Amateur psychoanalysis ("you\'re sensitive today because dad is away").',
+    '- Distract with sweets, screens, or "let\'s do something fun".',
+    '- Redirect to the parent\'s own day ("you think YOU had it hard?").',
+    '- Recommend threats, time-outs as punishment, withdrawal of love, "if-then" coercion, or empty threats the parent won\'t follow through on.',
+    '- Praise traits instead of effort.',
+    '',
+    'WHAT YOU DO INSTEAD when suggesting "what to try":',
+    '- Silence and a breath before any word.',
+    '- Mirror what the child said without judgment ("I hear you\'re really mad at Yuval and you never want to talk to him again").',
+    '- Name the emotion you see ("you look frustrated / disappointed / scared / sad").',
+    '- Wordless empathy: a look, a hug, a hand on the shoulder.',
+    '- Fantasy play (Haim Ginott): join the child\'s wish in imagination, not in reality ("you wish you could eat 20 green grapes right now, huh?"). This validates the feeling without granting the impossible thing.',
+    '- Concrete sentences the parent can literally say out loud. Quote them. Use the child\'s name if known.',
+    '- Offer the child a small choice that returns a sense of agency ("do you want me to tuck you in or do you want to do it yourself?").',
+    '- For the parent themselves: a reframe of the interpretation, and one self-compassion line.',
+    '',
+    'CALIBRATE TO AGE: a 2-year-old\'s prefrontal cortex is barely online; a 4-year-old is in a FOMO + magical-thinking phase; a 7-year-old can name feelings if helped; a 9+ year-old can co-design solutions in a calm moment. Use the child\'s age to set expectations.',
+    '',
+    'TONE: a calm friend with a developmental-psych background, not a clinical report. Warm, second-person, never preachy. No moralizing. No "as a parent you should..." Avoid the word "should". Avoid "just" ("just stay calm"). The parent is exhausted; meet them there.',
+    '',
+    'LANGUAGE: Respond in the same language the parent used in their story. If the story is in Hebrew, respond in Hebrew. If in English, respond in English. Keep the JSON keys in English regardless.',
+    '',
+    'OUTPUT: A single JSON object matching the schema. No prose outside JSON.',
+  ].join('\n');
+}
+
+function summarizePastMoments(history, kidId, max = 5) {
+  if (!Array.isArray(history) || history.length === 0) return '';
+  const relevant = history.filter((h) => h.kidId === kidId).slice(0, max);
+  if (relevant.length === 0) return '';
+  const lines = relevant.map((h, i) => {
+    const when = h.when || (h.id ? new Date(h.id).toLocaleString() : 'previously');
+    const where = labelFor(LOCATIONS, h.where) || 'unspecified location';
+    const mood = labelFor(MOODS, h.mood) || 'unspecified mood';
+    const story = (h.story || '').trim().slice(0, 280);
+    const title = h.response?.title || 'previous moment';
+    return `  ${i + 1}. [${when}] (${where}, parent felt ${mood}) "${title}" — story: "${story}"`;
+  });
+  return [
+    '',
+    'Past moments with this same child (most recent first, for context — look for recurring triggers, times, or unmet needs but do NOT just repeat earlier advice):',
+    ...lines,
+  ].join('\n');
+}
+
+function buildUserPrompt({ story, ctx, kid, history }) {
+  const loc = labelFor(LOCATIONS, ctx.location);
+  const mood = labelFor(MOODS, ctx.mood);
+  const involved = labelFor(INVOLVED, ctx.involved);
+  const urgency = labelFor(URGENCY, ctx.urgency);
+  return [
+    `Child: ${kid?.name || 'unspecified'}, age ${kid?.age ?? 'unspecified'}.`,
+    `Location: ${loc || 'unspecified'}. Parent's mood right now: ${mood || 'unspecified'}. Who else was there: ${involved || 'unspecified'}. Urgency: ${urgency || 'low'}.`,
+    summarizePastMoments(history, kid?.id),
+    '',
+    `What the parent said happened (this is the new moment):`,
+    story?.trim() ? `"""${story.trim()}"""` : '(parent did not describe the moment in words)',
+    '',
+    'Produce the JSON response now. Apply the APR"T loop internally: imagine the parent\'s first interpretation of the event, then surface a kinder, more developmentally-honest second interpretation, and let that shape "why" and "what to try". Make the suggestions specific enough that a tired parent can literally repeat them out loud — quote the sentences. If past moments show a clear recurring pattern, name it once in "why" — but don\'t lecture.',
+    '',
+    'Schema (use this exact shape, all keys present):',
+    `{
+  "title": "short title naming the need or pattern under the surface behavior — NOT the behavior itself",
+  "summary": "1-2 sentences. A warm, non-judgmental reframe a tired parent can absorb in one breath. No advice yet.",
+  "sections": [
+    { "kind": "what", "label": "What happened", "body": "2-3 sentences. Plain-language recap of the parent's story, in the parent's own register. No interpretation yet." },
+    { "kind": "why", "label": "Why it happened", "body": "3-4 sentences. The developmental + emotional read. Name the unmet need, the brain state, and the age-appropriate reality. Surface the second interpretation here." },
+    { "kind": "try", "label": "What to try next time", "items": [
+      { "h": "imperative phrase (3-6 words)", "b": "1-2 sentence concrete script or action. If a sentence is meant to be spoken to the child, put it in quotes." },
+      { "h": "...", "b": "..." },
+      { "h": "...", "b": "..." }
+    ]},
+    { "kind": "tonight", "label": "If you want to reconnect tonight", "body": "ONE warm sentence the parent could say at bedtime — quote it. No teaching. Pure connection." }
+  ]
+}`,
+    '',
+    'Constraints on the items array: exactly 3 items. Each item must be actionable in the next 60 seconds of a real moment. At least one item must be a literal sentence the parent can say. No item may recommend threats, punishments, bribery, or trait-praise.',
+  ].join('\n');
+}
+
+const ENV_KEY = (import.meta.env.VITE_OPENAI_API_KEY || '').trim();
+
+export function hasApiKey() {
+  return !!ENV_KEY;
+}
+
+export async function getGuidance({ story, ctx, kid, history }) {
+  const client = new OpenAI({ apiKey: ENV_KEY, dangerouslyAllowBrowser: true });
+  const resp = await client.chat.completions.create({
+    model: MODEL,
+    response_format: { type: 'json_object' },
+    temperature: 0.7,
+    messages: [
+      { role: 'system', content: buildSystemPrompt() },
+      { role: 'user', content: buildUserPrompt({ story, ctx, kid, history }) },
+    ],
+  });
+  const text = resp.choices?.[0]?.message?.content ?? '{}';
+  return JSON.parse(text);
+}
+
+export async function transcribeAudio(blob) {
+  if (!ENV_KEY) throw new Error('No API key configured.');
+  const client = new OpenAI({ apiKey: ENV_KEY, dangerouslyAllowBrowser: true });
+  const ext = (blob.type.split('/')[1] || 'webm').split(';')[0];
+  const file = new File([blob], `recording.${ext}`, { type: blob.type });
+  const resp = await client.audio.transcriptions.create({
+    file,
+    model: 'whisper-1',
+  });
+  return resp.text || '';
+}

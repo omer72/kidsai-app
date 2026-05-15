@@ -1,0 +1,70 @@
+import { useState } from 'react';
+import { tokens } from '../theme';
+import { Icon } from './Icons';
+import { Label, PrimaryButton } from './primitives';
+
+export function FollowupScreen({ kid, onDone }) {
+  const [rating, setRating] = useState(null);
+  const [note, setNote] = useState('');
+  const ratings = [
+    { id: 'worse', label: 'Got worse', color: tokens.danger },
+    { id: 'same', label: 'About the same', color: tokens.ink3 },
+    { id: 'better', label: 'Helped', color: tokens.success },
+    { id: 'great', label: 'Really helped', color: tokens.primary },
+  ];
+  return (
+    <div style={{ padding: '14px 22px 140px' }}>
+      <div style={{
+        fontFamily: tokens.sans, fontSize: 11, fontWeight: 600,
+        color: tokens.ink3, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 6,
+      }}>Follow-up</div>
+      <div style={{
+        fontFamily: tokens.serif, fontSize: 26, lineHeight: 1.2,
+        color: tokens.ink, letterSpacing: -0.3, marginBottom: 8,
+      }}>Did it work?</div>
+      <div style={{
+        fontFamily: tokens.sans, fontSize: 14, lineHeight: 1.5,
+        color: tokens.ink2, marginBottom: 20,
+      }}>
+        Your honest answer teaches Kidsit AI what lands with {kid?.name || 'your child'}.
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 18 }}>
+        {ratings.map((r) => {
+          const active = rating === r.id;
+          return (
+            <button key={r.id} onClick={() => setRating(r.id)} style={{
+              padding: '14px 16px', borderRadius: 14, cursor: 'pointer',
+              background: tokens.surface,
+              border: `1.5px solid ${active ? r.color : tokens.line}`,
+              fontFamily: tokens.sans, fontSize: 15, fontWeight: 600,
+              color: tokens.ink, textAlign: 'left',
+              display: 'flex', alignItems: 'center', gap: 12,
+              transition: 'all .15s',
+            }}>
+              <span style={{ width: 10, height: 10, borderRadius: 10, background: r.color }}/>
+              {r.label}
+              {active && <span style={{ marginLeft: 'auto' }}><Icon.Check s={18} c={r.color}/></span>}
+            </button>
+          );
+        })}
+      </div>
+
+      <Label>A quick note (optional)</Label>
+      <textarea
+        value={note} onChange={(e) => setNote(e.target.value)}
+        placeholder="Two choices calmed her down. The second warning helped most."
+        style={{
+          width: '100%', minHeight: 90, padding: 14, borderRadius: 14,
+          background: tokens.surface, border: `1px solid ${tokens.line}`,
+          fontFamily: tokens.sans, fontSize: 14, color: tokens.ink,
+          resize: 'none', outline: 'none', boxSizing: 'border-box',
+        }}
+      />
+
+      <PrimaryButton full onClick={() => onDone({ rating, note })} disabled={!rating} style={{ marginTop: 16 }}>
+        Save to {kid?.name || 'log'} <Icon.Check s={16} c={rating ? '#fff' : tokens.ink3}/>
+      </PrimaryButton>
+    </div>
+  );
+}

@@ -1,0 +1,28 @@
+{
+  "name": "kidsai",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Kidsit AI — parental guidance mobile app (Vite + React + Capacitor)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "ios": "vite build && cap sync ios && cap open ios",
+    "cap:sync": "vite build && cap sync"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.3.4",
+    "@capacitor/ios": "^8.3.4",
+    "@revenuecat/purchases-capacitor": "^13.1.1",
+    "openai": "^4.77.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^8.3.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.7"
+  }
+}

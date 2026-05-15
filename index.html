@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Kidsit AI — Parental Guidance</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #E8ECF3; font-family: 'Inter', system-ui, sans-serif; overflow: hidden; height: 100%; overscroll-behavior: none; -webkit-overflow-scrolling: auto; }
+  body { position: fixed; inset: 0; width: 100%; }
+  #root { height: 100%; width: 100%; display: flex; align-items: center; justify-content: center; }
+  button:focus { outline: none; }
+  ::-webkit-scrollbar { width: 0; height: 0; }
+
+  @keyframes pg-ring {
+    0%   { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(1.55); opacity: 0; }
+  }
+  @keyframes pg-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="module" src="/src/main.jsx"></script>
+</body>
+</html>

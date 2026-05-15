@@ -1,0 +1,10 @@
+{
+  "appId": "ai.kidsit.app",
+  "appName": "Kidsit AI",
+  "webDir": "dist",
+  "ios": {
+    "contentInset": "never",
+    "scrollEnabled": false,
+    "backgroundColor": "#E8ECF3"
+  }
+}

@@ -1,0 +1,24 @@
+node_modules
+book.pdf
+
+# secrets — never commit
+.env
+.env.local
+
+# vite build output
+dist/
+
+# capacitor sync output (regenerated from dist/)
+ios/App/App/public/
+
+# ios / xcode
+ios/App/Pods/
+ios/App/build/
+ios/App/output/
+ios/DerivedData/
+ios/App/App.xcodeproj/xcuserdata/
+ios/App/App.xcworkspace/xcuserdata/
+ios/capacitor-cordova-ios-plugins/
+
+# os
+.DS_Store
