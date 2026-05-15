@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { applyTheme, tokens } from './theme';
-import { loadSettings, saveSettings, loadKids, saveKids, loadHistory, appendHistory, clearAll, trialStatus } from './storage';
+import { loadSettings, saveSettings, loadKids, saveKids, loadHistory, appendHistory, updateHistoryEntry, clearAll, trialStatus, TRIAL_DURATION_MS } from './storage';
 import { getGuidance, hasApiKey } from './openai';
 import { initBilling, offUpdate, refreshEntitlement, billingAvailable } from './billing';
 import { DEMO_RESPONSE } from './constants';
@@ -18,6 +18,7 @@ import { FollowupScreen } from './components/Followup';
 import { HistoryScreen } from './components/History';
 import { KidsScreen } from './components/Kids';
 import { SettingsScreen } from './components/Settings';
+import { LapsedScreen, SubscriptionScreen, TrialReminderBanner } from './components/TrialScreens';
 
 const FRAME_W = 402;
 const FRAME_H = 874;
@@ -44,13 +45,17 @@ function useViewport() {
   return v;
 }
 
-function MainApp({ settings, setSettings, kids, setKids, history, setHistory, onClearData, fullscreen, billing, onBillingChange, trialActive }) {
+function MainApp({ settings, setSettings, kids, setKids, history, setHistory, setEntryFeedback, onClearData, fullscreen, billing, onBillingChange, trialActive, trialMsLeft }) {
   const [tab, setTab] = useState(() => (kids.length === 0 ? 'kids' : 'home'));
   const [activeKidId, setActiveKidId] = useState(kids[0]?.id || null);
   const [flowState, setFlowState] = useState({ stage: 'compose', story: '', ctx: null, response: null, error: null });
   const [paywallOpen, setPaywallOpen] = useState(false);
+  const [subscriptionOpen, setSubscriptionOpen] = useState(false);
+  const [bannerDismissed, setBannerDismissed] = useState(false);
 
   const entitled = !!billing?.entitled || !!trialActive;
+  const trialDaysLeft = trialMsLeft ? Math.ceil(trialMsLeft / (24 * 60 * 60 * 1000)) : 0;
+  const showTrialBanner = trialActive && !billing?.entitled && trialDaysLeft <= 2 && !bannerDismissed;
   const visibleKids = useMemo(() => (entitled ? kids : kids.slice(0, 1)), [kids, entitled]);
   const lockedKidCount = kids.length - visibleKids.length;
 
@@ -80,7 +85,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, on
     }
   };
 
-  const closeMoment = () => {
+  const closeMoment = (feedback = null) => {
     if (flowState.response && !flowState.error) {
       const entry = {
         kidId: activeKid?.id,
@@ -90,11 +95,14 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, on
         mood: flowState.ctx?.mood,
         response: flowState.response,
         when: new Date().toLocaleString([], { weekday: 'short', hour: 'numeric', minute: '2-digit' }),
+        feedback: feedback?.rating || null,
+        note: feedback?.note || null,
       };
       setHistory(appendHistory(entry));
     }
     setFlowState({ stage: 'compose', story: '', ctx: null, response: null, error: null });
   };
+
 
   const goFollowup = () => setFlowState((s) => ({ ...s, stage: 'followup' }));
 
@@ -116,17 +124,29 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, on
       content = <FollowupScreen kid={activeKid} onDone={closeMoment}/>;
     } else {
       content = (
-        <FlowComponent
-          key={settings.flow}
-          kids={visibleKids}
-          activeKid={activeKidId}
-          setActiveKid={setActiveKidId}
-          onSubmit={submit}
-        />
+        <>
+          {showTrialBanner && (
+            <div style={{ padding: '14px 22px 0' }}>
+              <TrialReminderBanner
+                daysLeft={trialDaysLeft}
+                kids={kids} history={history}
+                onUpgrade={() => setPaywallOpen(true)}
+                onDismiss={() => setBannerDismissed(true)}
+              />
+            </div>
+          )}
+          <FlowComponent
+            key={settings.flow}
+            kids={visibleKids}
+            activeKid={activeKidId}
+            setActiveKid={setActiveKidId}
+            onSubmit={submit}
+          />
+        </>
       );
     }
   } else if (tab === 'history') {
-    content = <HistoryScreen kids={visibleKids} history={history} activeKid={activeKidId}/>;
+    content = <HistoryScreen kids={visibleKids} history={history} activeKid={activeKidId} onFeedback={setEntryFeedback}/>;
   } else if (tab === 'kids') {
     content = (
       <KidsScreen
@@ -139,7 +159,27 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, on
       />
     );
   } else {
-    content = <SettingsScreen settings={settings} setSettings={setSettings} onClearData={onClearData}/>;
+    if (subscriptionOpen && billing?.entitled) {
+      content = (
+        <div style={{ padding: '0 0 140px' }}>
+          <SubscriptionScreen
+            billing={billing}
+            fullscreen={fullscreen}
+            onBack={() => setSubscriptionOpen(false)}
+            onChanged={onBillingChange}
+          />
+        </div>
+      );
+    } else {
+      content = (
+        <SettingsScreen
+          settings={settings} setSettings={setSettings} onClearData={onClearData}
+          billing={billing} trialActive={trialActive} trialDaysLeft={trialDaysLeft}
+          onOpenSubscription={() => setSubscriptionOpen(true)}
+          onOpenUpgrade={() => setPaywallOpen(true)}
+        />
+      );
+    }
   }
 
   const topBar = (
@@ -229,6 +269,7 @@ export function App() {
     setKidsState(next);
     saveKids(next);
   };
+  const setEntryFeedback = (id, patch) => setHistory(updateHistoryEntry(id, patch));
   const onClearData = () => {
     if (!confirm('Clear all data? This cannot be undone.')) return;
     clearAll();
@@ -265,17 +306,19 @@ export function App() {
   } else if (phase === 'trial_start') {
     inner = <PaywallScreen mode="trialStart" onTrialStart={startTrial} fullscreen={fullscreen}/>;
   } else if (trialBlocker) {
-    inner = <PaywallScreen mode="upgrade" fullscreen={fullscreen} onPurchased={applyBilling}/>;
+    inner = <LapsedScreen history={history} kids={kids} fullscreen={fullscreen} onPurchased={applyBilling}/>;
   } else {
     inner = (
       <MainApp
         settings={settings} setSettings={setSettings}
         kids={kids} setKids={setKids}
         history={history} setHistory={setHistory}
+        setEntryFeedback={setEntryFeedback}
         onClearData={onClearData}
         fullscreen={fullscreen}
         billing={billing} onBillingChange={applyBilling}
         trialActive={trialActive}
+        trialMsLeft={trial.msLeft}
       />
     );
   }

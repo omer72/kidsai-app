@@ -4,7 +4,14 @@ import { Icon } from './Icons';
 import { Avatar, Card, Segmented } from './primitives';
 import { MOODS, SAMPLE_PATTERNS } from '../constants';
 
-export function HistoryScreen({ kids, history, activeKid }) {
+const RATINGS = [
+  { id: 'worse', label: 'Got worse', dot: '#D94A5C' },
+  { id: 'same', label: 'About the same', dot: '#9AA1AD' },
+  { id: 'better', label: 'Helped', dot: '#4AAE8C' },
+  { id: 'great', label: 'Really helped', dot: '#2E5BFF' },
+];
+
+export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
   const [filter, setFilter] = useState('all');
   const [openId, setOpenId] = useState(null);
   const items = history.filter((h) => (filter === 'all' ? true : h.kidId === filter));
@@ -134,6 +141,35 @@ export function HistoryScreen({ kids, history, activeKid }) {
                         )}
                       </div>
                     ))}
+
+                    <div style={{ marginTop: 6, paddingTop: 14, borderTop: `1px solid ${tokens.line}` }}>
+                      <div style={{ fontFamily: tokens.sans, fontSize: 10, fontWeight: 700, color: tokens.ink3, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 8 }}>How did it go?</div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                        {RATINGS.map((r) => {
+                          const active = h.feedback === r.id;
+                          return (
+                            <button key={r.id}
+                              onClick={() => onFeedback?.(h.id, { feedback: active ? null : r.id })}
+                              style={{
+                                display: 'inline-flex', alignItems: 'center', gap: 6,
+                                padding: '7px 12px', borderRadius: 999, cursor: 'pointer',
+                                background: active ? tokens.ink : 'transparent',
+                                border: `1px solid ${active ? tokens.ink : tokens.line}`,
+                                fontFamily: tokens.sans, fontSize: 12, fontWeight: 500,
+                                color: active ? '#fff' : tokens.ink,
+                              }}>
+                              <span style={{ width: 6, height: 6, borderRadius: 6, background: r.dot }}/>
+                              {r.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {h.note && (
+                        <div style={{ marginTop: 10, padding: '8px 10px', background: tokens.surfaceAlt, borderRadius: 8, fontFamily: tokens.sans, fontSize: 12, lineHeight: 1.45, color: tokens.ink2, fontStyle: 'italic' }}>
+                          "{h.note}"
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
               </Card>

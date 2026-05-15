@@ -54,21 +54,60 @@ function buildSystemPrompt() {
   ].join('\n');
 }
 
-function summarizePastMoments(history, kidId, max = 5) {
+function wordSet(text) {
+  return new Set((text || '').toLowerCase().split(/\s+/).filter((w) => w.length > 2));
+}
+
+function scoreMoment(h, currentStory) {
+  let score = 0;
+  const ms = Date.now() - (h.id || 0);
+  const days = ms / (1000 * 60 * 60 * 24);
+  if (days < 1) score += 40;
+  else if (days < 2) score += 35;
+  else if (days < 7) score += 25;
+  else if (days < 14) score += 15;
+  else if (days < 30) score += 8;
+  else score += 3;
+  if (h.feedback === 'worse') score += 30;
+  else if (h.feedback === 'same') score += 18;
+  else if (h.feedback === 'better') score += 12;
+  else if (h.feedback === 'great') score += 6;
+  const cur = wordSet(currentStory);
+  const past = wordSet(h.story);
+  if (cur.size > 0 && past.size > 0) {
+    const intersection = [...cur].filter((w) => past.has(w)).length;
+    const union = new Set([...cur, ...past]).size;
+    score += Math.round((intersection / union) * 30);
+  }
+  return score;
+}
+
+function summarizePastMoments(history, kidId, currentStory, max = 5) {
   if (!Array.isArray(history) || history.length === 0) return '';
-  const relevant = history.filter((h) => h.kidId === kidId).slice(0, max);
-  if (relevant.length === 0) return '';
-  const lines = relevant.map((h, i) => {
+  const ownKid = history.filter((h) => h.kidId === kidId);
+  if (ownKid.length === 0) return '';
+  const top = ownKid
+    .map((h) => ({ h, s: scoreMoment(h, currentStory) }))
+    .sort((a, b) => b.s - a.s)
+    .slice(0, max)
+    .sort((a, b) => (a.h.id || 0) - (b.h.id || 0))
+    .map(({ h }) => h);
+  const lines = top.map((h, i) => {
     const when = h.when || (h.id ? new Date(h.id).toLocaleString() : 'previously');
     const where = labelFor(LOCATIONS, h.where) || 'unspecified location';
     const mood = labelFor(MOODS, h.mood) || 'unspecified mood';
     const story = (h.story || '').trim().slice(0, 280);
     const title = h.response?.title || 'previous moment';
-    return `  ${i + 1}. [${when}] (${where}, parent felt ${mood}) "${title}" — story: "${story}"`;
+    const fb = h.feedback === 'worse' ? ' [parent said this advice DID NOT help — got worse]'
+      : h.feedback === 'same' ? ' [parent said this advice did not change things]'
+      : h.feedback === 'better' ? ' [parent said this helped]'
+      : h.feedback === 'great' ? ' [parent said this really helped]'
+      : '';
+    return `  ${i + 1}. [${when}] (${where}, parent felt ${mood}) "${title}"${fb}\n     story: "${story}"`;
   });
   return [
     '',
-    'Past moments with this same child (most recent first, for context — look for recurring triggers, times, or unmet needs but do NOT just repeat earlier advice):',
+    'Past moments with this same child (chronological, top-5 by relevance). When a previous attempt is marked as "did not help" or "got worse", do NOT repeat it — try a different developmental angle. When marked as helped, build on what worked. Look for recurring triggers (time of day, location, who else is present, unmet need):',
     ...lines,
   ].join('\n');
 }
@@ -81,7 +120,7 @@ function buildUserPrompt({ story, ctx, kid, history }) {
   return [
     `Child: ${kid?.name || 'unspecified'}, age ${kid?.age ?? 'unspecified'}.`,
     `Location: ${loc || 'unspecified'}. Parent's mood right now: ${mood || 'unspecified'}. Who else was there: ${involved || 'unspecified'}. Urgency: ${urgency || 'low'}.`,
-    summarizePastMoments(history, kid?.id),
+    summarizePastMoments(history, kid?.id, story),
     '',
     `What the parent said happened (this is the new moment):`,
     story?.trim() ? `"""${story.trim()}"""` : '(parent did not describe the moment in words)',
