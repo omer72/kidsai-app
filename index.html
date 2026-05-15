@@ -9,9 +9,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; background: #E8ECF3; font-family: 'Inter', system-ui, sans-serif; overflow: hidden; height: 100%; overscroll-behavior: none; -webkit-overflow-scrolling: auto; }
+  html, body {
+    margin: 0; padding: 0; background: #E8ECF3;
+    font-family: 'Inter', system-ui, sans-serif;
+    overflow: hidden; height: 100%;
+    overscroll-behavior: none; -webkit-overflow-scrolling: auto;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
   body { position: fixed; inset: 0; width: 100%; }
+  input, textarea, [contenteditable="true"] {
+    -webkit-user-select: text;
+    user-select: text;
+    -webkit-touch-callout: default;
+  }
   #root { height: 100%; width: 100%; display: flex; align-items: center; justify-content: center; }
+  button { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: manipulation; }
   button:focus { outline: none; }
   ::-webkit-scrollbar { width: 0; height: 0; }
 

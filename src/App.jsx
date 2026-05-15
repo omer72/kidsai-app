@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { applyTheme, tokens } from './theme';
-import { loadSettings, saveSettings, loadKids, saveKids, loadHistory, appendHistory, updateHistoryEntry, clearAll, trialStatus, TRIAL_DURATION_MS } from './storage';
+import { loadSettings, saveSettings, loadKids, saveKids, loadHistory, appendHistory, updateHistoryEntry, clearAll } from './storage';
 import { getGuidance, hasApiKey } from './openai';
 import { initBilling, offUpdate, refreshEntitlement, billingAvailable } from './billing';
 import { DEMO_RESPONSE } from './constants';
@@ -18,7 +18,7 @@ import { FollowupScreen } from './components/Followup';
 import { HistoryScreen } from './components/History';
 import { KidsScreen } from './components/Kids';
 import { SettingsScreen } from './components/Settings';
-import { LapsedScreen, SubscriptionScreen, TrialReminderBanner } from './components/TrialScreens';
+import { SubscriptionScreen } from './components/TrialScreens';
 
 const FRAME_W = 402;
 const FRAME_H = 874;
@@ -45,17 +45,15 @@ function useViewport() {
   return v;
 }
 
-function MainApp({ settings, setSettings, kids, setKids, history, setHistory, setEntryFeedback, onClearData, fullscreen, billing, onBillingChange, trialActive, trialMsLeft }) {
+function MainApp({ settings, setSettings, kids, setKids, history, setHistory, setEntryFeedback, onClearData, fullscreen, billing, onBillingChange }) {
   const [tab, setTab] = useState(() => (kids.length === 0 ? 'kids' : 'home'));
   const [activeKidId, setActiveKidId] = useState(kids[0]?.id || null);
   const [flowState, setFlowState] = useState({ stage: 'compose', story: '', ctx: null, response: null, error: null });
   const [paywallOpen, setPaywallOpen] = useState(false);
   const [subscriptionOpen, setSubscriptionOpen] = useState(false);
-  const [bannerDismissed, setBannerDismissed] = useState(false);
 
-  const entitled = !!billing?.entitled || !!trialActive;
-  const trialDaysLeft = trialMsLeft ? Math.ceil(trialMsLeft / (24 * 60 * 60 * 1000)) : 0;
-  const showTrialBanner = trialActive && !billing?.entitled && trialDaysLeft <= 2 && !bannerDismissed;
+  const entitled = !!billing?.entitled;
+  const inTrial = !!billing?.inTrial;
   const visibleKids = useMemo(() => (entitled ? kids : kids.slice(0, 1)), [kids, entitled]);
   const lockedKidCount = kids.length - visibleKids.length;
 
@@ -124,25 +122,14 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
       content = <FollowupScreen kid={activeKid} onDone={closeMoment}/>;
     } else {
       content = (
-        <>
-          {showTrialBanner && (
-            <div style={{ padding: '14px 22px 0' }}>
-              <TrialReminderBanner
-                daysLeft={trialDaysLeft}
-                kids={kids} history={history}
-                onUpgrade={() => setPaywallOpen(true)}
-                onDismiss={() => setBannerDismissed(true)}
-              />
-            </div>
-          )}
-          <FlowComponent
-            key={settings.flow}
-            kids={visibleKids}
-            activeKid={activeKidId}
-            setActiveKid={setActiveKidId}
-            onSubmit={submit}
-          />
-        </>
+        <FlowComponent
+          key={settings.flow}
+          kids={visibleKids}
+          activeKid={activeKidId}
+          setActiveKid={setActiveKidId}
+          onSubmit={submit}
+          onAddKid={() => setTab('kids')}
+        />
       );
     }
   } else if (tab === 'history') {
@@ -174,7 +161,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
       content = (
         <SettingsScreen
           settings={settings} setSettings={setSettings} onClearData={onClearData}
-          billing={billing} trialActive={trialActive} trialDaysLeft={trialDaysLeft}
+          billing={billing} inTrial={inTrial}
           onOpenSubscription={() => setSubscriptionOpen(true)}
           onOpenUpgrade={() => setPaywallOpen(true)}
         />
@@ -185,7 +172,9 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
   const topBar = (
     <div style={{
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: fullscreen ? '12px 20px 8px' : '58px 20px 8px',
+      padding: fullscreen
+        ? 'max(96px, calc(env(safe-area-inset-top, 0px) + 36px)) 20px 8px'
+        : '58px 20px 8px',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <div style={{
@@ -286,27 +275,20 @@ export function App() {
     setPhase('app');
   };
 
-  const startTrial = () => {
-    const next = { ...settings, onboarded: true, trial: { startedAt: Date.now() } };
-    setSettings(next);
-    setPhase('app');
-  };
-
-  const trial = trialStatus(settings);
-  const trialActive = trial.active;
-  const trialExpired = trial.expired;
-  const entitled = !!billing?.entitled;
-  const trialBlocker = phase === 'app' && !entitled && trialExpired;
-
   let inner;
   if (phase === 'welcome') {
     inner = <WelcomeScreen onStart={() => setPhase('onboarding')} fullscreen={fullscreen}/>;
   } else if (phase === 'onboarding') {
-    inner = <OnboardingScreen onDone={() => setPhase('trial_start')} fullscreen={fullscreen}/>;
-  } else if (phase === 'trial_start') {
-    inner = <PaywallScreen mode="trialStart" onTrialStart={startTrial} fullscreen={fullscreen}/>;
-  } else if (trialBlocker) {
-    inner = <LapsedScreen history={history} kids={kids} fullscreen={fullscreen} onPurchased={applyBilling}/>;
+    inner = <OnboardingScreen onDone={() => setPhase('paywall')} fullscreen={fullscreen}/>;
+  } else if (phase === 'paywall') {
+    inner = (
+      <PaywallScreen
+        mode="upgrade"
+        fullscreen={fullscreen}
+        onStart={finishOnboarding}
+        onPurchased={(next) => { applyBilling(next); finishOnboarding(); }}
+      />
+    );
   } else {
     inner = (
       <MainApp
@@ -317,8 +299,6 @@ export function App() {
         onClearData={onClearData}
         fullscreen={fullscreen}
         billing={billing} onBillingChange={applyBilling}
-        trialActive={trialActive}
-        trialMsLeft={trial.msLeft}
       />
     );
   }
@@ -327,7 +307,6 @@ export function App() {
     return (
       <div style={{
         position: 'fixed', inset: 0, overflow: 'hidden', background: tokens.bg,
-        paddingTop: 'max(50px, env(safe-area-inset-top))',
       }}>
         {inner}
       </div>

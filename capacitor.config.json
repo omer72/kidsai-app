@@ -6,5 +6,20 @@
     "contentInset": "never",
     "scrollEnabled": false,
     "backgroundColor": "#E8ECF3"
+  },
+  "plugins": {
+    "Keyboard": {
+      "resize": "none",
+      "resizeOnFullScreen": false
+    },
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "launchAutoHide": false,
+      "backgroundColor": "#E8ECF3",
+      "iosSpinnerStyle": "small",
+      "showSpinner": false,
+      "splashFullScreen": true,
+      "splashImmersive": true
+    }
   }
 }

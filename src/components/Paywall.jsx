@@ -69,11 +69,15 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
     }
   };
 
+  const yearlyHasTrial = !!introOfferPeriod(yearlyPkg);
+  const monthlyHasTrial = !!introOfferPeriod(monthlyPkg);
   const ctaLabel = busy
     ? 'Working…'
     : (isTrialStart
         ? 'Start 7-day free trial'
-        : `Subscribe ${plan === 'yearly' ? yearlyPrice + '/yr' : monthlyPrice + '/mo'}`);
+        : (plan === 'yearly' && yearlyHasTrial) || (plan === 'monthly' && monthlyHasTrial)
+          ? `Start 7-day free trial`
+          : `Subscribe ${plan === 'yearly' ? yearlyPrice + '/yr' : monthlyPrice + '/mo'}`);
 
   const handleCTA = () => {
     if (isTrialStart) { onTrialStart?.(); return; }
@@ -244,15 +248,31 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
         }}>
           {isTrialStart
             ? 'Full access for 7 days. We won’t ask for payment until then.'
-            : <>Then {plan === 'yearly' ? `${yearlyPrice}/year` : `${monthlyPrice}/month`}. Cancel anytime in Settings.</>}
+            : <>
+                {plan === 'yearly' ? `${yearlyPrice}/year` : `${monthlyPrice}/month`}, auto-renewing. Cancel anytime at least 24 hours before the period ends via your Apple ID account settings. Any unused portion of a free trial is forfeited when you purchase a subscription.
+              </>}
+          <br/>
           {!isTrialStart && (
             <>
-              <br/>
               <button onClick={handleRestore} disabled={busy} style={{
                 background: 'transparent', border: 'none', padding: 0, cursor: busy ? 'not-allowed' : 'pointer',
                 color: tokens.ink2, fontFamily: tokens.sans, fontSize: 11, textDecoration: 'underline',
               }}>Restore purchase</button>
-              {' · '}<span style={{ color: tokens.ink2 }}>Terms</span> · <span style={{ color: tokens.ink2 }}>Privacy</span>
+              {' · '}
+            </>
+          )}
+          <a href="https://kidsit.ai/terms" target="_blank" rel="noopener noreferrer"
+             style={{ color: tokens.ink2, textDecoration: 'underline' }}>Terms</a>
+          {' · '}
+          <a href="https://kidsit.ai/privacy" target="_blank" rel="noopener noreferrer"
+             style={{ color: tokens.ink2, textDecoration: 'underline' }}>Privacy</a>
+          {onStart && !isTrialStart && (
+            <>
+              <br/>
+              <button onClick={onStart} disabled={busy} style={{
+                background: 'transparent', border: 'none', padding: '10px 0 0', cursor: busy ? 'not-allowed' : 'pointer',
+                color: tokens.ink3, fontFamily: tokens.sans, fontSize: 12,
+              }}>Maybe later — try with 1 kid free</button>
             </>
           )}
         </div>

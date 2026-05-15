@@ -27,25 +27,10 @@ const DEFAULT_BILLING = {
   entitled: false, productId: null, expiresAt: null, inTrial: false, willRenew: false, syncedAt: 0,
 };
 
-export const TRIAL_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
-
 export function loadSettings() {
   const s = read(KEYS.settings, { theme: 'warm', flow: 'A' });
   if (!s.billing) s.billing = DEFAULT_BILLING;
-  if (!s.trial) s.trial = { startedAt: null };
   return s;
-}
-
-export function trialStatus(settings) {
-  const startedAt = settings?.trial?.startedAt || 0;
-  if (!startedAt) return { started: false, active: false, expired: false, msLeft: 0 };
-  const elapsed = Date.now() - startedAt;
-  return {
-    started: true,
-    active: elapsed < TRIAL_DURATION_MS,
-    expired: elapsed >= TRIAL_DURATION_MS,
-    msLeft: Math.max(0, TRIAL_DURATION_MS - elapsed),
-  };
 }
 
 export function saveSettings(s) {

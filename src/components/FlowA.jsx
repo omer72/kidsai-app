@@ -6,7 +6,7 @@ import { LOCATIONS, MOODS, INVOLVED, URGENCY } from '../constants';
 import { startRecording, stopRecording, cancelRecording } from '../recorder';
 import { transcribeAudio, hasApiKey } from '../openai';
 
-export function FlowA({ kids, activeKid, setActiveKid, onSubmit }) {
+export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid }) {
   const [stage, setStage] = useState('idle');
   const [elapsed, setElapsed] = useState(0);
   const [story, setStory] = useState('');
@@ -71,23 +71,139 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit }) {
   if (stage === 'idle' || stage === 'recording' || stage === 'transcribing') {
     const h = new Date().getHours();
     const greeting = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+    const activeKidObj = kids.find((k) => k.id === activeKid) || kids[0];
     return (
       <div style={{ padding: '14px 22px 140px', minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
-          <div>
-            <div style={{ fontFamily: tokens.sans, fontSize: 13, color: tokens.ink3, fontWeight: 500 }}>{greeting}</div>
-            <div style={{ fontFamily: tokens.serif, fontSize: 22, fontWeight: 500, color: tokens.ink, marginTop: 2, letterSpacing: -0.2 }}>
-              What happened?
-            </div>
-          </div>
-          <div style={{ display: 'flex', gap: 6 }}>
-            {kids.map((k) => (
-              <button key={k.id} onClick={() => setActiveKid(k.id)} style={{ border: 'none', background: 'transparent', padding: 0, cursor: 'pointer' }}>
-                <Avatar kid={k} size={36} ring={k.id === activeKid}/>
-              </button>
-            ))}
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ fontFamily: tokens.sans, fontSize: 13, color: tokens.ink3, fontWeight: 500 }}>{greeting}</div>
+          <div style={{ fontFamily: tokens.serif, fontSize: 22, fontWeight: 500, color: tokens.ink, marginTop: 2, letterSpacing: -0.2 }}>
+            {activeKidObj
+              ? <>What happened with <span style={{ fontStyle: 'italic', color: activeKidObj.color }}>{activeKidObj.name}</span>?</>
+              : 'What happened?'}
           </div>
         </div>
+
+        {kids.length > 0 && (
+          <div style={{ marginBottom: 18 }}>
+            <div style={{
+              fontFamily: tokens.sans, fontSize: 11, fontWeight: 700,
+              color: tokens.ink3, letterSpacing: 0.8, textTransform: 'uppercase',
+              marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6,
+            }}>
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                width: 16, height: 16, borderRadius: 16,
+                background: tokens.ink, color: '#fff',
+                fontFamily: tokens.sans, fontSize: 10, fontWeight: 700,
+              }}>1</span>
+              This moment is about
+            </div>
+            {kids.length <= 2 ? (
+              <div style={{ display: 'flex', gap: 8 }}>
+                {kids.map((k) => {
+                  const active = k.id === activeKid;
+                  return (
+                    <button key={k.id} onClick={() => setActiveKid(k.id)} style={{
+                      flex: 1, padding: '12px 14px', borderRadius: 16,
+                      background: active ? tokens.surface : 'transparent',
+                      border: `2px solid ${active ? k.color : tokens.line}`,
+                      cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: 10,
+                      transition: 'all .15s',
+                    }}>
+                      <Avatar kid={k} size={36}/>
+                      <div style={{ textAlign: 'left', flex: 1 }}>
+                        <div style={{ fontFamily: tokens.sans, fontSize: 14, fontWeight: 600, color: tokens.ink, lineHeight: 1.2 }}>{k.name}</div>
+                        {!!k.age && <div style={{ fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3, marginTop: 1 }}>{k.age} years</div>}
+                      </div>
+                      {active && (
+                        <div style={{
+                          width: 18, height: 18, borderRadius: 18, background: k.color,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                        }}>
+                          <Icon.Check s={11} c="#fff"/>
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              <div style={{
+                display: 'flex', gap: 12, overflowX: 'auto', overflowY: 'hidden',
+                padding: '4px 2px 8px', margin: '0 -22px',
+                paddingLeft: 22, paddingRight: 22,
+                scrollbarWidth: 'none',
+              }}>
+                {kids.map((k) => {
+                  const active = k.id === activeKid;
+                  return (
+                    <button key={k.id} onClick={() => setActiveKid(k.id)} style={{
+                      background: 'transparent', border: 'none', padding: 0, cursor: 'pointer',
+                      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+                      flexShrink: 0, width: 62,
+                    }}>
+                      <div style={{
+                        position: 'relative',
+                        padding: active ? 2 : 0,
+                        borderRadius: 60,
+                        background: active ? k.color : 'transparent',
+                        transition: 'all .15s',
+                      }}>
+                        <div style={{
+                          padding: active ? 2 : 4,
+                          borderRadius: 60,
+                          background: tokens.bg,
+                        }}>
+                          <Avatar kid={k} size={active ? 48 : 44}/>
+                        </div>
+                        {active && (
+                          <div style={{
+                            position: 'absolute', bottom: -2, right: -2,
+                            width: 18, height: 18, borderRadius: 18, background: k.color,
+                            border: `2px solid ${tokens.bg}`,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          }}>
+                            <Icon.Check s={10} c="#fff"/>
+                          </div>
+                        )}
+                      </div>
+                      <div style={{
+                        fontFamily: tokens.sans, fontSize: 12,
+                        fontWeight: active ? 700 : 500,
+                        color: active ? tokens.ink : tokens.ink2,
+                        lineHeight: 1.2, marginTop: 2,
+                      }}>{k.name}</div>
+                      {!!k.age && (
+                        <div style={{ fontFamily: tokens.sans, fontSize: 10, color: tokens.ink3, lineHeight: 1, marginTop: -2 }}>{k.age}y</div>
+                      )}
+                    </button>
+                  );
+                })}
+                {onAddKid && (
+                  <button onClick={onAddKid} style={{
+                    background: 'transparent', border: 'none', padding: 0, cursor: 'pointer',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+                    flexShrink: 0, width: 62,
+                  }}>
+                    <div style={{
+                      width: 52, height: 52, borderRadius: 52, marginTop: 4,
+                      border: `1.5px dashed ${tokens.line}`,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      color: tokens.ink3,
+                    }}>
+                      <Icon.Plus s={18} c={tokens.ink3}/>
+                    </div>
+                    <div style={{
+                      fontFamily: tokens.sans, fontSize: 12, fontWeight: 500,
+                      color: tokens.ink3, lineHeight: 1.2, marginTop: 2,
+                    }}>Add</div>
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
         <Card style={{
           marginBottom: 'auto',
@@ -96,9 +212,18 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit }) {
           transition: 'all .3s',
         }}>
           <div style={{
-            fontFamily: tokens.sans, fontSize: 12, fontWeight: 600,
-            color: tokens.primaryInk, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 8,
+            fontFamily: tokens.sans, fontSize: 11, fontWeight: 700,
+            color: stage === 'recording' ? tokens.primaryInk : tokens.ink3,
+            letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 8,
+            display: 'flex', alignItems: 'center', gap: 6,
           }}>
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              width: 16, height: 16, borderRadius: 16,
+              background: stage === 'recording' ? tokens.primary : tokens.ink,
+              color: '#fff',
+              fontFamily: tokens.sans, fontSize: 10, fontWeight: 700,
+            }}>2</span>
             {stage === 'recording' ? 'Listening' : stage === 'transcribing' ? 'Transcribing…' : 'Hold to speak (or type below)'}
           </div>
           <div style={{ fontFamily: tokens.serif, fontSize: 19, lineHeight: 1.4, color: tokens.ink, letterSpacing: -0.1 }}>

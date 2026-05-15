@@ -2,7 +2,7 @@ import { tokens } from '../theme';
 import { Icon } from './Icons';
 import { Card, Label, Segmented } from './primitives';
 
-export function SettingsScreen({ settings, setSettings, onClearData, billing, trialActive, trialDaysLeft, onOpenSubscription, onOpenUpgrade }) {
+export function SettingsScreen({ settings, setSettings, onClearData, billing, inTrial, onOpenSubscription, onOpenUpgrade }) {
   return (
     <div style={{ padding: '14px 20px 140px' }}>
       <div style={{
@@ -26,33 +26,14 @@ export function SettingsScreen({ settings, setSettings, onClearData, billing, tr
               <Icon.Sparkle s={16} c={tokens.primary}/>
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: tokens.sans, fontSize: 14, fontWeight: 600, color: tokens.ink, marginBottom: 2 }}>Active subscription</div>
+              <div style={{ fontFamily: tokens.sans, fontSize: 14, fontWeight: 600, color: tokens.ink, marginBottom: 2 }}>
+                {inTrial ? 'Free trial active' : 'Active subscription'}
+              </div>
               <div style={{ fontFamily: tokens.sans, fontSize: 12, color: tokens.ink3 }}>
                 Manage plan, restore, or cancel
               </div>
             </div>
             <Icon.Chevron s={14} c={tokens.ink3}/>
-          </button>
-        ) : trialActive ? (
-          <button onClick={onOpenUpgrade} style={{
-            width: '100%', padding: '14px 16px', borderRadius: 14, cursor: 'pointer',
-            background: tokens.primarySoft, border: `1px solid ${tokens.primary}40`, textAlign: 'left',
-            display: 'flex', alignItems: 'center', gap: 12,
-          }}>
-            <div style={{
-              width: 36, height: 36, borderRadius: 12, flexShrink: 0,
-              background: tokens.primary, color: '#fff',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <Icon.Clock s={16} c="#fff"/>
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: tokens.sans, fontSize: 14, fontWeight: 600, color: tokens.ink, marginBottom: 2 }}>
-                {trialDaysLeft <= 1 ? 'Trial ends soon' : `${trialDaysLeft} days left in trial`}
-              </div>
-              <div style={{ fontFamily: tokens.sans, fontSize: 12, color: tokens.ink2 }}>Continue with Kidsit AI</div>
-            </div>
-            <Icon.ArrowRight s={14} c={tokens.primary}/>
           </button>
         ) : (
           <button onClick={onOpenUpgrade} style={{
