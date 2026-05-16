@@ -1,8 +1,34 @@
+import { useState } from 'react';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
 import { IOSStatusBar } from './IOSFrame';
+import { billingAvailable, restorePurchases } from '../billing';
 
-export function WelcomeScreen({ onStart, fullscreen }) {
+export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
+  const [restoring, setRestoring] = useState(false);
+  const [restoreMsg, setRestoreMsg] = useState('');
+
+  const handleRestore = async () => {
+    setRestoreMsg('');
+    if (!billingAvailable()) {
+      setRestoreMsg('Restore is only available on the App Store build.');
+      return;
+    }
+    setRestoring(true);
+    try {
+      const next = await restorePurchases();
+      if (next.entitled) {
+        onRestored?.(next);
+      } else {
+        setRestoreMsg('No active subscription found on this Apple ID.');
+      }
+    } catch (err) {
+      setRestoreMsg(err?.message || 'Restore failed.');
+    } finally {
+      setRestoring(false);
+    }
+  };
+
   return (
     <div style={{
       width: '100%', height: '100%', position: 'relative', overflowY: 'auto', overflowX: 'hidden', WebkitOverflowScrolling: 'touch',
@@ -79,8 +105,22 @@ export function WelcomeScreen({ onStart, fullscreen }) {
           textAlign: 'center', marginTop: 14,
           fontFamily: tokens.sans, fontSize: 12, color: tokens.ink3,
         }}>
-          Already a member? <span style={{ color: tokens.ink, fontWeight: 600 }}>Sign in</span>
+          Already a subscriber?{' '}
+          <button onClick={handleRestore} disabled={restoring} style={{
+            background: 'transparent', border: 'none', padding: 0,
+            cursor: restoring ? 'not-allowed' : 'pointer',
+            color: tokens.ink, fontWeight: 600, fontSize: 12,
+            fontFamily: tokens.sans, textDecoration: 'underline',
+          }}>
+            {restoring ? 'Restoring…' : 'Restore'}
+          </button>
         </div>
+        {restoreMsg && (
+          <div style={{
+            textAlign: 'center', marginTop: 8,
+            fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3,
+          }}>{restoreMsg}</div>
+        )}
         <div style={{
           textAlign: 'center', marginTop: 18, padding: '0 12px',
           fontFamily: tokens.sans, fontSize: 11, lineHeight: 1.5, color: tokens.ink3,

@@ -277,7 +277,13 @@ export function App() {
 
   let inner;
   if (phase === 'welcome') {
-    inner = <WelcomeScreen onStart={() => setPhase('onboarding')} fullscreen={fullscreen}/>;
+    inner = (
+      <WelcomeScreen
+        onStart={() => setPhase('onboarding')}
+        onRestored={(next) => { applyBilling(next); finishOnboarding(); }}
+        fullscreen={fullscreen}
+      />
+    );
   } else if (phase === 'onboarding') {
     inner = <OnboardingScreen onDone={() => setPhase('paywall')} fullscreen={fullscreen}/>;
   } else if (phase === 'paywall') {
