@@ -22,3 +22,4 @@ ios/capacitor-cordova-ios-plugins/
 
 # os
 .DS_Store
+.gstack/

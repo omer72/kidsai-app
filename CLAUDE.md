@@ -37,3 +37,10 @@ No tests, no lint setup. Don't add them unless asked.
 - **No IAP yet.** The Paywall screen's "Start trial" button just sets `settings.onboarded = true` and drops into the app. Trial / lapsed / subscription screens were not ported — they belong with the payment work.
 - **`dangerouslyAllowBrowser: true`** is acceptable here because the key is user-supplied and stays on-device. If you later add a backend proxy, switch to calling your proxy instead and remove the flag.
 - **Don't reintroduce window globals.** Everything is ES modules now. Imports must be from relative paths under `src/`.
+
+## gstack
+
+Use the `/browse` skill from gstack for all web browsing. Never use `mcp__claude-in-chrome__*` tools.
+
+Available gstack skills:
+`/office-hours`, `/plan-ceo-review`, `/plan-eng-review`, `/plan-design-review`, `/design-consultation`, `/design-shotgun`, `/design-html`, `/review`, `/ship`, `/land-and-deploy`, `/canary`, `/benchmark`, `/browse`, `/connect-chrome`, `/qa`, `/qa-only`, `/design-review`, `/setup-browser-cookies`, `/setup-deploy`, `/setup-gbrain`, `/retro`, `/investigate`, `/document-release`, `/document-generate`, `/codex`, `/cso`, `/autoplan`, `/plan-devex-review`, `/devex-review`, `/careful`, `/freeze`, `/guard`, `/unfreeze`, `/gstack-upgrade`, `/learn`

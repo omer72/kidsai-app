@@ -163,9 +163,11 @@ Reviewer notes:
 
 1. No account creation is required to test. On first launch the app
    goes Welcome → Onboarding → Paywall. The paywall offers a 7-day
-   free trial on the Yearly plan; you can also tap "Maybe later —
-   try with 1 kid free" to enter the free tier and test most
-   functionality without subscribing.
+   free trial on BOTH plans (Monthly and Yearly) — whichever the
+   reviewer picks, the IAP sheet shows the introductory offer
+   ("Free for 1 week, then $X/month or year"). You can also tap
+   "Maybe later — try with 1 kid free" to enter the free tier and
+   test most functionality without subscribing.
 
 2. The microphone button on the Home tab is press-and-hold. Hold
    it for at least one second to record. Audio is sent to a server
@@ -173,8 +175,9 @@ Reviewer notes:
    for guidance (OpenAI GPT-4o-mini). All API keys are server-side;
    the IPA contains no third-party credentials.
 
-3. Subscription products: kidsit_monthly ($9.99/mo) and kidsit_yearly
-   ($59.99/yr with 7-day free trial). Both use StoreKit 2 via
+3. Subscription products: kidsit_monthly ($9.99/mo, 7-day free
+   trial for new subscribers) and kidsit_yearly ($59.99/yr, 7-day
+   free trial for new subscribers). Both use StoreKit 2 via
    RevenueCat. Restore is wired in the paywall footer and in
    Settings → Subscription.
 
