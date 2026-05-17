@@ -38,6 +38,29 @@
     0%, 100% { opacity: 1; }
     50% { opacity: 0.35; }
   }
+
+  /* ── RTL ─────────────────────────────────────────────────────────── */
+  html[dir="rtl"] body { direction: rtl; text-align: right; }
+
+  /* Default text alignment for content inside an RTL document.
+     Components that hard-code text-align: 'left'/'right' in inline
+     styles will still override this — that's intentional. */
+  html[dir="rtl"] input,
+  html[dir="rtl"] textarea,
+  html[dir="rtl"] [contenteditable="true"] {
+    text-align: right;
+  }
+
+  /* Directional-arrow icons (Icon.ArrowRight etc.) inside an RTL
+     document get visually mirrored so they point in the correct
+     reading-flow direction (right→left becomes →start). */
+  html[dir="rtl"] [data-flip-rtl="true"],
+  html[dir="rtl"] svg[data-arrow="right"],
+  html[dir="rtl"] svg[data-arrow="left"],
+  html[dir="rtl"] svg[data-arrow="chevron"],
+  html[dir="rtl"] svg[data-arrow="back"] {
+    transform: scaleX(-1);
+  }
 </style>
 </head>
 <body>
