@@ -225,6 +225,7 @@
     "languageLabel": "Idioma",
     "languageEn": "English",
     "languageEs": "Español",
+    "languageHe": "עברית",
     "dataLabel": "Datos",
     "dataBody": "Todos los momentos e hijos se guardan localmente en este dispositivo. Borrarlos es permanente.",
     "clearAll": "Borrar todos los datos",

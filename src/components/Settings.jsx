@@ -93,6 +93,7 @@ export function SettingsScreen({ settings, setSettings, onClearData, billing, in
           options={[
             { value: 'en', label: t('settings.languageEn') },
             { value: 'es', label: t('settings.languageEs') },
+            { value: 'he', label: t('settings.languageHe') },
           ]}
         />
       </div>

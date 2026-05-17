@@ -1,0 +1,285 @@
+{
+  "brand": {
+    "name": "Kidsit AI",
+    "wordmark": "kidsit ai"
+  },
+  "common": {
+    "skip": "דלג",
+    "cancel": "ביטול",
+    "save": "שמירה",
+    "done": "סיום",
+    "back": "חזרה",
+    "next": "הבא",
+    "close": "סגור",
+    "continue": "המשך",
+    "startOver": "התחל מחדש",
+    "edit": "עריכה",
+    "delete": "מחק",
+    "add": "הוסף",
+    "ok": "אישור",
+    "working": "עובד…",
+    "restoring": "משחזר…",
+    "restore": "שחזר",
+    "restorePurchase": "שחזור רכישה",
+    "terms": "תנאים",
+    "privacy": "פרטיות"
+  },
+  "welcome": {
+    "badge": "24,000 הורים סומכים עלינו",
+    "headline1": "הורות זה",
+    "headline2": "קשה.",
+    "headline3a": "אתם לא צריכים",
+    "headline3b": "לעשות את זה לבד.",
+    "subhead": "ספרו מה קרה. קבלו הכוונה חמה ומבוססת מחקר תוך 12 שניות.",
+    "cta": "נסו את הרגע הראשון — בחינם",
+    "alreadySubscriber": "כבר מנויים?",
+    "disclaimer": "Kidsit AI מציעה הכוונה רפלקטיבית, לא ייעוץ רפואי או פסיכולוגי. היא לא מאבחנת ולא מטפלת באף מצב. אם יש לכם דאגה קלינית לגבי הילד, פנו לאיש מקצוע מוסמך.",
+    "noSubscriptionFound": "לא נמצא מנוי פעיל בחשבון Apple ID הזה.",
+    "restoreUnavailable": "שחזור זמין רק בגרסת App Store.",
+    "restoreFailed": "השחזור נכשל."
+  },
+  "onboarding": {
+    "slide1": {
+      "eyebrow": "01 — דברו בקול",
+      "title": "פשוט תדברו. כמו שמדברים עם חבר בטלפון.",
+      "body": "בלי יומנים. בלי טפסים. החזיקו את המיקרופון, נשמו החוצה את הכאוס. Kidsit AI מקשיבה בלי שיפוטיות."
+    },
+    "slide2": {
+      "eyebrow": "02 — קבלו עדשה צלולה",
+      "title": "ראו את הרגע ממקום רגוע יותר.",
+      "body": "תקבלו קריאה מובנית — מה קרה, למה, ומה לנסות. מבוסס על מחקר בהתפתחות הילד."
+    },
+    "slide3": {
+      "eyebrow": "03 — זהו את הדפוסים",
+      "title": "דפוסים נחשפים. ואז אפשר לשנות אותם.",
+      "body": "עם הזמן, Kidsit AI חושפת את הטריגרים, השעות והקונטקסטים שחוזרים על עצמם. בשקט, ברוך."
+    },
+    "repeatingBadge": "← חוזר"
+  },
+  "paywall": {
+    "headline1": "כל Kidsit AI,",
+    "headline2": "בקצות האצבעות.",
+    "subhead": "ביטול בכל רגע. תקופת ניסיון של {{trial}} חינם. בלי הפתעות בחיוב.",
+    "trialDefault": "7 ימים",
+    "features": {
+      "trackEveryChild": {
+        "title": "לכל ילד פרופיל משלו",
+        "body": "הוסיפו כמה ילדים שיש לכם. כל אחד עם הפרופיל והדפוסים שלו."
+      },
+      "unlimitedMoments": {
+        "title": "רגעים ללא הגבלה",
+        "body": "תיעוד, רישום, למידה — כמה שהורות דורשת."
+      },
+      "patternDetection": {
+        "title": "זיהוי דפוסים",
+        "body": "סיכום שבועי של הטריגרים ושל מה שבאמת עובד."
+      },
+      "coParentSharing": {
+        "title": "שיתוף עם בן/בת הזוג",
+        "body": "שלחו כל רגע לבן/בת הזוג כדי להיות מסונכרנים."
+      },
+      "private": {
+        "title": "פרטי. תמיד.",
+        "body": "הצפנה מקצה לקצה. לעולם לא בשימוש לאימון מודלים."
+      }
+    },
+    "yearly": "שנתי",
+    "yearlyDetail": "חיוב פעם בשנה",
+    "perYear": "לשנה",
+    "monthly": "חודשי",
+    "monthlyDetail": "תשלום לפי שימוש",
+    "perMonth": "לחודש",
+    "bestValue": "ערך מיטבי",
+    "ctaTrialStart": "התחילו ניסיון חינם ל-7 ימים",
+    "ctaSubscribeYearly": "הירשמו {{price}}/שנה",
+    "ctaSubscribeMonthly": "הירשמו {{price}}/חודש",
+    "trialStartFooter": "גישה מלאה ל-7 ימים. לא נבקש תשלום עד אז.",
+    "autoRenewDisclosure": "{{price}}, עם חידוש אוטומטי. ביטול אפשרי לפחות 24 שעות לפני סוף התקופה דרך הגדרות חשבון Apple ID. החלק שלא נוצל מהתקופה החינמית מתבטל בעת רכישת מנוי.",
+    "maybeLater": "אולי בפעם אחרת — נסו עם ילד אחד בחינם",
+    "productsLoading": "מוצרי המנוי עוד נטענים. נסו שוב בעוד רגע.",
+    "purchaseFailed": "הרכישה לא הושלמה.",
+    "genericError": "משהו השתבש.",
+    "restoreFailed": "השחזור נכשל.",
+    "noSubscriptionFound": "לא נמצא מנוי פעיל בחשבון Apple ID הזה.",
+    "restoreUnavailable": "רכישות לא זמינות בתצוגה מקדימה בדפדפן."
+  },
+  "flowA": {
+    "greeting": {
+      "morning": "בוקר טוב",
+      "afternoon": "צהריים טובים",
+      "evening": "ערב טוב"
+    },
+    "headlineGeneric": "מה קרה?",
+    "headlineWithKidPrefix": "מה קרה עם ",
+    "headlineWithKidSuffix": "?",
+    "step1Label": "הרגע הזה הוא על",
+    "step2Listening": "מקשיבה",
+    "step2Transcribing": "מתמללת…",
+    "step2HoldToSpeak": "החזיקו כדי לדבר (או הקלידו למטה)",
+    "promptRecording": "ספרו את כל הסיפור. בלי לערוך.",
+    "promptTranscribing": "ממירה את הקול למילים…",
+    "promptIdle": "תארו מה בדיוק קרה. כללו מה עשיתם ואיך זה נגמר.",
+    "releaseWhenDone": "שחררו בסיום",
+    "pressAndHold": "החזיקו לחיצה",
+    "orTypeItOut": "או הקלידו",
+    "yourStory": "הסיפור שלכם",
+    "tellWhatHappened": "ספרו ל-Kidsit AI מה קרה.",
+    "storyPlaceholder": "היא נפלה לרצפה בחניית הפארק והתחילה לצרוח. כולם הסתכלו. ניסיתי לשאול אותה פעמיים…",
+    "addLabel": "הוסף",
+    "kidYears": "בן/בת {{age}}",
+    "kidYearsShort": "{{age}}",
+    "errors": {
+      "micPermission": "אין הרשאת מיקרופון.",
+      "micFailed": "לא הצלחנו להגיע למיקרופון.",
+      "couldNotHear": "לא שמענו כלום. הקלידו למטה או נסו שוב.",
+      "transcriptionFailed": "התמלול נכשל. הקלידו במקום.",
+      "emptyRecording": "הקלטה ריקה"
+    },
+    "context": {
+      "stepOf": "שלב {{step}} מתוך {{total}}",
+      "whereDidItHappen": "איפה זה קרה?",
+      "howWereTheyFeeling": "איך הם הרגישו?",
+      "whoElseWasThere": "מי עוד היה שם?",
+      "howUrgent": "כמה זה דחוף?",
+      "getGuidance": "קבל הכוונה"
+    }
+  },
+  "thinking": {
+    "title": "חושבת לעומק",
+    "step1": "מקשיבה למה ששיתפתם…",
+    "step2": "בודקת קונטקסט התפתחותי…",
+    "step3": "מנסחת הכוונה רכה…"
+  },
+  "response": {
+    "couldntReach": "לא הצלחנו להגיע ל-Kidsit AI",
+    "forKidJustNow": "עבור {{kidName}}, ממש עכשיו",
+    "forYourChildJustNow": "עבור הילד שלכם, ממש עכשיו",
+    "tryNextTime": "נסו את זה בפעם הבאה",
+    "tonightBeforeBed": "הלילה, לפני השינה",
+    "tonightExpand": "להבין למה זה קרה",
+    "whatExpand": "מה שמעתי מהתיאור שלכם",
+    "closingLine": "אתם עושים את זה טוב יותר ממה שאתם חושבים. — Kidsit AI",
+    "markHowItWent": "סמנו איך זה הלך",
+    "closeForNow": "סגור לעת עתה"
+  },
+  "followup": {
+    "eyebrow": "מעקב",
+    "title": "זה עבד?",
+    "subhead": "התשובה הכנה שלכם מלמדת את Kidsit AI מה מצליח עם {{kidName}}.",
+    "subheadGeneric": "התשובה הכנה שלכם מלמדת את Kidsit AI מה מצליח עם הילד.",
+    "rating": {
+      "worse": "הורע",
+      "same": "פחות או יותר אותו דבר",
+      "better": "עזר",
+      "great": "עזר מאוד"
+    },
+    "noteLabel": "הערה מהירה (לא חובה)",
+    "notePlaceholder": "שתי האפשרויות הרגיעו אותה. האזהרה השנייה עזרה הכי הרבה.",
+    "saveTo": "שמור אצל {{kidName}}",
+    "saveToLog": "שמור ביומן"
+  },
+  "history": {
+    "title": "היסטוריה",
+    "filterAll": "הכל",
+    "empty": {
+      "title": "עדיין אין רגעים מתועדים",
+      "body": "תעדו את הרגע הראשון מהמסך הראשי — הוא יופיע כאן."
+    },
+    "yourStoryLabel": "הסיפור שלכם",
+    "feedbackPrompt": "איך זה הלך?",
+    "patternsHeader": "דפוסים השבוע"
+  },
+  "kids": {
+    "title": "ילדים",
+    "addChild": "הוסיפו ילד",
+    "addAnotherUnlock": "הוסיפו ילד נוסף — לפתיחה",
+    "editKid": "עריכת ילד",
+    "namePlaceholder": "שם הילד",
+    "agePlaceholder": "גיל (שנים)",
+    "setAsActive": "הגדירו כילד פעיל",
+    "deleteKid": "מחק ילד",
+    "deleteConfirm": "למחוק את הילד הזה? הרגעים המתועדים יישארו בהיסטוריה.",
+    "yearsAndMoments": "גיל {{age}} · {{count}} רגעים מתועדים",
+    "momentsOnly": "{{count}} רגעים מתועדים",
+    "lockedWaiting": "{{count}} ילד נוסף ממתין",
+    "lockedWaitingPlural": "{{count}} ילדים נוספים ממתינים",
+    "lockedDescription": "הנתונים שלהם בטוחים. פתחו כדי לראות ולהשתמש בהם שוב.",
+    "aboutTitle": "על Kidsit AI",
+    "aboutBody": "Kidsit AI מקשיבה כמו חבר עם דוקטורט בהתפתחות הילד. היא לא שופטת, לא מאבחנת, לא מחליפה מטפל. היא עוזרת לכם לחשוב."
+  },
+  "settings": {
+    "title": "הגדרות",
+    "subscriptionLabel": "מנוי",
+    "activeSubscription": "מנוי פעיל",
+    "freeTrialActive": "ניסיון חינם פעיל",
+    "manageHint": "ניהול תוכנית, שחזור או ביטול",
+    "subscribe": "הצטרפו",
+    "subscribeHint": "פתחו את כל מה ש-Kidsit AI יכולה לעשות",
+    "themeLabel": "ערכת נושא",
+    "themeWarm": "חם",
+    "themeClinical": "קליני",
+    "themeDusk": "דמדומים",
+    "flowLabel": "סגנון",
+    "flowGuided": "מודרך",
+    "flowDense": "צפוף",
+    "languageLabel": "שפה",
+    "languageEn": "English",
+    "languageEs": "Español",
+    "languageHe": "עברית",
+    "dataLabel": "נתונים",
+    "dataBody": "כל הרגעים והילדים נשמרים מקומית במכשיר הזה. מחיקה היא לצמיתות.",
+    "clearAll": "מחק את כל הנתונים",
+    "clearConfirm": "למחוק את כל הנתונים? לא ניתן לשחזר את הפעולה.",
+    "aboutLabel": "אודות ואזהרה",
+    "aboutNotMedical": "Kidsit AI אינה שירות רפואי או פסיכולוגי.",
+    "aboutBody1": " זוהי בת לוויה רפלקטיבית בהורות המציעה הכוונה חמה ומבוססת מחקר לרגעים היומיומיים עם הילד.",
+    "aboutBody2": "האפליקציה לא מאבחנת, לא מטפלת, ולא מחליפה טיפול מאיש מקצוע מוסמך. אם אתם מודאגים מהבטיחות, ההתפתחות או הבריאות הנפשית של הילד — או שלכם — דברו עם רופא ילדים, מטפל או איש מקצוע מורשה אחר. במקרה חירום, פנו לשירותי החירום המקומיים.",
+    "aboutBody3": "ההכוונה נוצרת על ידי מודל בינה מלאכותית ולעיתים עשויה להיות חלקית או שגויה. אתם מכירים את הילד שלכם הכי טוב — סמכו על השיפוט שלכם."
+  },
+  "subscription": {
+    "back": "חזרה",
+    "title": "מנוי",
+    "active": "פעיל",
+    "planYearly": "Kidsit AI שנתי",
+    "planMonthly": "Kidsit AI חודשי",
+    "yearlyPriceLine": "$59.99/שנה",
+    "monthlyPriceLine": "$9.99/חודש",
+    "renewsOn": "מתחדש ב-{{date}}",
+    "endsOn": "מסתיים ב-{{date}}",
+    "inTrial": "אתם נמצאים בתקופת ההיכרות.",
+    "switchToMonthly": "החליפו לחודשי",
+    "switchToYearly": "החליפו לשנתי",
+    "switchToMonthlyDetail": "$9.99/חודש",
+    "switchToYearlyDetail": "חסכו 51% · $59.99/שנה",
+    "manageInAppleId": "ניהול ב-Apple ID",
+    "manageDetail": "ביטול, השהיה, החלפת תוכנית",
+    "restoreDetail": "למנויים שנרכשו בעבר",
+    "cancel": "ביטול מנוי",
+    "cancelFooter": "תשמרו על הגישה עד תאריך החידוש. הרגעים שלכם נשארים פרטיים ושמורים."
+  },
+  "trialBanner": {
+    "endsToday": "תקופת הניסיון מסתיימת היום",
+    "endsTomorrow": "תקופת הניסיון מסתיימת מחר",
+    "daysLeft": "נותרו {{daysLeft}} ימים לתקופת הניסיון",
+    "statsWithKid": "תיעדתם {{count}} רגעים. הדפוסים של {{kidName}} מתחילים להתחדד — תמשיכו ככה.",
+    "stats": "תיעדתם {{count}} רגעים. הדפוסים מתחילים להתחדד — תמשיכו ככה.",
+    "continueCTA": "המשיכו עם Kidsit AI"
+  },
+  "lapsed": {
+    "title": "תקופת הניסיון הסתיימה.",
+    "subhead": "הרגעים והדפוסים שלכם בטוחים — הם מחכים שתחזרו.",
+    "momentsAndKids": "רגע אחד · ילד אחד",
+    "momentsAndKidsPlural": "{{moments}} רגעים · {{kids}} ילדים",
+    "momentsOnly": "רגע אחד",
+    "momentsOnlyPlural": "{{moments}} רגעים",
+    "historyPaused": "ההיסטוריה שלכם בהפסקה, לא נמחקה.",
+    "resumeYearlyCTA": "חדשו את Kidsit AI · {{price}}/שנה",
+    "payMonthlyInstead": "תשלום חודשי במקום · {{price}}/חודש"
+  },
+  "tabBar": {
+    "home": "ראשי",
+    "history": "היסטוריה",
+    "kids": "ילדים",
+    "settings": "הגדרות"
+  }
+}
