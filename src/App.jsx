@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { applyTheme, tokens } from './theme';
 import { loadSettings, saveSettings, loadKids, saveKids, loadHistory, appendHistory, updateHistoryEntry, clearAll } from './storage';
 import { getGuidance, hasApiKey } from './openai';
@@ -46,6 +47,7 @@ function useViewport() {
 }
 
 function MainApp({ settings, setSettings, kids, setKids, history, setHistory, setEntryFeedback, onClearData, fullscreen, billing, onBillingChange }) {
+  const { t } = useTranslation();
   const [tab, setTab] = useState(() => (kids.length === 0 ? 'kids' : 'home'));
   const [activeKidId, setActiveKidId] = useState(kids[0]?.id || null);
   const [flowState, setFlowState] = useState({ stage: 'compose', story: '', ctx: null, response: null, error: null });
@@ -183,7 +185,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           boxShadow: `0 4px 10px ${tokens.primary}40`,
         }}><Icon.Sparkle s={14} c="#fff"/></div>
-        <div style={{ fontFamily: tokens.serif, fontSize: 19, fontWeight: 600, color: tokens.ink, letterSpacing: -0.3 }}>kidsit ai</div>
+        <div style={{ fontFamily: tokens.serif, fontSize: 19, fontWeight: 600, color: tokens.ink, letterSpacing: -0.3 }}>{t('brand.wordmark')}</div>
       </div>
     </div>
   );
@@ -259,8 +261,9 @@ export function App() {
     saveKids(next);
   };
   const setEntryFeedback = (id, patch) => setHistory(updateHistoryEntry(id, patch));
+  const { t: tApp } = useTranslation();
   const onClearData = () => {
-    if (!confirm('Clear all data? This cannot be undone.')) return;
+    if (!confirm(tApp('settings.clearConfirm'))) return;
     clearAll();
     const fresh = loadSettings();
     setSettingsState(fresh);

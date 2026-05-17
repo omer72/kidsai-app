@@ -1,16 +1,18 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
 import { billingAvailable, getOfferings, priceString, purchasePackage, restorePurchases } from '../billing';
 
 export function TrialReminderBanner({ daysLeft, kids, history, onUpgrade, onDismiss }) {
+  const { t } = useTranslation();
   const stats = useMemo(() => {
     const count = history.length;
     const kid = kids[0]?.name;
     if (count === 0) return null;
-    if (kid) return `You've logged ${count} moment${count === 1 ? '' : 's'}. ${kid}'s patterns are starting to come into focus — keep going.`;
-    return `You've logged ${count} moment${count === 1 ? '' : 's'}. Patterns are starting to come into focus — keep going.`;
-  }, [history.length, kids]);
+    if (kid) return t('trialBanner.statsWithKid', { count, kidName: kid });
+    return t('trialBanner.stats', { count });
+  }, [history.length, kids, t]);
   return (
     <div style={{
       background: '#FFF', borderRadius: 18, padding: 16,
@@ -35,7 +37,7 @@ export function TrialReminderBanner({ daysLeft, kids, history, onUpgrade, onDism
         </div>
         <div style={{ flex: 1, paddingRight: 18 }}>
           <div style={{ fontFamily: tokens.sans, fontSize: 14, fontWeight: 600, color: tokens.ink, marginBottom: 4 }}>
-            {daysLeft <= 0 ? 'Trial ends today' : daysLeft === 1 ? 'Trial ends tomorrow' : `${daysLeft} days left in your trial`}
+            {daysLeft <= 0 ? t('trialBanner.endsToday') : daysLeft === 1 ? t('trialBanner.endsTomorrow') : t('trialBanner.daysLeft', { daysLeft })}
           </div>
           {stats && (
             <div style={{ fontFamily: tokens.sans, fontSize: 13, lineHeight: 1.45, color: tokens.ink2, marginBottom: 10 }}>
@@ -46,7 +48,7 @@ export function TrialReminderBanner({ daysLeft, kids, history, onUpgrade, onDism
             background: 'transparent', border: 'none', padding: 0, cursor: 'pointer',
             fontFamily: tokens.sans, fontSize: 13, fontWeight: 600, color: tokens.primary,
             display: 'inline-flex', alignItems: 'center', gap: 4,
-          }}>Continue with Kidsit AI <Icon.ArrowRight s={13} c={tokens.primary}/></button>
+          }}>{t('trialBanner.continueCTA')} <Icon.ArrowRight s={13} c={tokens.primary}/></button>
         </div>
       </div>
     </div>
@@ -54,6 +56,7 @@ export function TrialReminderBanner({ daysLeft, kids, history, onUpgrade, onDism
 }
 
 export function LapsedScreen({ history, kids, fullscreen, onPurchased }) {
+  const { t } = useTranslation();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [packages, setPackages] = useState({ monthly: null, yearly: null });
@@ -76,16 +79,16 @@ export function LapsedScreen({ history, kids, fullscreen, onPurchased }) {
     setError('');
     setPlan(which);
     const pkg = which === 'yearly' ? packages.yearly : packages.monthly;
-    if (!billingAvailable()) { setError('Purchases unavailable in browser preview.'); return; }
-    if (!pkg) { setError('Subscription products are still loading. Try again in a moment.'); return; }
+    if (!billingAvailable()) { setError(t('paywall.restoreUnavailable')); return; }
+    if (!pkg) { setError(t('paywall.productsLoading')); return; }
     setBusy(true);
     try {
       const next = await purchasePackage(pkg);
       if (next.entitled) onPurchased?.(next);
-      else setError('Purchase did not complete.');
+      else setError(t('paywall.purchaseFailed'));
     } catch (err) {
       if (err?.userCancelled) return;
-      setError(err?.message || 'Something went wrong.');
+      setError(err?.message || t('paywall.genericError'));
     } finally {
       setBusy(false);
     }
@@ -93,14 +96,14 @@ export function LapsedScreen({ history, kids, fullscreen, onPurchased }) {
 
   const handleRestore = async () => {
     setError('');
-    if (!billingAvailable()) { setError('Purchases unavailable in browser preview.'); return; }
+    if (!billingAvailable()) { setError(t('paywall.restoreUnavailable')); return; }
     setBusy(true);
     try {
       const next = await restorePurchases();
       if (next.entitled) onPurchased?.(next);
-      else setError('No active subscription found on this Apple ID.');
+      else setError(t('paywall.noSubscriptionFound'));
     } catch (err) {
-      setError(err?.message || 'Restore failed.');
+      setError(err?.message || t('paywall.restoreFailed'));
     } finally { setBusy(false); }
   };
 
@@ -129,13 +132,13 @@ export function LapsedScreen({ history, kids, fullscreen, onPurchased }) {
           letterSpacing: -0.4, fontWeight: 500, textAlign: 'center', marginBottom: 12,
           maxWidth: 300,
         }}>
-          Your trial ended.
+          {t('lapsed.title')}
         </div>
         <div style={{
           fontFamily: tokens.sans, fontSize: 15, lineHeight: 1.5, color: tokens.ink2,
           textAlign: 'center', maxWidth: 320, marginBottom: 26,
         }}>
-          Your moments and patterns are safe — they're waiting for you to come back.
+          {t('lapsed.subhead')}
         </div>
 
         {momentsCount > 0 && (
@@ -153,10 +156,12 @@ export function LapsedScreen({ history, kids, fullscreen, onPurchased }) {
             </div>
             <div style={{ flex: 1, textAlign: 'left' }}>
               <div style={{ fontFamily: tokens.sans, fontSize: 13, fontWeight: 600, color: tokens.ink, marginBottom: 2 }}>
-                {momentsCount} moment{momentsCount === 1 ? '' : 's'}{kidsCount > 0 ? ` · ${kidsCount} kid${kidsCount === 1 ? '' : 's'}` : ''}
+                {kidsCount > 0
+                  ? t(momentsCount === 1 && kidsCount === 1 ? 'lapsed.momentsAndKids' : 'lapsed.momentsAndKidsPlural', { moments: momentsCount, kids: kidsCount })
+                  : t(momentsCount === 1 ? 'lapsed.momentsOnly' : 'lapsed.momentsOnlyPlural', { moments: momentsCount })}
               </div>
               <div style={{ fontFamily: tokens.sans, fontSize: 12, color: tokens.ink3 }}>
-                Your history is paused, not deleted.
+                {t('lapsed.historyPaused')}
               </div>
             </div>
           </div>
@@ -180,21 +185,21 @@ export function LapsedScreen({ history, kids, fullscreen, onPurchased }) {
           boxShadow: busy ? 'none' : `0 14px 28px ${tokens.ink}30`,
           marginBottom: 10,
         }}>
-          {busy && plan === 'yearly' ? 'Working…' : `Resume Kidsit AI · ${yearlyPrice}/year`}
+          {busy && plan === 'yearly' ? t('common.working') : t('lapsed.resumeYearlyCTA', { price: yearlyPrice })}
         </button>
         <button onClick={() => handlePurchase('monthly')} disabled={busy} style={{
           background: 'transparent', border: 'none', padding: '8px 0',
           fontFamily: tokens.sans, fontSize: 13, color: tokens.ink3, fontWeight: 500,
           cursor: busy ? 'not-allowed' : 'pointer',
         }}>
-          Pay monthly instead · {monthlyPrice}/mo
+          {t('lapsed.payMonthlyInstead', { price: monthlyPrice })}
         </button>
         <button onClick={handleRestore} disabled={busy} style={{
           background: 'transparent', border: 'none', padding: '4px 0',
           fontFamily: tokens.sans, fontSize: 12, color: tokens.ink3,
           cursor: busy ? 'not-allowed' : 'pointer', textDecoration: 'underline',
         }}>
-          Restore purchase
+          {t('common.restorePurchase')}
         </button>
       </div>
     </div>
@@ -202,6 +207,7 @@ export function LapsedScreen({ history, kids, fullscreen, onPurchased }) {
 }
 
 export function SubscriptionScreen({ billing, onBack, onChanged, fullscreen }) {
+  const { t } = useTranslation();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const productId = billing?.productId || '';
@@ -217,7 +223,7 @@ export function SubscriptionScreen({ billing, onBack, onChanged, fullscreen }) {
       const next = await restorePurchases();
       onChanged?.(next);
     } catch (err) {
-      setError(err?.message || 'Restore failed.');
+      setError(err?.message || t('paywall.restoreFailed'));
     } finally { setBusy(false); }
   };
 
@@ -244,7 +250,7 @@ export function SubscriptionScreen({ billing, onBack, onChanged, fullscreen }) {
           <Icon.Back s={16} c={tokens.ink}/>
         </button>
         <div style={{ fontFamily: tokens.serif, fontSize: 22, fontWeight: 500, color: tokens.ink, letterSpacing: -0.3 }}>
-          Subscription
+          {t('subscription.title')}
         </div>
       </div>
 
@@ -265,17 +271,17 @@ export function SubscriptionScreen({ billing, onBack, onChanged, fullscreen }) {
             marginBottom: 14,
           }}>
             <span style={{ width: 6, height: 6, borderRadius: 6, background: '#A7F3C9' }}/>
-            ACTIVE
+            {t('subscription.active')}
           </div>
           <div style={{ fontFamily: tokens.serif, fontSize: 26, fontWeight: 500, letterSpacing: -0.4, marginBottom: 4 }}>
-            Kidsit AI {isYearly ? 'Yearly' : 'Monthly'}
+            {isYearly ? t('subscription.planYearly') : t('subscription.planMonthly')}
           </div>
           <div style={{ fontFamily: tokens.sans, fontSize: 14, opacity: 0.85, marginBottom: 18 }}>
-            {isYearly ? '$59.99/year' : '$9.99/month'} · {willRenew ? `renews ${renews}` : `ends ${renews}`}
+            {(isYearly ? t('subscription.yearlyPriceLine') : t('subscription.monthlyPriceLine'))} · {willRenew ? t('subscription.renewsOn', { date: renews }) : t('subscription.endsOn', { date: renews })}
           </div>
           {billing?.inTrial && (
             <div style={{ fontFamily: tokens.sans, fontSize: 12, opacity: 0.75, lineHeight: 1.5 }}>
-              You're currently in the introductory period.
+              {t('subscription.inTrial')}
             </div>
           )}
         </div>
@@ -285,9 +291,9 @@ export function SubscriptionScreen({ billing, onBack, onChanged, fullscreen }) {
           border: `1px solid ${tokens.line}`, marginBottom: 16,
         }}>
           {[
-            { label: isYearly ? 'Switch to monthly' : 'Switch to yearly', detail: isYearly ? '$9.99/month' : 'Save 51% · $59.99/year', onClick: manageInApple },
-            { label: 'Manage in Apple ID', detail: 'Cancel, pause, change plan', onClick: manageInApple },
-            { label: 'Restore purchase', detail: 'For previously purchased subscriptions', onClick: handleRestore },
+            { label: isYearly ? t('subscription.switchToMonthly') : t('subscription.switchToYearly'), detail: isYearly ? t('subscription.switchToMonthlyDetail') : t('subscription.switchToYearlyDetail'), onClick: manageInApple },
+            { label: t('subscription.manageInAppleId'), detail: t('subscription.manageDetail'), onClick: manageInApple },
+            { label: t('common.restorePurchase'), detail: t('subscription.restoreDetail'), onClick: handleRestore },
           ].map((row, i, arr) => (
             <button key={i} onClick={row.onClick} disabled={busy} style={{
               width: '100%', padding: '14px 16px', textAlign: 'left',
@@ -322,13 +328,13 @@ export function SubscriptionScreen({ billing, onBack, onChanged, fullscreen }) {
           border: `1px solid ${tokens.line}`,
           fontFamily: tokens.sans, fontSize: 14, fontWeight: 500, color: tokens.danger,
         }}>
-          Cancel subscription
+          {t('subscription.cancel')}
         </button>
         <div style={{
           marginTop: 14, fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3,
           textAlign: 'center', lineHeight: 1.5, padding: '0 14px',
         }}>
-          You'll keep access until your renewal date. Your moments stay private and saved.
+          {t('subscription.cancelFooter')}
         </div>
       </div>
     </div>

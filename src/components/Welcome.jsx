@@ -1,17 +1,19 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
 import { IOSStatusBar } from './IOSFrame';
 import { billingAvailable, restorePurchases } from '../billing';
 
 export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
+  const { t } = useTranslation();
   const [restoring, setRestoring] = useState(false);
   const [restoreMsg, setRestoreMsg] = useState('');
 
   const handleRestore = async () => {
     setRestoreMsg('');
     if (!billingAvailable()) {
-      setRestoreMsg('Restore is only available on the App Store build.');
+      setRestoreMsg(t('welcome.restoreUnavailable'));
       return;
     }
     setRestoring(true);
@@ -20,10 +22,10 @@ export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
       if (next.entitled) {
         onRestored?.(next);
       } else {
-        setRestoreMsg('No active subscription found on this Apple ID.');
+        setRestoreMsg(t('welcome.noSubscriptionFound'));
       }
     } catch (err) {
-      setRestoreMsg(err?.message || 'Restore failed.');
+      setRestoreMsg(err?.message || t('welcome.restoreFailed'));
     } finally {
       setRestoring(false);
     }
@@ -61,7 +63,7 @@ export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
             <Icon.Sparkle s={16} c="#fff"/>
           </div>
           <div style={{ fontFamily: tokens.serif, fontSize: 22, fontWeight: 600, color: tokens.ink, letterSpacing: -0.3 }}>
-            kidsit ai
+            {t('brand.wordmark')}
           </div>
         </div>
 
@@ -73,21 +75,21 @@ export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
             fontFamily: tokens.sans, fontSize: 11, fontWeight: 600, color: tokens.ink2, letterSpacing: 0.4,
           }}>
             <span style={{ width: 6, height: 6, borderRadius: 6, background: '#4AAE8C' }}/>
-            Trusted by 24,000 parents
+            {t('welcome.badge')}
           </div>
           <div style={{
             fontFamily: tokens.serif, fontSize: 40, lineHeight: 1.05, color: tokens.ink,
             letterSpacing: -1.2, fontWeight: 500, marginBottom: 16,
           }}>
-            Parenting is<br/>hard.<br/>
-            <span style={{ fontStyle: 'italic', color: tokens.primary }}>You don't have</span><br/>
-            <span style={{ fontStyle: 'italic', color: tokens.primary }}>to do it alone.</span>
+            {t('welcome.headline1')}<br/>{t('welcome.headline2')}<br/>
+            <span style={{ fontStyle: 'italic', color: tokens.primary }}>{t('welcome.headline3a')}</span><br/>
+            <span style={{ fontStyle: 'italic', color: tokens.primary }}>{t('welcome.headline3b')}</span>
           </div>
           <div style={{
             fontFamily: tokens.sans, fontSize: 16, lineHeight: 1.5, color: tokens.ink2,
             maxWidth: 320,
           }}>
-            Whisper what just happened. Get warm, science-backed guidance in 12 seconds.
+            {t('welcome.subhead')}
           </div>
         </div>
 
@@ -98,21 +100,21 @@ export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
           boxShadow: `0 14px 28px ${tokens.ink}30`,
         }}>
-          Try your first moment — free
+          {t('welcome.cta')}
           <Icon.ArrowRight s={17} c="#fff"/>
         </button>
         <div style={{
           textAlign: 'center', marginTop: 14,
           fontFamily: tokens.sans, fontSize: 12, color: tokens.ink3,
         }}>
-          Already a subscriber?{' '}
+          {t('welcome.alreadySubscriber')}{' '}
           <button onClick={handleRestore} disabled={restoring} style={{
             background: 'transparent', border: 'none', padding: 0,
             cursor: restoring ? 'not-allowed' : 'pointer',
             color: tokens.ink, fontWeight: 600, fontSize: 12,
             fontFamily: tokens.sans, textDecoration: 'underline',
           }}>
-            {restoring ? 'Restoring…' : 'Restore'}
+            {restoring ? t('common.restoring') : t('common.restore')}
           </button>
         </div>
         {restoreMsg && (
@@ -125,7 +127,7 @@ export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
           textAlign: 'center', marginTop: 18, padding: '0 12px',
           fontFamily: tokens.sans, fontSize: 11, lineHeight: 1.5, color: tokens.ink3,
         }}>
-          Kidsit AI offers reflective guidance, not medical or psychological advice. It does not diagnose or treat any condition. For clinical concerns about your child, please consult a qualified professional.
+          {t('welcome.disclaimer')}
         </div>
       </div>
     </div>

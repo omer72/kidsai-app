@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
 import { Avatar, Card, PrimaryButton } from './primitives';
@@ -6,6 +7,7 @@ import { Avatar, Card, PrimaryButton } from './primitives';
 const COLORS = ['#2E5BFF', '#7C5BE8', '#4AAE8C', '#E5A64B', '#D94A5C', '#5B48D4'];
 
 export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, entitled = true, lockedKidCount = 0, onRequestUpgrade }) {
+  const { t } = useTranslation();
   const [adding, setAdding] = useState(false);
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
@@ -55,7 +57,7 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
   };
 
   const deleteKid = () => {
-    if (!confirm('Delete this kid? Their logged moments stay in history.')) return;
+    if (!confirm(t('kids.deleteConfirm'))) return;
     const remaining = kids.filter((k) => k.id !== editingId);
     setKids(remaining);
     if (activeKid === editingId) setActiveKid(remaining[0]?.id || null);
@@ -67,7 +69,7 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
       <div style={{
         fontFamily: tokens.serif, fontSize: 28, color: tokens.ink,
         letterSpacing: -0.3, fontWeight: 500, marginBottom: 14,
-      }}>Kids</div>
+      }}>{t('kids.title')}</div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         {(entitled ? kids : kids.slice(0, 1)).map((k) => {
           const momentsCount = history.filter((h) => h.kidId === k.id).length;
@@ -80,13 +82,13 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
                   <Avatar kid={k} size={52}/>
                   <div style={{ flex: 1, fontFamily: tokens.sans, fontSize: 12, fontWeight: 700,
                     color: tokens.ink3, letterSpacing: 0.8, textTransform: 'uppercase' }}>
-                    Edit kid
+                    {t('kids.editKid')}
                   </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   <input
                     autoFocus value={editName} onChange={(e) => setEditName(e.target.value)}
-                    placeholder="Child’s name"
+                    placeholder={t('kids.namePlaceholder')}
                     style={{
                       padding: 12, borderRadius: 10, border: `1px solid ${tokens.line}`,
                       fontFamily: tokens.sans, fontSize: 15, outline: 'none',
@@ -94,7 +96,7 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
                   />
                   <input
                     value={editAge} onChange={(e) => setEditAge(e.target.value.replace(/[^0-9]/g, ''))}
-                    placeholder="Age (years)" inputMode="numeric"
+                    placeholder={t('kids.agePlaceholder')} inputMode="numeric"
                     style={{
                       padding: 12, borderRadius: 10, border: `1px solid ${tokens.line}`,
                       fontFamily: tokens.sans, fontSize: 15, outline: 'none',
@@ -107,23 +109,23 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
                       fontFamily: tokens.sans, fontSize: 13, fontWeight: 500, color: tokens.ink,
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
                     }}>
-                      <Icon.Check s={13} c={tokens.ink2}/> Set as active kid
+                      <Icon.Check s={13} c={tokens.ink2}/> {t('kids.setAsActive')}
                     </button>
                   )}
                   <div style={{ display: 'flex', gap: 8 }}>
-                    <PrimaryButton onClick={saveEdit} disabled={!editName.trim()} style={{ flex: 1 }}>Save</PrimaryButton>
+                    <PrimaryButton onClick={saveEdit} disabled={!editName.trim()} style={{ flex: 1 }}>{t('common.save')}</PrimaryButton>
                     <button onClick={cancelEdit} style={{
                       padding: '14px 16px', borderRadius: 14, background: 'transparent',
                       border: `1px solid ${tokens.line}`, cursor: 'pointer',
                       fontFamily: tokens.sans, fontSize: 14, fontWeight: 500, color: tokens.ink2,
-                    }}>Cancel</button>
+                    }}>{t('common.cancel')}</button>
                   </div>
                   <button onClick={deleteKid} style={{
                     padding: '10px 12px', borderRadius: 12, background: 'transparent',
                     border: 'none', cursor: 'pointer',
                     fontFamily: tokens.sans, fontSize: 13, fontWeight: 500, color: '#D94A5C',
                     alignSelf: 'center',
-                  }}>Delete kid</button>
+                  }}>{t('kids.deleteKid')}</button>
                 </div>
               </Card>
             );
@@ -143,7 +145,7 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
                   {k.name}
                 </div>
                 <div style={{ fontFamily: tokens.sans, fontSize: 13, color: tokens.ink3, marginTop: 2 }}>
-                  {k.age ? `${k.age} years · ` : ''}{momentsCount} moments logged
+                  {k.age ? t('kids.yearsAndMoments', { age: k.age, count: momentsCount }) : t('kids.momentsOnly', { count: momentsCount })}
                 </div>
               </div>
               {active && (
@@ -162,7 +164,7 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
           <Card pad={16} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <input
               autoFocus value={name} onChange={(e) => setName(e.target.value)}
-              placeholder="Child’s name"
+              placeholder={t('kids.namePlaceholder')}
               style={{
                 padding: 12, borderRadius: 10, border: `1px solid ${tokens.line}`,
                 fontFamily: tokens.sans, fontSize: 15, outline: 'none',
@@ -170,19 +172,19 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
             />
             <input
               value={age} onChange={(e) => setAge(e.target.value.replace(/[^0-9]/g, ''))}
-              placeholder="Age (years)" inputMode="numeric"
+              placeholder={t('kids.agePlaceholder')} inputMode="numeric"
               style={{
                 padding: 12, borderRadius: 10, border: `1px solid ${tokens.line}`,
                 fontFamily: tokens.sans, fontSize: 15, outline: 'none',
               }}
             />
             <div style={{ display: 'flex', gap: 8 }}>
-              <PrimaryButton onClick={addKid} disabled={!name.trim()} style={{ flex: 1 }}>Save</PrimaryButton>
+              <PrimaryButton onClick={addKid} disabled={!name.trim()} style={{ flex: 1 }}>{t('common.save')}</PrimaryButton>
               <button onClick={() => { setAdding(false); setName(''); setAge(''); }} style={{
                 padding: '14px 16px', borderRadius: 14, background: 'transparent',
                 border: `1px solid ${tokens.line}`, cursor: 'pointer',
                 fontFamily: tokens.sans, fontSize: 14, fontWeight: 500, color: tokens.ink2,
-              }}>Cancel</button>
+              }}>{t('common.cancel')}</button>
             </div>
           </Card>
         ) : (
@@ -192,7 +194,7 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             color: tokens.ink3, fontFamily: tokens.sans, fontSize: 14, fontWeight: 500,
           }}>
-            <Icon.Plus s={16}/> {canAddFree ? 'Add a child' : 'Add another child — unlock'}
+            <Icon.Plus s={16}/> {canAddFree ? t('kids.addChild') : t('kids.addAnotherUnlock')}
           </button>
         )}
 
@@ -211,10 +213,10 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontFamily: tokens.sans, fontSize: 14, fontWeight: 600, color: tokens.ink, marginBottom: 2 }}>
-                {lockedKidCount === 1 ? '1 more kid waiting' : `${lockedKidCount} more kids waiting`}
+                {lockedKidCount === 1 ? t('kids.lockedWaiting', { count: 1 }) : t('kids.lockedWaitingPlural', { count: lockedKidCount })}
               </div>
               <div style={{ fontFamily: tokens.sans, fontSize: 12, color: tokens.ink2, lineHeight: 1.4 }}>
-                Their data is safe. Unlock to see and use them again.
+                {t('kids.lockedDescription')}
               </div>
             </div>
             <Icon.ArrowRight s={16} c={tokens.primary}/>
@@ -225,10 +227,10 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
       <div style={{
         marginTop: 26, fontFamily: tokens.sans, fontSize: 11, fontWeight: 700,
         color: tokens.ink3, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 10,
-      }}>About Kidsit AI</div>
+      }}>{t('kids.aboutTitle')}</div>
       <Card pad={16}>
         <div style={{ fontFamily: tokens.sans, fontSize: 13, lineHeight: 1.55, color: tokens.ink2 }}>
-          Kidsit AI listens like a friend with a PhD in child development. It won’t judge, won’t diagnose, won’t replace a clinician. It helps you think.
+          {t('kids.aboutBody')}
         </div>
       </Card>
     </div>

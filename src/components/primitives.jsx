@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
 
@@ -176,11 +177,12 @@ export function GhostButton({ children, onClick, style = {} }) {
 }
 
 export function TabBar({ current, onChange }) {
+  const { t } = useTranslation();
   const tabs = [
-    { id: 'home', icon: Icon.Home, label: 'Home' },
-    { id: 'history', icon: Icon.Clock, label: 'History' },
-    { id: 'kids', icon: Icon.Kid, label: 'Kids' },
-    { id: 'settings', icon: Icon.Settings, label: 'Settings' },
+    { id: 'home', icon: Icon.Home, label: t('tabBar.home') },
+    { id: 'history', icon: Icon.Clock, label: t('tabBar.history') },
+    { id: 'kids', icon: Icon.Kid, label: t('tabBar.kids') },
+    { id: 'settings', icon: Icon.Settings, label: t('tabBar.settings') },
   ];
   return (
     <div style={{

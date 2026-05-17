@@ -1,0 +1,281 @@
+{
+  "brand": {
+    "name": "Kidsit AI",
+    "wordmark": "kidsit ai"
+  },
+  "common": {
+    "skip": "Skip",
+    "cancel": "Cancel",
+    "save": "Save",
+    "done": "Done",
+    "back": "Back",
+    "next": "Next",
+    "close": "Close",
+    "continue": "Continue",
+    "startOver": "Start over",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "ok": "OK",
+    "working": "Working…",
+    "restoring": "Restoring…",
+    "restore": "Restore",
+    "restorePurchase": "Restore purchase",
+    "terms": "Terms",
+    "privacy": "Privacy"
+  },
+  "welcome": {
+    "badge": "Trusted by 24,000 parents",
+    "headline1": "Parenting is",
+    "headline2": "hard.",
+    "headline3a": "You don't have",
+    "headline3b": "to do it alone.",
+    "subhead": "Whisper what just happened. Get warm, science-backed guidance in 12 seconds.",
+    "cta": "Try your first moment — free",
+    "alreadySubscriber": "Already a subscriber?",
+    "disclaimer": "Kidsit AI offers reflective guidance, not medical or psychological advice. It does not diagnose or treat any condition. For clinical concerns about your child, please consult a qualified professional.",
+    "noSubscriptionFound": "No active subscription found on this Apple ID.",
+    "restoreUnavailable": "Restore is only available on the App Store build.",
+    "restoreFailed": "Restore failed."
+  },
+  "onboarding": {
+    "slide1": {
+      "eyebrow": "01 — Speak it out",
+      "title": "Just talk. Like a friend's on the line.",
+      "body": "No journaling. No forms. Hold the mic, breathe out the chaos. Kidsit AI listens with no judgment."
+    },
+    "slide2": {
+      "eyebrow": "02 — Get a clear lens",
+      "title": "See the moment from a calmer place.",
+      "body": "You'll get back a structured read — what happened, why, and what to try. Rooted in child development research."
+    },
+    "slide3": {
+      "eyebrow": "03 — Notice the patterns",
+      "title": "Patterns become visible. So you change them.",
+      "body": "Over time, Kidsit AI surfaces the triggers, times, and contexts that keep tripping you up. Quietly, kindly."
+    },
+    "repeatingBadge": "← REPEATING"
+  },
+  "paywall": {
+    "headline1": "The full Kidsit AI,",
+    "headline2": "at your fingertips.",
+    "subhead": "Cancel anytime. {{trial}} free trial. No surprise charges.",
+    "trialDefault": "7-day",
+    "features": {
+      "trackEveryChild": {
+        "title": "Track every child",
+        "body": "Add as many kids as you have. Each gets their own profile and patterns."
+      },
+      "unlimitedMoments": {
+        "title": "Unlimited moments",
+        "body": "Record, log, learn — as often as parenting demands."
+      },
+      "patternDetection": {
+        "title": "Pattern detection",
+        "body": "Weekly notice of triggers and what's actually working."
+      },
+      "coParentSharing": {
+        "title": "Co-parent sharing",
+        "body": "Send any moment to your partner so you're aligned."
+      },
+      "private": {
+        "title": "Private. Always.",
+        "body": "End-to-end encrypted. Never used to train models."
+      }
+    },
+    "yearly": "Yearly",
+    "yearlyDetail": "Billed once a year",
+    "perYear": "per year",
+    "monthly": "Monthly",
+    "monthlyDetail": "Pay as you go",
+    "perMonth": "per month",
+    "bestValue": "BEST VALUE",
+    "ctaTrialStart": "Start 7-day free trial",
+    "ctaSubscribeYearly": "Subscribe {{price}}/yr",
+    "ctaSubscribeMonthly": "Subscribe {{price}}/mo",
+    "trialStartFooter": "Full access for 7 days. We won't ask for payment until then.",
+    "autoRenewDisclosure": "{{price}}, auto-renewing. Cancel anytime at least 24 hours before the period ends via your Apple ID account settings. Any unused portion of a free trial is forfeited when you purchase a subscription.",
+    "maybeLater": "Maybe later — try with 1 kid free",
+    "productsLoading": "Subscription products are still loading. Try again in a moment.",
+    "purchaseFailed": "Purchase did not complete.",
+    "genericError": "Something went wrong.",
+    "restoreFailed": "Restore failed.",
+    "noSubscriptionFound": "No active subscription found on this Apple ID.",
+    "restoreUnavailable": "Purchases unavailable in browser preview."
+  },
+  "flowA": {
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
+    "headlineGeneric": "What happened?",
+    "headlineWithKidPrefix": "What happened with ",
+    "headlineWithKidSuffix": "?",
+    "step1Label": "This moment is about",
+    "step2Listening": "Listening",
+    "step2Transcribing": "Transcribing…",
+    "step2HoldToSpeak": "Hold to speak (or type below)",
+    "promptRecording": "Tell the whole story. Don't edit.",
+    "promptTranscribing": "Turning your voice into words…",
+    "promptIdle": "Describe what just happened. Include what you did and how it ended.",
+    "releaseWhenDone": "Release when done",
+    "pressAndHold": "Press and hold",
+    "orTypeItOut": "Or type it out",
+    "yourStory": "Your story",
+    "tellWhatHappened": "Tell Kidsit AI what happened.",
+    "storyPlaceholder": "She dropped to the ground in the park parking lot and started screaming. Everyone was looking. I tried asking her twice…",
+    "addLabel": "Add",
+    "kidYears": "{{age}} years",
+    "kidYearsShort": "{{age}}y",
+    "errors": {
+      "micPermission": "Microphone permission denied.",
+      "micFailed": "Could not access microphone.",
+      "couldNotHear": "We couldn't hear anything. Type below or try again.",
+      "transcriptionFailed": "Transcription failed. Type instead.",
+      "emptyRecording": "Empty recording"
+    },
+    "context": {
+      "stepOf": "Step {{step}} of {{total}}",
+      "whereDidItHappen": "Where did it happen?",
+      "howWereTheyFeeling": "How were they feeling?",
+      "whoElseWasThere": "Who else was there?",
+      "howUrgent": "How urgent is this?",
+      "getGuidance": "Get guidance"
+    }
+  },
+  "thinking": {
+    "title": "Thinking it through",
+    "step1": "Listening to what you shared…",
+    "step2": "Checking developmental context…",
+    "step3": "Drafting gentle guidance…"
+  },
+  "response": {
+    "couldntReach": "Couldn't reach Kidsit AI",
+    "forKidJustNow": "For {{kidName}}, just now",
+    "forYourChildJustNow": "For your child, just now",
+    "tryNextTime": "Try this next time",
+    "tonightBeforeBed": "Tonight, before bed",
+    "tonightExpand": "Understand why this happened",
+    "whatExpand": "What I heard you describe",
+    "closingLine": "You're doing better than you think. — Kidsit AI",
+    "markHowItWent": "Mark how it went",
+    "closeForNow": "Close for now"
+  },
+  "followup": {
+    "eyebrow": "Follow-up",
+    "title": "Did it work?",
+    "subhead": "Your honest answer teaches Kidsit AI what lands with {{kidName}}.",
+    "subheadGeneric": "Your honest answer teaches Kidsit AI what lands with your child.",
+    "rating": {
+      "worse": "Got worse",
+      "same": "About the same",
+      "better": "Helped",
+      "great": "Really helped"
+    },
+    "noteLabel": "A quick note (optional)",
+    "notePlaceholder": "Two choices calmed her down. The second warning helped most.",
+    "saveTo": "Save to {{kidName}}",
+    "saveToLog": "Save to log"
+  },
+  "history": {
+    "title": "History",
+    "filterAll": "All",
+    "empty": {
+      "title": "No moments logged yet",
+      "body": "Record your first moment from Home — it'll appear here."
+    },
+    "yourStoryLabel": "Your story",
+    "feedbackPrompt": "How did it go?",
+    "patternsHeader": "Patterns this week"
+  },
+  "kids": {
+    "title": "Kids",
+    "addChild": "Add a child",
+    "addAnotherUnlock": "Add another child — unlock",
+    "editKid": "Edit kid",
+    "namePlaceholder": "Child's name",
+    "agePlaceholder": "Age (years)",
+    "setAsActive": "Set as active kid",
+    "deleteKid": "Delete kid",
+    "deleteConfirm": "Delete this kid? Their logged moments stay in history.",
+    "yearsAndMoments": "{{age}} years · {{count}} moments logged",
+    "momentsOnly": "{{count}} moments logged",
+    "lockedWaiting": "{{count}} more kid waiting",
+    "lockedWaitingPlural": "{{count}} more kids waiting",
+    "lockedDescription": "Their data is safe. Unlock to see and use them again.",
+    "aboutTitle": "About Kidsit AI",
+    "aboutBody": "Kidsit AI listens like a friend with a PhD in child development. It won't judge, won't diagnose, won't replace a clinician. It helps you think."
+  },
+  "settings": {
+    "title": "Settings",
+    "subscriptionLabel": "Subscription",
+    "activeSubscription": "Active subscription",
+    "freeTrialActive": "Free trial active",
+    "manageHint": "Manage plan, restore, or cancel",
+    "subscribe": "Subscribe",
+    "subscribeHint": "Unlock everything Kidsit AI can do",
+    "themeLabel": "Theme",
+    "themeWarm": "Warm",
+    "themeClinical": "Clinical",
+    "themeDusk": "Dusk",
+    "flowLabel": "Flow style",
+    "flowGuided": "Guided",
+    "flowDense": "Dense",
+    "dataLabel": "Data",
+    "dataBody": "All moments and kids are stored locally on this device. Clearing data is permanent.",
+    "clearAll": "Clear all data",
+    "clearConfirm": "Clear all data? This cannot be undone.",
+    "aboutLabel": "About & disclaimer",
+    "aboutNotMedical": "Kidsit AI is not a medical or psychological service.",
+    "aboutBody1": " It is a reflective parenting companion that offers warm, science-informed guidance for everyday moments with your child.",
+    "aboutBody2": "The app does not diagnose, treat, or replace care from a qualified professional. If you are worried about your child's safety, development, or mental health — or your own — please speak with a pediatrician, therapist, or other licensed practitioner. In an emergency, contact your local emergency services.",
+    "aboutBody3": "Guidance is generated by an AI model and may occasionally be incomplete or wrong. You know your child best — trust your judgment."
+  },
+  "subscription": {
+    "back": "Back",
+    "title": "Subscription",
+    "active": "ACTIVE",
+    "planYearly": "Kidsit AI Yearly",
+    "planMonthly": "Kidsit AI Monthly",
+    "yearlyPriceLine": "$59.99/year",
+    "monthlyPriceLine": "$9.99/month",
+    "renewsOn": "renews {{date}}",
+    "endsOn": "ends {{date}}",
+    "inTrial": "You're currently in the introductory period.",
+    "switchToMonthly": "Switch to monthly",
+    "switchToYearly": "Switch to yearly",
+    "switchToMonthlyDetail": "$9.99/month",
+    "switchToYearlyDetail": "Save 51% · $59.99/year",
+    "manageInAppleId": "Manage in Apple ID",
+    "manageDetail": "Cancel, pause, change plan",
+    "restoreDetail": "For previously purchased subscriptions",
+    "cancel": "Cancel subscription",
+    "cancelFooter": "You'll keep access until your renewal date. Your moments stay private and saved."
+  },
+  "trialBanner": {
+    "endsToday": "Trial ends today",
+    "endsTomorrow": "Trial ends tomorrow",
+    "daysLeft": "{{daysLeft}} days left in your trial",
+    "statsWithKid": "You've logged {{count}} moments. {{kidName}}'s patterns are starting to come into focus — keep going.",
+    "stats": "You've logged {{count}} moments. Patterns are starting to come into focus — keep going.",
+    "continueCTA": "Continue with Kidsit AI"
+  },
+  "lapsed": {
+    "title": "Your trial ended.",
+    "subhead": "Your moments and patterns are safe — they're waiting for you to come back.",
+    "momentsAndKids": "{{moments}} moment · {{kids}} kid",
+    "momentsAndKidsPlural": "{{moments}} moments · {{kids}} kids",
+    "momentsOnly": "{{moments}} moment",
+    "momentsOnlyPlural": "{{moments}} moments",
+    "historyPaused": "Your history is paused, not deleted.",
+    "resumeYearlyCTA": "Resume Kidsit AI · {{price}}/year",
+    "payMonthlyInstead": "Pay monthly instead · {{price}}/mo"
+  },
+  "tabBar": {
+    "home": "Home",
+    "history": "History",
+    "kids": "Kids",
+    "settings": "Settings"
+  }
+}

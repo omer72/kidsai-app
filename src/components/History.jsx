@@ -1,17 +1,18 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
 import { Avatar, Card, Segmented } from './primitives';
 import { MOODS, SAMPLE_PATTERNS } from '../constants';
 
-const RATINGS = [
-  { id: 'worse', label: 'Got worse', dot: '#D94A5C' },
-  { id: 'same', label: 'About the same', dot: '#9AA1AD' },
-  { id: 'better', label: 'Helped', dot: '#4AAE8C' },
-  { id: 'great', label: 'Really helped', dot: '#2E5BFF' },
-];
-
 export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
+  const { t } = useTranslation();
+  const RATINGS = [
+    { id: 'worse', label: t('followup.rating.worse'), dot: '#D94A5C' },
+    { id: 'same', label: t('followup.rating.same'), dot: '#9AA1AD' },
+    { id: 'better', label: t('followup.rating.better'), dot: '#4AAE8C' },
+    { id: 'great', label: t('followup.rating.great'), dot: '#2E5BFF' },
+  ];
   const [filter, setFilter] = useState('all');
   const [openId, setOpenId] = useState(null);
   const items = history.filter((h) => (filter === 'all' ? true : h.kidId === filter));
@@ -22,14 +23,14 @@ export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
       <div style={{
         fontFamily: tokens.serif, fontSize: 28, color: tokens.ink,
         letterSpacing: -0.3, fontWeight: 500, marginBottom: 14,
-      }}>History</div>
+      }}>{t('history.title')}</div>
 
       {showPatterns && (
         <div style={{ marginBottom: 20 }}>
           <div style={{
             fontFamily: tokens.sans, fontSize: 11, fontWeight: 700,
             color: tokens.ink3, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 10,
-          }}>Patterns this week</div>
+          }}>{t('history.patternsHeader')}</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {SAMPLE_PATTERNS.map((p, i) => (
               <Card key={i} pad={14} style={{ borderLeft: `3px solid ${tokens.primary}` }}>
@@ -55,17 +56,17 @@ export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
         <Segmented
           value={filter}
           onChange={setFilter}
-          options={[{ value: 'all', label: 'All' }, ...kids.map((k) => ({ value: k.id, label: k.name }))]}
+          options={[{ value: 'all', label: t('history.filterAll') }, ...kids.map((k) => ({ value: k.id, label: k.name }))]}
         />
       </div>
 
       {items.length === 0 ? (
         <Card pad={20} style={{ textAlign: 'center' }}>
           <div style={{ fontFamily: tokens.serif, fontSize: 16, color: tokens.ink, marginBottom: 6 }}>
-            No moments logged yet
+            {t('history.empty.title')}
           </div>
           <div style={{ fontFamily: tokens.sans, fontSize: 13, lineHeight: 1.5, color: tokens.ink2 }}>
-            Record your first moment from Home — it'll appear here.
+            {t('history.empty.body')}
           </div>
         </Card>
       ) : (
@@ -113,7 +114,7 @@ export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
                   <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${tokens.line}` }}>
                     {h.story && (
                       <div style={{ marginBottom: 14 }}>
-                        <div style={{ fontFamily: tokens.sans, fontSize: 10, fontWeight: 700, color: tokens.ink3, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 6 }}>Your story</div>
+                        <div style={{ fontFamily: tokens.sans, fontSize: 10, fontWeight: 700, color: tokens.ink3, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 6 }}>{t('history.yourStoryLabel')}</div>
                         <div style={{ fontFamily: tokens.sans, fontSize: 13.5, lineHeight: 1.55, color: tokens.ink2 }}>{h.story}</div>
                       </div>
                     )}
@@ -143,7 +144,7 @@ export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
                     ))}
 
                     <div style={{ marginTop: 6, paddingTop: 14, borderTop: `1px solid ${tokens.line}` }}>
-                      <div style={{ fontFamily: tokens.sans, fontSize: 10, fontWeight: 700, color: tokens.ink3, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 8 }}>How did it go?</div>
+                      <div style={{ fontFamily: tokens.sans, fontSize: 10, fontWeight: 700, color: tokens.ink3, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 8 }}>{t('history.feedbackPrompt')}</div>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                         {RATINGS.map((r) => {
                           const active = h.feedback === r.id;

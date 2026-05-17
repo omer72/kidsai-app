@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
 import { PrimaryButton } from './primitives';
 
 export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
+  const { t } = useTranslation();
   const [saved, setSaved] = useState(false);
   const [whyOpen, setWhyOpen] = useState(false);
   const [whatOpen, setWhatOpen] = useState(false);
@@ -12,12 +14,12 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
     return (
       <div style={{ padding: '40px 24px', textAlign: 'center' }}>
         <div style={{ fontFamily: tokens.serif, fontSize: 22, color: tokens.ink, marginBottom: 10 }}>
-          Couldn’t reach Kidsit AI
+          {t('response.couldntReach')}
         </div>
         <div style={{ fontFamily: tokens.sans, fontSize: 14, lineHeight: 1.5, color: tokens.ink2, marginBottom: 18 }}>
           {String(error)}
         </div>
-        <PrimaryButton onClick={onDone} full>Close</PrimaryButton>
+        <PrimaryButton onClick={onDone} full>{t('common.close')}</PrimaryButton>
       </div>
     );
   }
@@ -46,7 +48,7 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
           <Icon.Sparkle s={16} c="#fff"/>
         </div>
         <div style={{ fontFamily: tokens.sans, fontSize: 12, fontWeight: 600, color: tokens.primaryInk, marginBottom: 10 }}>
-          For {kid?.name || 'your child'}, just now
+          {kid?.name ? t('response.forKidJustNow', { kidName: kid.name }) : t('response.forYourChildJustNow')}
         </div>
         <div style={{
           fontFamily: tokens.serif, fontSize: 26, lineHeight: 1.2,
@@ -74,7 +76,7 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
               <Icon.Sparkle s={14} c={tokens.primary}/>
             </div>
             <div style={{ fontFamily: tokens.serif, fontSize: 19, fontWeight: 600, color: tokens.ink, letterSpacing: -0.2 }}>
-              Try this next time
+              {t('response.tryNextTime')}
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 14 }}>
@@ -113,7 +115,7 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
           <div style={{ fontSize: 22, lineHeight: 1 }}>🌙</div>
           <div>
             <div style={{ fontFamily: tokens.sans, fontSize: 13, fontWeight: 700, color: '#8A6012', marginBottom: 4 }}>
-              Tonight, before bed
+              {t('response.tonightBeforeBed')}
             </div>
             <div style={{ fontFamily: tokens.sans, fontSize: 14, lineHeight: 1.5, color: '#5C4316' }}>
               {tonightSection.body}
@@ -131,7 +133,7 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
         }}>
           <div style={{ flex: 1 }}>
             <div style={{ fontFamily: tokens.sans, fontSize: 14.5, fontWeight: 600, color: tokens.ink, marginBottom: whyOpen ? 8 : 0 }}>
-              Understand why this happened
+              {t('response.tonightExpand')}
             </div>
             {whyOpen && (
               <div style={{ fontFamily: tokens.sans, fontSize: 13.5, lineHeight: 1.55, color: tokens.ink2, marginTop: 6 }}>
@@ -154,7 +156,7 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
         }}>
           <div style={{ flex: 1 }}>
             <div style={{ fontFamily: tokens.sans, fontSize: 14.5, fontWeight: 600, color: tokens.ink, marginBottom: whatOpen ? 8 : 0 }}>
-              What I heard you describe
+              {t('response.whatExpand')}
             </div>
             {whatOpen && (
               <div style={{ fontFamily: tokens.sans, fontSize: 13.5, lineHeight: 1.55, color: tokens.ink2, marginTop: 6, fontStyle: 'italic' }}>
@@ -173,7 +175,7 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
         fontFamily: tokens.serif, fontSize: 14, lineHeight: 1.5,
         color: tokens.ink3, fontStyle: 'italic',
       }}>
-        You're doing better than you think. — Kidsit AI
+        {t('response.closingLine')}
       </div>
 
       <div style={{ display: 'flex', gap: 8 }}>
@@ -187,14 +189,14 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
           <Icon.Star s={18} c={saved ? '#B58220' : tokens.ink2} filled={saved}/>
         </button>
         <PrimaryButton onClick={onFollowup} style={{ flex: 1 }}>
-          Mark how it went <Icon.ArrowRight s={15} c="#fff"/>
+          {t('response.markHowItWent')} <Icon.ArrowRight s={15} c="#fff"/>
         </PrimaryButton>
       </div>
       <button onClick={onDone} style={{
         marginTop: 10, width: '100%', padding: 10, background: 'transparent',
         border: 'none', cursor: 'pointer',
         fontFamily: tokens.sans, fontSize: 13, color: tokens.ink3, fontWeight: 500,
-      }}>Close for now</button>
+      }}>{t('response.closeForNow')}</button>
     </div>
   );
 }

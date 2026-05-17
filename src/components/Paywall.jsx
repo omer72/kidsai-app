@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
 import { IOSStatusBar } from './IOSFrame';
 import { billingAvailable, getOfferings, introOfferPeriod, priceString, purchasePackage, restorePurchases } from '../billing';
 
 export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart, fullscreen, onPurchased }) {
+  const { t } = useTranslation();
   const isTrialStart = mode === 'trialStart';
   const [plan, setPlan] = useState('yearly');
   const [packages, setPackages] = useState({ monthly: null, yearly: null });
@@ -26,7 +28,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
   const selectedPkg = plan === 'yearly' ? yearlyPkg : monthlyPkg;
   const yearlyPrice = priceString(yearlyPkg) || '$59.99';
   const monthlyPrice = priceString(monthlyPkg) || '$9.99';
-  const trial = introOfferPeriod(yearlyPkg) || introOfferPeriod(monthlyPkg) || '7-day';
+  const trial = introOfferPeriod(yearlyPkg) || introOfferPeriod(monthlyPkg) || t('paywall.trialDefault');
 
   const handlePurchase = async () => {
     setError('');
@@ -35,17 +37,17 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
       return;
     }
     if (!selectedPkg) {
-      setError('Subscription products are still loading. Try again in a moment.');
+      setError(t('paywall.productsLoading'));
       return;
     }
     setBusy(true);
     try {
       const next = await purchasePackage(selectedPkg);
       if (next.entitled) onPurchased?.(next);
-      else setError('Purchase did not complete.');
+      else setError(t('paywall.purchaseFailed'));
     } catch (err) {
       if (err?.userCancelled) return;
-      setError(err?.message || 'Something went wrong.');
+      setError(err?.message || t('paywall.genericError'));
     } finally {
       setBusy(false);
     }
@@ -54,16 +56,16 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
   const handleRestore = async () => {
     setError('');
     if (!billingAvailable()) {
-      setError('Purchases unavailable in browser preview.');
+      setError(t('paywall.restoreUnavailable'));
       return;
     }
     setBusy(true);
     try {
       const next = await restorePurchases();
       if (next.entitled) onPurchased?.(next);
-      else setError('No active subscription found on this Apple ID.');
+      else setError(t('paywall.noSubscriptionFound'));
     } catch (err) {
-      setError(err?.message || 'Restore failed.');
+      setError(err?.message || t('paywall.restoreFailed'));
     } finally {
       setBusy(false);
     }
@@ -72,12 +74,12 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
   const yearlyHasTrial = !!introOfferPeriod(yearlyPkg);
   const monthlyHasTrial = !!introOfferPeriod(monthlyPkg);
   const ctaLabel = busy
-    ? 'Working…'
+    ? t('common.working')
     : (isTrialStart
-        ? 'Start 7-day free trial'
+        ? t('paywall.ctaTrialStart')
         : (plan === 'yearly' && yearlyHasTrial) || (plan === 'monthly' && monthlyHasTrial)
-          ? `Start 7-day free trial`
-          : `Subscribe ${plan === 'yearly' ? yearlyPrice + '/yr' : monthlyPrice + '/mo'}`);
+          ? t('paywall.ctaTrialStart')
+          : (plan === 'yearly' ? t('paywall.ctaSubscribeYearly', { price: yearlyPrice }) : t('paywall.ctaSubscribeMonthly', { price: monthlyPrice })));
 
   const handleCTA = () => {
     if (isTrialStart) { onTrialStart?.(); return; }
@@ -123,14 +125,14 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
           letterSpacing: -0.7, fontWeight: 500, textAlign: 'center', marginBottom: 10,
           padding: '0 8px',
         }}>
-          The full Kidsit AI,<br/>
-          <span style={{ fontStyle: 'italic', color: tokens.primary }}>at your fingertips.</span>
+          {t('paywall.headline1')}<br/>
+          <span style={{ fontStyle: 'italic', color: tokens.primary }}>{t('paywall.headline2')}</span>
         </div>
         <div style={{
           fontFamily: tokens.sans, fontSize: 14, color: tokens.ink2, textAlign: 'center',
           maxWidth: 300, margin: '0 auto 24px', lineHeight: 1.5,
         }}>
-          Cancel anytime. {trial} free trial. No surprise charges.
+          {t('paywall.subhead', { trial })}
         </div>
 
         <div style={{
@@ -138,11 +140,11 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
           border: `1px solid ${tokens.line}`, marginBottom: 18,
         }}>
           {[
-            { t: 'Track every child', s: 'Add as many kids as you have. Each gets their own profile and patterns.' },
-            { t: 'Unlimited moments', s: 'Record, log, learn — as often as parenting demands.' },
-            { t: 'Pattern detection', s: 'Weekly notice of triggers and what’s actually working.' },
-            { t: 'Co-parent sharing', s: 'Send any moment to your partner so you’re aligned.' },
-            { t: 'Private. Always.', s: 'End-to-end encrypted. Never used to train models.' },
+            { t: t('paywall.features.trackEveryChild.title'), s: t('paywall.features.trackEveryChild.body') },
+            { t: t('paywall.features.unlimitedMoments.title'), s: t('paywall.features.unlimitedMoments.body') },
+            { t: t('paywall.features.patternDetection.title'), s: t('paywall.features.patternDetection.body') },
+            { t: t('paywall.features.coParentSharing.title'), s: t('paywall.features.coParentSharing.body') },
+            { t: t('paywall.features.private.title'), s: t('paywall.features.private.body') },
           ].map((f, i) => (
             <div key={i} style={{
               display: 'flex', gap: 12, alignItems: 'flex-start',
@@ -176,7 +178,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
               background: tokens.primary, color: '#fff',
               fontFamily: tokens.sans, fontSize: 10, fontWeight: 700,
               padding: '4px 10px', borderRadius: 999, letterSpacing: 0.6,
-            }}>BEST VALUE</div>
+            }}>{t('paywall.bestValue')}</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{
                 width: 22, height: 22, borderRadius: 22, flexShrink: 0,
@@ -187,12 +189,12 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
                 {plan === 'yearly' && <Icon.Check s={11} c="#fff"/>}
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontFamily: tokens.sans, fontSize: 15, fontWeight: 600, color: tokens.ink }}>Yearly</div>
-                <div style={{ fontFamily: tokens.sans, fontSize: 12, color: tokens.ink3, marginTop: 1 }}>Billed once a year</div>
+                <div style={{ fontFamily: tokens.sans, fontSize: 15, fontWeight: 600, color: tokens.ink }}>{t('paywall.yearly')}</div>
+                <div style={{ fontFamily: tokens.sans, fontSize: 12, color: tokens.ink3, marginTop: 1 }}>{t('paywall.yearlyDetail')}</div>
               </div>
               <div style={{ textAlign: 'right' }}>
                 <div style={{ fontFamily: tokens.serif, fontSize: 22, fontWeight: 600, color: tokens.ink, letterSpacing: -0.3 }}>{yearlyPrice}</div>
-                <div style={{ fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3 }}>per year</div>
+                <div style={{ fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3 }}>{t('paywall.perYear')}</div>
               </div>
             </div>
           </button>
@@ -211,12 +213,12 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
                 {plan === 'monthly' && <Icon.Check s={11} c="#fff"/>}
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontFamily: tokens.sans, fontSize: 15, fontWeight: 600, color: tokens.ink }}>Monthly</div>
-                <div style={{ fontFamily: tokens.sans, fontSize: 12, color: tokens.ink3, marginTop: 1 }}>Pay as you go</div>
+                <div style={{ fontFamily: tokens.sans, fontSize: 15, fontWeight: 600, color: tokens.ink }}>{t('paywall.monthly')}</div>
+                <div style={{ fontFamily: tokens.sans, fontSize: 12, color: tokens.ink3, marginTop: 1 }}>{t('paywall.monthlyDetail')}</div>
               </div>
               <div style={{ textAlign: 'right' }}>
                 <div style={{ fontFamily: tokens.serif, fontSize: 22, fontWeight: 600, color: tokens.ink, letterSpacing: -0.3 }}>{monthlyPrice}</div>
-                <div style={{ fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3 }}>per month</div>
+                <div style={{ fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3 }}>{t('paywall.perMonth')}</div>
               </div>
             </div>
           </button>
@@ -247,32 +249,30 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
           fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3, lineHeight: 1.6,
         }}>
           {isTrialStart
-            ? 'Full access for 7 days. We won’t ask for payment until then.'
-            : <>
-                {plan === 'yearly' ? `${yearlyPrice}/year` : `${monthlyPrice}/month`}, auto-renewing. Cancel anytime at least 24 hours before the period ends via your Apple ID account settings. Any unused portion of a free trial is forfeited when you purchase a subscription.
-              </>}
+            ? t('paywall.trialStartFooter')
+            : t('paywall.autoRenewDisclosure', { price: plan === 'yearly' ? `${yearlyPrice}/year` : `${monthlyPrice}/month` })}
           <br/>
           {!isTrialStart && (
             <>
               <button onClick={handleRestore} disabled={busy} style={{
                 background: 'transparent', border: 'none', padding: 0, cursor: busy ? 'not-allowed' : 'pointer',
                 color: tokens.ink2, fontFamily: tokens.sans, fontSize: 11, textDecoration: 'underline',
-              }}>Restore purchase</button>
+              }}>{t('common.restorePurchase')}</button>
               {' · '}
             </>
           )}
           <a href="https://kidsit.ai/terms" target="_blank" rel="noopener noreferrer"
-             style={{ color: tokens.ink2, textDecoration: 'underline' }}>Terms</a>
+             style={{ color: tokens.ink2, textDecoration: 'underline' }}>{t('common.terms')}</a>
           {' · '}
           <a href="https://kidsit.ai/privacy" target="_blank" rel="noopener noreferrer"
-             style={{ color: tokens.ink2, textDecoration: 'underline' }}>Privacy</a>
+             style={{ color: tokens.ink2, textDecoration: 'underline' }}>{t('common.privacy')}</a>
           {onStart && !isTrialStart && (
             <>
               <br/>
               <button onClick={onStart} disabled={busy} style={{
                 background: 'transparent', border: 'none', padding: '10px 0 0', cursor: busy ? 'not-allowed' : 'pointer',
                 color: tokens.ink3, fontFamily: tokens.sans, fontSize: 12,
-              }}>Maybe later — try with 1 kid free</button>
+              }}>{t('paywall.maybeLater')}</button>
             </>
           )}
         </div>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
 import { IOSStatusBar } from './IOSFrame';
@@ -89,17 +90,18 @@ function PatternArt() {
         background: '#FFF', borderRadius: 10, border: `1px solid ${tokens.line}`,
         fontFamily: tokens.sans, fontSize: 10, fontWeight: 700, color: tokens.primary,
         letterSpacing: 0.5, boxShadow: '0 4px 12px rgba(11,29,58,0.06)',
-      }}>← REPEATING</div>
+      }}>{useTranslation().t('onboarding.repeatingBadge')}</div>
     </div>
   );
 }
 
 export function OnboardingScreen({ onDone, fullscreen }) {
+  const { t } = useTranslation();
   const [i, setI] = useState(0);
   const slides = [
-    { eyebrow: '01 — Speak it out', title: 'Just talk. Like a friend’s on the line.', body: 'No journaling. No forms. Hold the mic, breathe out the chaos. Kidsit AI listens with no judgment.', art: 'mic' },
-    { eyebrow: '02 — Get a clear lens', title: 'See the moment from a calmer place.', body: 'You’ll get back a structured read — what happened, why, and what to try. Rooted in child development research.', art: 'lens' },
-    { eyebrow: '03 — Notice the patterns', title: 'Patterns become visible. So you change them.', body: 'Over time, Kidsit AI surfaces the triggers, times, and contexts that keep tripping you up. Quietly, kindly.', art: 'pattern' },
+    { eyebrow: t('onboarding.slide1.eyebrow'), title: t('onboarding.slide1.title'), body: t('onboarding.slide1.body'), art: 'mic' },
+    { eyebrow: t('onboarding.slide2.eyebrow'), title: t('onboarding.slide2.title'), body: t('onboarding.slide2.body'), art: 'lens' },
+    { eyebrow: t('onboarding.slide3.eyebrow'), title: t('onboarding.slide3.title'), body: t('onboarding.slide3.body'), art: 'pattern' },
   ];
   const s = slides[i];
 
@@ -120,7 +122,7 @@ export function OnboardingScreen({ onDone, fullscreen }) {
         right: 22, zIndex: 20,
         background: 'transparent', border: 'none', cursor: 'pointer',
         fontFamily: tokens.sans, fontSize: 13, color: tokens.ink3, fontWeight: 500,
-      }}>Skip</button>
+      }}>{t('common.skip')}</button>
 
       <div style={{
         flex: 1, minHeight: 0, overflowY: 'auto', overflowX: 'hidden', WebkitOverflowScrolling: 'touch',

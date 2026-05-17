@@ -1,32 +1,34 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
 import { Label, PrimaryButton } from './primitives';
 
 export function FollowupScreen({ kid, onDone }) {
+  const { t } = useTranslation();
   const [rating, setRating] = useState(null);
   const [note, setNote] = useState('');
   const ratings = [
-    { id: 'worse', label: 'Got worse', color: tokens.danger },
-    { id: 'same', label: 'About the same', color: tokens.ink3 },
-    { id: 'better', label: 'Helped', color: tokens.success },
-    { id: 'great', label: 'Really helped', color: tokens.primary },
+    { id: 'worse', label: t('followup.rating.worse'), color: tokens.danger },
+    { id: 'same', label: t('followup.rating.same'), color: tokens.ink3 },
+    { id: 'better', label: t('followup.rating.better'), color: tokens.success },
+    { id: 'great', label: t('followup.rating.great'), color: tokens.primary },
   ];
   return (
     <div style={{ padding: '14px 22px 140px' }}>
       <div style={{
         fontFamily: tokens.sans, fontSize: 11, fontWeight: 600,
         color: tokens.ink3, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 6,
-      }}>Follow-up</div>
+      }}>{t('followup.eyebrow')}</div>
       <div style={{
         fontFamily: tokens.serif, fontSize: 26, lineHeight: 1.2,
         color: tokens.ink, letterSpacing: -0.3, marginBottom: 8,
-      }}>Did it work?</div>
+      }}>{t('followup.title')}</div>
       <div style={{
         fontFamily: tokens.sans, fontSize: 14, lineHeight: 1.5,
         color: tokens.ink2, marginBottom: 20,
       }}>
-        Your honest answer teaches Kidsit AI what lands with {kid?.name || 'your child'}.
+        {kid?.name ? t('followup.subhead', { kidName: kid.name }) : t('followup.subheadGeneric')}
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 18 }}>
@@ -50,10 +52,10 @@ export function FollowupScreen({ kid, onDone }) {
         })}
       </div>
 
-      <Label>A quick note (optional)</Label>
+      <Label>{t('followup.noteLabel')}</Label>
       <textarea
         value={note} onChange={(e) => setNote(e.target.value)}
-        placeholder="Two choices calmed her down. The second warning helped most."
+        placeholder={t('followup.notePlaceholder')}
         style={{
           width: '100%', minHeight: 90, padding: 14, borderRadius: 14,
           background: tokens.surface, border: `1px solid ${tokens.line}`,
@@ -63,7 +65,7 @@ export function FollowupScreen({ kid, onDone }) {
       />
 
       <PrimaryButton full onClick={() => onDone({ rating, note })} disabled={!rating} style={{ marginTop: 16 }}>
-        Save to {kid?.name || 'log'} <Icon.Check s={16} c={rating ? '#fff' : tokens.ink3}/>
+        {kid?.name ? t('followup.saveTo', { kidName: kid.name }) : t('followup.saveToLog')} <Icon.Check s={16} c={rating ? '#fff' : tokens.ink3}/>
       </PrimaryButton>
     </div>
   );

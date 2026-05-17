@@ -1,16 +1,18 @@
+import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
 import { Card, Label, Segmented } from './primitives';
 
 export function SettingsScreen({ settings, setSettings, onClearData, billing, inTrial, onOpenSubscription, onOpenUpgrade }) {
+  const { t } = useTranslation();
   return (
     <div style={{ padding: '14px 20px 140px' }}>
       <div style={{
         fontFamily: tokens.serif, fontSize: 28, color: tokens.ink,
         letterSpacing: -0.3, fontWeight: 500, marginBottom: 14,
-      }}>Settings</div>
+      }}>{t('settings.title')}</div>
 
-      <Label>Subscription</Label>
+      <Label>{t('settings.subscriptionLabel')}</Label>
       <div style={{ marginBottom: 18 }}>
         {billing?.entitled ? (
           <button onClick={onOpenSubscription} style={{
@@ -27,10 +29,10 @@ export function SettingsScreen({ settings, setSettings, onClearData, billing, in
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontFamily: tokens.sans, fontSize: 14, fontWeight: 600, color: tokens.ink, marginBottom: 2 }}>
-                {inTrial ? 'Free trial active' : 'Active subscription'}
+                {inTrial ? t('settings.freeTrialActive') : t('settings.activeSubscription')}
               </div>
               <div style={{ fontFamily: tokens.sans, fontSize: 12, color: tokens.ink3 }}>
-                Manage plan, restore, or cancel
+                {t('settings.manageHint')}
               </div>
             </div>
             <Icon.Chevron s={14} c={tokens.ink3}/>
@@ -49,69 +51,65 @@ export function SettingsScreen({ settings, setSettings, onClearData, billing, in
               <Icon.Sparkle s={16} c="#fff"/>
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: tokens.sans, fontSize: 14, fontWeight: 600, marginBottom: 2 }}>Subscribe</div>
-              <div style={{ fontFamily: tokens.sans, fontSize: 12, opacity: 0.7 }}>Unlock everything Kidsit AI can do</div>
+              <div style={{ fontFamily: tokens.sans, fontSize: 14, fontWeight: 600, marginBottom: 2 }}>{t('settings.subscribe')}</div>
+              <div style={{ fontFamily: tokens.sans, fontSize: 12, opacity: 0.7 }}>{t('settings.subscribeHint')}</div>
             </div>
             <Icon.ArrowRight s={14} c="#fff"/>
           </button>
         )}
       </div>
 
-      <Label>Theme</Label>
+      <Label>{t('settings.themeLabel')}</Label>
       <div style={{ marginBottom: 18 }}>
         <Segmented
           value={settings.theme}
           onChange={(v) => setSettings({ ...settings, theme: v })}
           options={[
-            { value: 'warm', label: 'Warm' },
-            { value: 'clinical', label: 'Clinical' },
-            { value: 'dusk', label: 'Dusk' },
+            { value: 'warm', label: t('settings.themeWarm') },
+            { value: 'clinical', label: t('settings.themeClinical') },
+            { value: 'dusk', label: t('settings.themeDusk') },
           ]}
         />
       </div>
 
-      <Label>Flow style</Label>
+      <Label>{t('settings.flowLabel')}</Label>
       <div style={{ marginBottom: 18 }}>
         <Segmented
           value={settings.flow}
           onChange={(v) => setSettings({ ...settings, flow: v })}
           options={[
-            { value: 'A', label: 'Guided' },
-            { value: 'B', label: 'Dense' },
+            { value: 'A', label: t('settings.flowGuided') },
+            { value: 'B', label: t('settings.flowDense') },
           ]}
         />
       </div>
 
-      <Label>Data</Label>
+      <Label>{t('settings.dataLabel')}</Label>
       <Card pad={14}>
         <div style={{ fontFamily: tokens.sans, fontSize: 13, lineHeight: 1.5, color: tokens.ink2, marginBottom: 10 }}>
-          All moments and kids are stored locally on this device. Clearing data is permanent.
+          {t('settings.dataBody')}
         </div>
         <button onClick={onClearData} style={{
           padding: '12px 16px', borderRadius: 12, border: `1px solid ${tokens.line}`,
           background: 'transparent', color: tokens.danger,
           fontFamily: tokens.sans, fontSize: 14, fontWeight: 500, cursor: 'pointer', width: '100%',
         }}>
-          Clear all data
+          {t('settings.clearAll')}
         </button>
       </Card>
 
-      <div style={{ marginTop: 18 }}><Label>About & disclaimer</Label></div>
+      <div style={{ marginTop: 18 }}><Label>{t('settings.aboutLabel')}</Label></div>
       <Card pad={16}>
         <div style={{ fontFamily: tokens.sans, fontSize: 13, lineHeight: 1.55, color: tokens.ink2 }}>
           <p style={{ margin: '0 0 10px' }}>
-            <strong style={{ color: tokens.ink }}>Kidsit AI is not a medical or psychological service.</strong> It is a reflective parenting companion that offers warm, science-informed guidance for everyday moments with your child.
+            <strong style={{ color: tokens.ink }}>{t('settings.aboutNotMedical')}</strong>{t('settings.aboutBody1')}
           </p>
-          <p style={{ margin: '0 0 10px' }}>
-            The app does not diagnose, treat, or replace care from a qualified professional. If you are worried about your child's safety, development, or mental health — or your own — please speak with a pediatrician, therapist, or other licensed practitioner. In an emergency, contact your local emergency services.
-          </p>
-          <p style={{ margin: '0 0 10px' }}>
-            Guidance is generated by an AI model and may occasionally be incomplete or wrong. You know your child best — trust your judgment.
-          </p>
+          <p style={{ margin: '0 0 10px' }}>{t('settings.aboutBody2')}</p>
+          <p style={{ margin: '0 0 10px' }}>{t('settings.aboutBody3')}</p>
           <p style={{ margin: 0, fontSize: 12, color: tokens.ink3 }}>
-            <a href="https://kidsit.ai/terms" target="_blank" rel="noopener noreferrer" style={{ color: tokens.ink3, textDecoration: 'underline' }}>Terms</a>
+            <a href="https://kidsit.ai/terms" target="_blank" rel="noopener noreferrer" style={{ color: tokens.ink3, textDecoration: 'underline' }}>{t('common.terms')}</a>
             {' · '}
-            <a href="https://kidsit.ai/privacy" target="_blank" rel="noopener noreferrer" style={{ color: tokens.ink3, textDecoration: 'underline' }}>Privacy</a>
+            <a href="https://kidsit.ai/privacy" target="_blank" rel="noopener noreferrer" style={{ color: tokens.ink3, textDecoration: 'underline' }}>{t('common.privacy')}</a>
           </p>
         </div>
       </Card>

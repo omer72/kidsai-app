@@ -1,18 +1,16 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
 
 export function ThinkingScreen() {
+  const { t } = useTranslation();
   const [dots, setDots] = useState(1);
   useEffect(() => {
-    const t = setInterval(() => setDots((d) => (d % 3) + 1), 400);
-    return () => clearInterval(t);
+    const i = setInterval(() => setDots((d) => (d % 3) + 1), 400);
+    return () => clearInterval(i);
   }, []);
-  const lines = [
-    'Listening to what you shared…',
-    'Checking developmental context…',
-    'Drafting gentle guidance…',
-  ];
+  const lines = [t('thinking.step1'), t('thinking.step2'), t('thinking.step3')];
   return (
     <div style={{ padding: '40px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
       <div style={{ position: 'relative', width: 120, height: 120, marginBottom: 30 }}>
@@ -34,7 +32,7 @@ export function ThinkingScreen() {
         </div>
       </div>
       <div style={{ fontFamily: tokens.serif, fontSize: 22, color: tokens.ink, letterSpacing: -0.2, marginBottom: 22, textAlign: 'center' }}>
-        Thinking it through{'.'.repeat(dots)}
+        {t('thinking.title')}{'.'.repeat(dots)}
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%', maxWidth: 300 }}>
         {lines.map((l, i) => (
