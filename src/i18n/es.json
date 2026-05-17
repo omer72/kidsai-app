@@ -1,0 +1,284 @@
+{
+  "brand": {
+    "name": "Kidsit AI",
+    "wordmark": "kidsit ai"
+  },
+  "common": {
+    "skip": "Omitir",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "done": "Listo",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "close": "Cerrar",
+    "continue": "Continuar",
+    "startOver": "Empezar de nuevo",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "add": "Añadir",
+    "ok": "OK",
+    "working": "Trabajando…",
+    "restoring": "Restaurando…",
+    "restore": "Restaurar",
+    "restorePurchase": "Restaurar compra",
+    "terms": "Términos",
+    "privacy": "Privacidad"
+  },
+  "welcome": {
+    "badge": "La confianza de 24.000 familias",
+    "headline1": "Criar es",
+    "headline2": "difícil.",
+    "headline3a": "No tienes que",
+    "headline3b": "hacerlo solo.",
+    "subhead": "Cuenta lo que acaba de pasar. Recibe orientación cálida y basada en ciencia en 12 segundos.",
+    "cta": "Prueba tu primer momento — gratis",
+    "alreadySubscriber": "¿Ya tienes suscripción?",
+    "disclaimer": "Kidsit AI ofrece orientación reflexiva, no consejo médico ni psicológico. No diagnostica ni trata ninguna condición. Si tienes inquietudes clínicas sobre tu hijo o hija, consulta a un profesional cualificado.",
+    "noSubscriptionFound": "No se encontró una suscripción activa en este Apple ID.",
+    "restoreUnavailable": "Restaurar solo está disponible en la versión de App Store.",
+    "restoreFailed": "Fallo al restaurar."
+  },
+  "onboarding": {
+    "slide1": {
+      "eyebrow": "01 — Habla con libertad",
+      "title": "Solo habla. Como con un amigo al teléfono.",
+      "body": "Sin formularios. Sin diario. Mantén el micrófono presionado y deja salir el caos. Kidsit AI escucha sin juzgar."
+    },
+    "slide2": {
+      "eyebrow": "02 — Obtén una nueva mirada",
+      "title": "Mira el momento desde un lugar más tranquilo.",
+      "body": "Recibirás una lectura estructurada: qué pasó, por qué y qué intentar. Basada en investigación del desarrollo infantil."
+    },
+    "slide3": {
+      "eyebrow": "03 — Detecta los patrones",
+      "title": "Los patrones se vuelven visibles. Para que puedas cambiarlos.",
+      "body": "Con el tiempo, Kidsit AI revela los detonantes, momentos y contextos que se repiten. Con calma. Con cariño."
+    },
+    "repeatingBadge": "← SE REPITE"
+  },
+  "paywall": {
+    "headline1": "Todo Kidsit AI,",
+    "headline2": "al alcance de tu mano.",
+    "subhead": "Cancela cuando quieras. Prueba gratis de {{trial}}. Sin sorpresas en el cobro.",
+    "trialDefault": "7 días",
+    "features": {
+      "trackEveryChild": {
+        "title": "Cada hijo, su propio perfil",
+        "body": "Añade tantos hijos como tengas. Cada uno tiene su perfil y sus patrones propios."
+      },
+      "unlimitedMoments": {
+        "title": "Momentos ilimitados",
+        "body": "Graba, registra, aprende — todas las veces que la crianza lo pida."
+      },
+      "patternDetection": {
+        "title": "Detección de patrones",
+        "body": "Aviso semanal de detonantes y de lo que realmente está funcionando."
+      },
+      "coParentSharing": {
+        "title": "Compartir con tu pareja",
+        "body": "Envía cualquier momento a tu pareja para que estén alineados."
+      },
+      "private": {
+        "title": "Privado. Siempre.",
+        "body": "Cifrado de extremo a extremo. Nunca se usa para entrenar modelos."
+      }
+    },
+    "yearly": "Anual",
+    "yearlyDetail": "Pago una vez al año",
+    "perYear": "al año",
+    "monthly": "Mensual",
+    "monthlyDetail": "Paga sobre la marcha",
+    "perMonth": "al mes",
+    "bestValue": "MEJOR VALOR",
+    "ctaTrialStart": "Empezar prueba gratis de 7 días",
+    "ctaSubscribeYearly": "Suscríbete {{price}}/año",
+    "ctaSubscribeMonthly": "Suscríbete {{price}}/mes",
+    "trialStartFooter": "Acceso completo durante 7 días. No te pediremos pago hasta entonces.",
+    "autoRenewDisclosure": "{{price}}, con renovación automática. Cancela al menos 24 horas antes del final del período en los ajustes de tu Apple ID. La parte no usada de una prueba gratuita se pierde al comprar una suscripción.",
+    "maybeLater": "Quizá más tarde — prueba con 1 hijo gratis",
+    "productsLoading": "Los productos de suscripción aún se están cargando. Inténtalo en un momento.",
+    "purchaseFailed": "La compra no se completó.",
+    "genericError": "Algo salió mal.",
+    "restoreFailed": "Fallo al restaurar.",
+    "noSubscriptionFound": "No se encontró una suscripción activa en este Apple ID.",
+    "restoreUnavailable": "Compras no disponibles en la vista previa del navegador."
+  },
+  "flowA": {
+    "greeting": {
+      "morning": "Buenos días",
+      "afternoon": "Buenas tardes",
+      "evening": "Buenas noches"
+    },
+    "headlineGeneric": "¿Qué pasó?",
+    "headlineWithKidPrefix": "¿Qué pasó con ",
+    "headlineWithKidSuffix": "?",
+    "step1Label": "Este momento es sobre",
+    "step2Listening": "Escuchando",
+    "step2Transcribing": "Transcribiendo…",
+    "step2HoldToSpeak": "Mantén presionado para hablar (o escribe abajo)",
+    "promptRecording": "Cuenta toda la historia. No edites.",
+    "promptTranscribing": "Convirtiendo tu voz en palabras…",
+    "promptIdle": "Describe lo que acaba de pasar. Incluye qué hiciste y cómo terminó.",
+    "releaseWhenDone": "Suelta cuando termines",
+    "pressAndHold": "Mantén presionado",
+    "orTypeItOut": "O escríbelo",
+    "yourStory": "Tu historia",
+    "tellWhatHappened": "Cuéntale a Kidsit AI lo que pasó.",
+    "storyPlaceholder": "Se tiró al suelo en el estacionamiento del parque y empezó a gritar. Todos miraban. Le pregunté dos veces…",
+    "addLabel": "Añadir",
+    "kidYears": "{{age}} años",
+    "kidYearsShort": "{{age}}a",
+    "errors": {
+      "micPermission": "Permiso del micrófono denegado.",
+      "micFailed": "No se pudo acceder al micrófono.",
+      "couldNotHear": "No pudimos oír nada. Escribe abajo o vuelve a intentarlo.",
+      "transcriptionFailed": "La transcripción falló. Escríbelo.",
+      "emptyRecording": "Grabación vacía"
+    },
+    "context": {
+      "stepOf": "Paso {{step}} de {{total}}",
+      "whereDidItHappen": "¿Dónde pasó?",
+      "howWereTheyFeeling": "¿Cómo se sentía?",
+      "whoElseWasThere": "¿Quién más estaba?",
+      "howUrgent": "¿Qué tan urgente es?",
+      "getGuidance": "Obtener orientación"
+    }
+  },
+  "thinking": {
+    "title": "Pensándolo bien",
+    "step1": "Escuchando lo que compartiste…",
+    "step2": "Revisando el contexto de desarrollo…",
+    "step3": "Redactando orientación amable…"
+  },
+  "response": {
+    "couldntReach": "No pudimos contactar a Kidsit AI",
+    "forKidJustNow": "Para {{kidName}}, ahora mismo",
+    "forYourChildJustNow": "Para tu hijo, ahora mismo",
+    "tryNextTime": "Prueba esto la próxima vez",
+    "tonightBeforeBed": "Esta noche, antes de dormir",
+    "tonightExpand": "Entiende por qué pasó",
+    "whatExpand": "Lo que escuché que describiste",
+    "closingLine": "Lo estás haciendo mejor de lo que crees. — Kidsit AI",
+    "markHowItWent": "Marca cómo salió",
+    "closeForNow": "Cerrar por ahora"
+  },
+  "followup": {
+    "eyebrow": "Seguimiento",
+    "title": "¿Funcionó?",
+    "subhead": "Tu respuesta sincera le enseña a Kidsit AI lo que funciona con {{kidName}}.",
+    "subheadGeneric": "Tu respuesta sincera le enseña a Kidsit AI lo que funciona con tu hijo.",
+    "rating": {
+      "worse": "Empeoró",
+      "same": "Igual que antes",
+      "better": "Ayudó",
+      "great": "Ayudó mucho"
+    },
+    "noteLabel": "Una nota rápida (opcional)",
+    "notePlaceholder": "Darle a elegir la calmó. La segunda advertencia ayudó más.",
+    "saveTo": "Guardar en {{kidName}}",
+    "saveToLog": "Guardar en historial"
+  },
+  "history": {
+    "title": "Historial",
+    "filterAll": "Todos",
+    "empty": {
+      "title": "Aún no hay momentos registrados",
+      "body": "Graba tu primer momento desde Inicio — aparecerá aquí."
+    },
+    "yourStoryLabel": "Tu historia",
+    "feedbackPrompt": "¿Cómo salió?",
+    "patternsHeader": "Patrones de esta semana"
+  },
+  "kids": {
+    "title": "Hijos",
+    "addChild": "Añadir un hijo",
+    "addAnotherUnlock": "Añadir otro hijo — desbloquear",
+    "editKid": "Editar hijo",
+    "namePlaceholder": "Nombre del hijo",
+    "agePlaceholder": "Edad (años)",
+    "setAsActive": "Establecer como hijo activo",
+    "deleteKid": "Eliminar hijo",
+    "deleteConfirm": "¿Eliminar este hijo? Sus momentos registrados quedan en el historial.",
+    "yearsAndMoments": "{{age}} años · {{count}} momentos registrados",
+    "momentsOnly": "{{count}} momentos registrados",
+    "lockedWaiting": "{{count}} hijo más esperando",
+    "lockedWaitingPlural": "{{count}} hijos más esperando",
+    "lockedDescription": "Sus datos están a salvo. Desbloquea para volver a verlos y usarlos.",
+    "aboutTitle": "Sobre Kidsit AI",
+    "aboutBody": "Kidsit AI escucha como un amigo con doctorado en desarrollo infantil. No juzga, no diagnostica, no reemplaza a un clínico. Te ayuda a pensar."
+  },
+  "settings": {
+    "title": "Ajustes",
+    "subscriptionLabel": "Suscripción",
+    "activeSubscription": "Suscripción activa",
+    "freeTrialActive": "Prueba gratuita activa",
+    "manageHint": "Gestiona tu plan, restaura o cancela",
+    "subscribe": "Suscríbete",
+    "subscribeHint": "Desbloquea todo lo que Kidsit AI puede hacer",
+    "themeLabel": "Tema",
+    "themeWarm": "Cálido",
+    "themeClinical": "Clínico",
+    "themeDusk": "Crepúsculo",
+    "flowLabel": "Estilo de flujo",
+    "flowGuided": "Guiado",
+    "flowDense": "Denso",
+    "languageLabel": "Idioma",
+    "languageEn": "English",
+    "languageEs": "Español",
+    "dataLabel": "Datos",
+    "dataBody": "Todos los momentos e hijos se guardan localmente en este dispositivo. Borrarlos es permanente.",
+    "clearAll": "Borrar todos los datos",
+    "clearConfirm": "¿Borrar todos los datos? Esto no se puede deshacer.",
+    "aboutLabel": "Sobre la app y aviso",
+    "aboutNotMedical": "Kidsit AI no es un servicio médico ni psicológico.",
+    "aboutBody1": " Es una compañera reflexiva de crianza que ofrece orientación cálida y basada en ciencia para los momentos cotidianos con tu hijo.",
+    "aboutBody2": "La app no diagnostica, ni trata, ni reemplaza la atención de un profesional cualificado. Si te preocupa la seguridad, el desarrollo o la salud mental de tu hijo — o la tuya — habla con un pediatra, terapeuta u otro profesional con licencia. En una emergencia, contacta a los servicios locales de emergencia.",
+    "aboutBody3": "La orientación es generada por un modelo de IA y a veces puede ser incompleta o incorrecta. Tú conoces a tu hijo mejor que nadie — confía en tu criterio."
+  },
+  "subscription": {
+    "back": "Atrás",
+    "title": "Suscripción",
+    "active": "ACTIVA",
+    "planYearly": "Kidsit AI Anual",
+    "planMonthly": "Kidsit AI Mensual",
+    "yearlyPriceLine": "$59,99/año",
+    "monthlyPriceLine": "$9,99/mes",
+    "renewsOn": "se renueva {{date}}",
+    "endsOn": "termina {{date}}",
+    "inTrial": "Estás en el período introductorio.",
+    "switchToMonthly": "Cambiar a mensual",
+    "switchToYearly": "Cambiar a anual",
+    "switchToMonthlyDetail": "$9,99/mes",
+    "switchToYearlyDetail": "Ahorra 51% · $59,99/año",
+    "manageInAppleId": "Gestionar en Apple ID",
+    "manageDetail": "Cancelar, pausar, cambiar plan",
+    "restoreDetail": "Para suscripciones compradas previamente",
+    "cancel": "Cancelar suscripción",
+    "cancelFooter": "Conservarás el acceso hasta tu fecha de renovación. Tus momentos siguen privados y guardados."
+  },
+  "trialBanner": {
+    "endsToday": "Tu prueba termina hoy",
+    "endsTomorrow": "Tu prueba termina mañana",
+    "daysLeft": "Te quedan {{daysLeft}} días de prueba",
+    "statsWithKid": "Has registrado {{count}} momentos. Los patrones de {{kidName}} empiezan a aclararse — sigue así.",
+    "stats": "Has registrado {{count}} momentos. Los patrones empiezan a aclararse — sigue así.",
+    "continueCTA": "Continúa con Kidsit AI"
+  },
+  "lapsed": {
+    "title": "Tu prueba terminó.",
+    "subhead": "Tus momentos y patrones están a salvo — esperan tu regreso.",
+    "momentsAndKids": "{{moments}} momento · {{kids}} hijo",
+    "momentsAndKidsPlural": "{{moments}} momentos · {{kids}} hijos",
+    "momentsOnly": "{{moments}} momento",
+    "momentsOnlyPlural": "{{moments}} momentos",
+    "historyPaused": "Tu historial está en pausa, no borrado.",
+    "resumeYearlyCTA": "Reanudar Kidsit AI · {{price}}/año",
+    "payMonthlyInstead": "Pagar mensualmente · {{price}}/mes"
+  },
+  "tabBar": {
+    "home": "Inicio",
+    "history": "Historial",
+    "kids": "Hijos",
+    "settings": "Ajustes"
+  }
+}

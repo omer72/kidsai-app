@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
 import { Card, Label, Segmented } from './primitives';
+import { setLanguage, getLanguage } from '../i18n';
 
 export function SettingsScreen({ settings, setSettings, onClearData, billing, inTrial, onOpenSubscription, onOpenUpgrade }) {
   const { t } = useTranslation();
@@ -80,6 +81,18 @@ export function SettingsScreen({ settings, setSettings, onClearData, billing, in
           options={[
             { value: 'A', label: t('settings.flowGuided') },
             { value: 'B', label: t('settings.flowDense') },
+          ]}
+        />
+      </div>
+
+      <Label>{t('settings.languageLabel')}</Label>
+      <div style={{ marginBottom: 18 }}>
+        <Segmented
+          value={getLanguage()?.split('-')[0] || 'en'}
+          onChange={(v) => setLanguage(v)}
+          options={[
+            { value: 'en', label: t('settings.languageEn') },
+            { value: 'es', label: t('settings.languageEs') },
           ]}
         />
       </div>
