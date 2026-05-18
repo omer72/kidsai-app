@@ -174,14 +174,14 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
           {/* Yearly — direct purchase button. Tap = open Apple IAP sheet. */}
           <button
             onClick={() => handlePurchase('yearly')}
-            disabled={busy || !packagesLoaded || !yearlyPkg}
+            disabled={busy || (billingAvailable() && (!packagesLoaded || !yearlyPkg))}
             style={{
               padding: '18px 18px 16px', borderRadius: 16,
-              cursor: (busy || !packagesLoaded || !yearlyPkg) ? 'progress' : 'pointer',
+              cursor: (busy || (billingAvailable() && (!packagesLoaded || !yearlyPkg))) ? 'progress' : 'pointer',
               textAlign: 'left',
               background: tokens.ink, border: 'none', color: '#fff', position: 'relative',
-              boxShadow: (busy || !packagesLoaded || !yearlyPkg) ? 'none' : `0 14px 28px ${tokens.ink}30`,
-              opacity: (!packagesLoaded || !yearlyPkg) ? 0.6 : 1,
+              boxShadow: (busy || (billingAvailable() && (!packagesLoaded || !yearlyPkg))) ? 'none' : `0 14px 28px ${tokens.ink}30`,
+              opacity: (billingAvailable() && (!packagesLoaded || !yearlyPkg)) ? 0.6 : 1,
             }}>
             <div style={{
               position: 'absolute', top: -10, right: 16,
@@ -195,7 +195,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
                   {t('paywall.yearly')}
                 </div>
                 <div style={{ fontFamily: tokens.sans, fontSize: 13, opacity: 0.85, lineHeight: 1.35 }}>
-                  {!packagesLoaded
+                  {(billingAvailable() && !packagesLoaded)
                     ? t('common.working')
                     : t('paywall.trialThenYearly', { price: yearlyPrice })}
                 </div>
@@ -207,13 +207,13 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
           {/* Monthly — direct purchase button. */}
           <button
             onClick={() => handlePurchase('monthly')}
-            disabled={busy || !packagesLoaded || !monthlyPkg}
+            disabled={busy || (billingAvailable() && (!packagesLoaded || !monthlyPkg))}
             style={{
               padding: '18px 18px 16px', borderRadius: 16,
-              cursor: (busy || !packagesLoaded || !monthlyPkg) ? 'progress' : 'pointer',
+              cursor: (busy || (billingAvailable() && (!packagesLoaded || !monthlyPkg))) ? 'progress' : 'pointer',
               textAlign: 'left',
               background: '#FFF', border: `2px solid ${tokens.line}`,
-              opacity: (!packagesLoaded || !monthlyPkg) ? 0.6 : 1,
+              opacity: (billingAvailable() && (!packagesLoaded || !monthlyPkg)) ? 0.6 : 1,
             }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ flex: 1 }}>
