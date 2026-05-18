@@ -30,19 +30,21 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
   const monthlyPrice = priceString(monthlyPkg) || '$9.99';
   const trial = introOfferPeriod(yearlyPkg) || introOfferPeriod(monthlyPkg) || t('paywall.trialDefault');
 
-  const handlePurchase = async () => {
+  const handlePurchase = async (which) => {
     setError('');
+    const pkg = which === 'yearly' ? yearlyPkg : which === 'monthly' ? monthlyPkg : selectedPkg;
+    if (which) setPlan(which);
     if (!billingAvailable()) {
       onStart?.();
       return;
     }
-    if (!selectedPkg) {
+    if (!pkg) {
       setError(t('paywall.productsLoading'));
       return;
     }
     setBusy(true);
     try {
-      const next = await purchasePackage(selectedPkg);
+      const next = await purchasePackage(pkg);
       if (next.entitled) onPurchased?.(next);
       else setError(t('paywall.purchaseFailed'));
     } catch (err) {
@@ -167,11 +169,12 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
         </div>
 
         {!isTrialStart && (<>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
-          <button onClick={() => setPlan('yearly')} style={{
-            padding: '16px 18px', borderRadius: 16, cursor: 'pointer', textAlign: 'left',
-            background: '#FFF', border: `2px solid ${plan === 'yearly' ? tokens.primary : tokens.line}`,
-            position: 'relative',
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
+          {/* Yearly — direct purchase button. Tap = open Apple IAP sheet. */}
+          <button onClick={() => handlePurchase('yearly')} disabled={busy} style={{
+            padding: '18px 18px 16px', borderRadius: 16, cursor: busy ? 'not-allowed' : 'pointer', textAlign: 'left',
+            background: tokens.ink, border: 'none', color: '#fff', position: 'relative',
+            boxShadow: busy ? 'none' : `0 14px 28px ${tokens.ink}30`,
           }}>
             <div style={{
               position: 'absolute', top: -10, right: 16,
@@ -180,46 +183,33 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
               padding: '4px 10px', borderRadius: 999, letterSpacing: 0.6,
             }}>{t('paywall.bestValue')}</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{
-                width: 22, height: 22, borderRadius: 22, flexShrink: 0,
-                border: `2px solid ${plan === 'yearly' ? tokens.primary : tokens.line}`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: plan === 'yearly' ? tokens.primary : 'transparent',
-              }}>
-                {plan === 'yearly' && <Icon.Check s={11} c="#fff"/>}
-              </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontFamily: tokens.sans, fontSize: 15, fontWeight: 600, color: tokens.ink }}>{t('paywall.yearly')}</div>
-                <div style={{ fontFamily: tokens.sans, fontSize: 12, color: tokens.ink3, marginTop: 1 }}>{t('paywall.yearlyDetail')}</div>
+                <div style={{ fontFamily: tokens.sans, fontSize: 16, fontWeight: 700, marginBottom: 4 }}>
+                  {t('paywall.yearly')}
+                </div>
+                <div style={{ fontFamily: tokens.sans, fontSize: 13, opacity: 0.85, lineHeight: 1.35 }}>
+                  {t('paywall.trialThenYearly', { price: yearlyPrice })}
+                </div>
               </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontFamily: tokens.serif, fontSize: 22, fontWeight: 600, color: tokens.ink, letterSpacing: -0.3 }}>{yearlyPrice}</div>
-                <div style={{ fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3 }}>{t('paywall.perYear')}</div>
-              </div>
+              <Icon.ArrowRight s={18} c="#fff"/>
             </div>
           </button>
 
-          <button onClick={() => setPlan('monthly')} style={{
-            padding: '16px 18px', borderRadius: 16, cursor: 'pointer', textAlign: 'left',
-            background: '#FFF', border: `2px solid ${plan === 'monthly' ? tokens.primary : tokens.line}`,
+          {/* Monthly — direct purchase button. */}
+          <button onClick={() => handlePurchase('monthly')} disabled={busy} style={{
+            padding: '18px 18px 16px', borderRadius: 16, cursor: busy ? 'not-allowed' : 'pointer', textAlign: 'left',
+            background: '#FFF', border: `2px solid ${tokens.line}`,
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{
-                width: 22, height: 22, borderRadius: 22, flexShrink: 0,
-                border: `2px solid ${plan === 'monthly' ? tokens.primary : tokens.line}`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: plan === 'monthly' ? tokens.primary : 'transparent',
-              }}>
-                {plan === 'monthly' && <Icon.Check s={11} c="#fff"/>}
-              </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontFamily: tokens.sans, fontSize: 15, fontWeight: 600, color: tokens.ink }}>{t('paywall.monthly')}</div>
-                <div style={{ fontFamily: tokens.sans, fontSize: 12, color: tokens.ink3, marginTop: 1 }}>{t('paywall.monthlyDetail')}</div>
+                <div style={{ fontFamily: tokens.sans, fontSize: 16, fontWeight: 700, color: tokens.ink, marginBottom: 4 }}>
+                  {t('paywall.monthly')}
+                </div>
+                <div style={{ fontFamily: tokens.sans, fontSize: 13, color: tokens.ink2, lineHeight: 1.35 }}>
+                  {t('paywall.trialThenMonthly', { price: monthlyPrice })}
+                </div>
               </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontFamily: tokens.serif, fontSize: 22, fontWeight: 600, color: tokens.ink, letterSpacing: -0.3 }}>{monthlyPrice}</div>
-                <div style={{ fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3 }}>{t('paywall.perMonth')}</div>
-              </div>
+              <Icon.ArrowRight s={18} c={tokens.ink2}/>
             </div>
           </button>
         </div>
@@ -233,24 +223,28 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
           }}>{error}</div>
         )}
 
-        <button onClick={handleCTA} disabled={busy} style={{
-          width: '100%', padding: '17px 20px', borderRadius: 16, border: 'none',
-          background: busy ? tokens.surfaceAlt : tokens.ink,
-          color: busy ? tokens.ink3 : '#fff',
-          cursor: busy ? 'not-allowed' : 'pointer',
-          fontFamily: tokens.sans, fontSize: 16, fontWeight: 600,
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-          boxShadow: busy ? 'none' : `0 14px 28px ${tokens.ink}30`,
-        }}>
-          {ctaLabel}
-        </button>
+        {isTrialStart && (
+          <button onClick={handleCTA} disabled={busy} style={{
+            width: '100%', padding: '17px 20px', borderRadius: 16, border: 'none',
+            background: busy ? tokens.surfaceAlt : tokens.ink,
+            color: busy ? tokens.ink3 : '#fff',
+            cursor: busy ? 'not-allowed' : 'pointer',
+            fontFamily: tokens.sans, fontSize: 16, fontWeight: 600,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            boxShadow: busy ? 'none' : `0 14px 28px ${tokens.ink}30`,
+          }}>
+            {ctaLabel}
+          </button>
+        )}
         <div style={{
           textAlign: 'center', marginTop: 12,
           fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3, lineHeight: 1.6,
         }}>
           {isTrialStart
             ? t('paywall.trialStartFooter')
-            : t('paywall.autoRenewDisclosure', { price: plan === 'yearly' ? `${yearlyPrice}/year` : `${monthlyPrice}/month` })}
+            : <>
+                {t('paywall.autoRenewDisclosure', { price: `${yearlyPrice}/year ${t('common.or') || 'or'} ${monthlyPrice}/month` })}
+              </>}
           <br/>
           {!isTrialStart && (
             <>

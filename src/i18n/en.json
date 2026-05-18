@@ -22,7 +22,8 @@
     "restore": "Restore",
     "restorePurchase": "Restore purchase",
     "terms": "Terms",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "or": "or"
   },
   "welcome": {
     "badge": "Trusted by 24,000 parents",
@@ -93,6 +94,11 @@
     "ctaTrialStart": "Start 7-day free trial",
     "ctaSubscribeYearly": "Subscribe {{price}}/yr",
     "ctaSubscribeMonthly": "Subscribe {{price}}/mo",
+    "tapToStart": "Tap to start",
+    "trialThenYearly": "7-day free trial, then {{price}}/year",
+    "trialThenMonthly": "7-day free trial, then {{price}}/month",
+    "billedYearly": "Billed {{price}} per year",
+    "billedMonthly": "Billed {{price}} per month",
     "trialStartFooter": "Full access for 7 days. We won't ask for payment until then.",
     "autoRenewDisclosure": "{{price}}, auto-renewing. Cancel anytime at least 24 hours before the period ends via your Apple ID account settings. Any unused portion of a free trial is forfeited when you purchase a subscription.",
     "maybeLater": "Maybe later — try with 1 kid free",

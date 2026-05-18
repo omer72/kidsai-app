@@ -22,7 +22,8 @@
     "restore": "Restaurar",
     "restorePurchase": "Restaurar compra",
     "terms": "Términos",
-    "privacy": "Privacidad"
+    "privacy": "Privacidad",
+    "or": "o"
   },
   "welcome": {
     "badge": "La confianza de 24.000 familias",
@@ -93,6 +94,11 @@
     "ctaTrialStart": "Empezar prueba gratis de 7 días",
     "ctaSubscribeYearly": "Suscríbete {{price}}/año",
     "ctaSubscribeMonthly": "Suscríbete {{price}}/mes",
+    "tapToStart": "Toca para empezar",
+    "trialThenYearly": "Prueba gratis de 7 días, luego {{price}}/año",
+    "trialThenMonthly": "Prueba gratis de 7 días, luego {{price}}/mes",
+    "billedYearly": "Cobrado {{price}} al año",
+    "billedMonthly": "Cobrado {{price}} al mes",
     "trialStartFooter": "Acceso completo durante 7 días. No te pediremos pago hasta entonces.",
     "autoRenewDisclosure": "{{price}}, con renovación automática. Cancela al menos 24 horas antes del final del período en los ajustes de tu Apple ID. La parte no usada de una prueba gratuita se pierde al comprar una suscripción.",
     "maybeLater": "Quizá más tarde — prueba con 1 hijo gratis",

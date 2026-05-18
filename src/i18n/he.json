@@ -22,7 +22,8 @@
     "restore": "שחזר",
     "restorePurchase": "שחזור רכישה",
     "terms": "תנאים",
-    "privacy": "פרטיות"
+    "privacy": "פרטיות",
+    "or": "או"
   },
   "welcome": {
     "badge": "24,000 הורים סומכים עלינו",
@@ -93,6 +94,11 @@
     "ctaTrialStart": "התחילו ניסיון חינם ל-7 ימים",
     "ctaSubscribeYearly": "הירשמו {{price}}/שנה",
     "ctaSubscribeMonthly": "הירשמו {{price}}/חודש",
+    "tapToStart": "הקישו להתחלה",
+    "trialThenYearly": "ניסיון חינם 7 ימים, אחר כך {{price}}/שנה",
+    "trialThenMonthly": "ניסיון חינם 7 ימים, אחר כך {{price}}/חודש",
+    "billedYearly": "חיוב {{price}} לשנה",
+    "billedMonthly": "חיוב {{price}} לחודש",
     "trialStartFooter": "גישה מלאה ל-7 ימים. לא נבקש תשלום עד אז.",
     "autoRenewDisclosure": "{{price}}, עם חידוש אוטומטי. ביטול אפשרי לפחות 24 שעות לפני סוף התקופה דרך הגדרות חשבון Apple ID. החלק שלא נוצל מהתקופה החינמית מתבטל בעת רכישת מנוי.",
     "maybeLater": "אולי בפעם אחרת — נסו עם ילד אחד בחינם",

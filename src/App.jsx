@@ -309,7 +309,18 @@ export function App() {
       />
     );
   } else if (phase === 'onboarding') {
-    inner = <OnboardingScreen onDone={() => setPhase('paywall')} fullscreen={fullscreen}/>;
+    inner = <OnboardingScreen onDone={() => setPhase(settings.aiConsent ? 'paywall' : 'consent')} fullscreen={fullscreen}/>;
+  } else if (phase === 'consent') {
+    inner = (
+      <AIConsentModal
+        fullscreen={fullscreen}
+        onAgree={() => {
+          setSettings({ ...settings, aiConsent: true });
+          setPhase('paywall');
+        }}
+        onDecline={() => setPhase('welcome')}
+      />
+    );
   } else if (phase === 'paywall') {
     inner = (
       <PaywallScreen
