@@ -10,16 +10,17 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
   const isTrialStart = mode === 'trialStart';
   const [plan, setPlan] = useState('yearly');
   const [packages, setPackages] = useState({ monthly: null, yearly: null });
+  const [packagesLoaded, setPackagesLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (isTrialStart) return;
-    if (!billingAvailable()) return;
+    if (isTrialStart) { setPackagesLoaded(true); return; }
+    if (!billingAvailable()) { setPackagesLoaded(true); return; }
     let mounted = true;
     getOfferings()
-      .then((pkgs) => { if (mounted) setPackages(pkgs); })
-      .catch((err) => { if (mounted) setError(err?.message || 'Could not load offers.'); });
+      .then((pkgs) => { if (mounted) { setPackages(pkgs); setPackagesLoaded(true); } })
+      .catch((err) => { if (mounted) { setError(err?.message || 'Could not load offers.'); setPackagesLoaded(true); } });
     return () => { mounted = false; };
   }, [isTrialStart]);
 
@@ -171,11 +172,17 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
         {!isTrialStart && (<>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
           {/* Yearly — direct purchase button. Tap = open Apple IAP sheet. */}
-          <button onClick={() => handlePurchase('yearly')} disabled={busy} style={{
-            padding: '18px 18px 16px', borderRadius: 16, cursor: busy ? 'not-allowed' : 'pointer', textAlign: 'left',
-            background: tokens.ink, border: 'none', color: '#fff', position: 'relative',
-            boxShadow: busy ? 'none' : `0 14px 28px ${tokens.ink}30`,
-          }}>
+          <button
+            onClick={() => handlePurchase('yearly')}
+            disabled={busy || !packagesLoaded || !yearlyPkg}
+            style={{
+              padding: '18px 18px 16px', borderRadius: 16,
+              cursor: (busy || !packagesLoaded || !yearlyPkg) ? 'progress' : 'pointer',
+              textAlign: 'left',
+              background: tokens.ink, border: 'none', color: '#fff', position: 'relative',
+              boxShadow: (busy || !packagesLoaded || !yearlyPkg) ? 'none' : `0 14px 28px ${tokens.ink}30`,
+              opacity: (!packagesLoaded || !yearlyPkg) ? 0.6 : 1,
+            }}>
             <div style={{
               position: 'absolute', top: -10, right: 16,
               background: tokens.primary, color: '#fff',
@@ -188,7 +195,9 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
                   {t('paywall.yearly')}
                 </div>
                 <div style={{ fontFamily: tokens.sans, fontSize: 13, opacity: 0.85, lineHeight: 1.35 }}>
-                  {t('paywall.trialThenYearly', { price: yearlyPrice })}
+                  {!packagesLoaded
+                    ? t('common.working')
+                    : t('paywall.trialThenYearly', { price: yearlyPrice })}
                 </div>
               </div>
               <Icon.ArrowRight s={18} c="#fff"/>
@@ -196,17 +205,25 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
           </button>
 
           {/* Monthly — direct purchase button. */}
-          <button onClick={() => handlePurchase('monthly')} disabled={busy} style={{
-            padding: '18px 18px 16px', borderRadius: 16, cursor: busy ? 'not-allowed' : 'pointer', textAlign: 'left',
-            background: '#FFF', border: `2px solid ${tokens.line}`,
-          }}>
+          <button
+            onClick={() => handlePurchase('monthly')}
+            disabled={busy || !packagesLoaded || !monthlyPkg}
+            style={{
+              padding: '18px 18px 16px', borderRadius: 16,
+              cursor: (busy || !packagesLoaded || !monthlyPkg) ? 'progress' : 'pointer',
+              textAlign: 'left',
+              background: '#FFF', border: `2px solid ${tokens.line}`,
+              opacity: (!packagesLoaded || !monthlyPkg) ? 0.6 : 1,
+            }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ flex: 1 }}>
                 <div style={{ fontFamily: tokens.sans, fontSize: 16, fontWeight: 700, color: tokens.ink, marginBottom: 4 }}>
                   {t('paywall.monthly')}
                 </div>
                 <div style={{ fontFamily: tokens.sans, fontSize: 13, color: tokens.ink2, lineHeight: 1.35 }}>
-                  {t('paywall.trialThenMonthly', { price: monthlyPrice })}
+                  {!packagesLoaded
+                    ? t('common.working')
+                    : t('paywall.trialThenMonthly', { price: monthlyPrice })}
                 </div>
               </div>
               <Icon.ArrowRight s={18} c={tokens.ink2}/>
