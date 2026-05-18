@@ -20,6 +20,7 @@ import { HistoryScreen } from './components/History';
 import { KidsScreen } from './components/Kids';
 import { SettingsScreen } from './components/Settings';
 import { SubscriptionScreen } from './components/TrialScreens';
+import { AIConsentModal } from './components/AIConsent';
 
 const FRAME_W = 402;
 const FRAME_H = 874;
@@ -53,6 +54,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
   const [flowState, setFlowState] = useState({ stage: 'compose', story: '', ctx: null, response: null, error: null });
   const [paywallOpen, setPaywallOpen] = useState(false);
   const [subscriptionOpen, setSubscriptionOpen] = useState(false);
+  const [consentPending, setConsentPending] = useState(null); // pending submit args if consent needed
 
   const entitled = !!billing?.entitled;
   const inTrial = !!billing?.inTrial;
@@ -69,6 +71,12 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
   const FlowComponent = settings.flow === 'B' ? FlowB : FlowA;
 
   const submit = async ({ story, ctx }) => {
+    // Apple Review 5.1.2(i) — require explicit consent before any data
+    // leaves the device for OpenAI.
+    if (!settings.aiConsent) {
+      setConsentPending({ story, ctx });
+      return;
+    }
     setFlowState({ stage: 'thinking', story, ctx, response: null, error: null });
     try {
       let response;
@@ -209,6 +217,19 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
             onPurchased={(next) => { onBillingChange(next); setPaywallOpen(false); }}
           />
         </div>
+      )}
+      {consentPending && (
+        <AIConsentModal
+          fullscreen={fullscreen}
+          onAgree={() => {
+            setSettings({ ...settings, aiConsent: true });
+            const pending = consentPending;
+            setConsentPending(null);
+            // re-run submit now that consent is granted
+            setTimeout(() => submit(pending), 0);
+          }}
+          onDecline={() => setConsentPending(null)}
+        />
       )}
     </div>
   );

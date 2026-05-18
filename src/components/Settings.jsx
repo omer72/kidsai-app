@@ -98,6 +98,30 @@ export function SettingsScreen({ settings, setSettings, onClearData, billing, in
         />
       </div>
 
+      <Label>{t('aiConsent.settingsLabel')}</Label>
+      <Card pad={14} style={{ marginBottom: 18 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ flex: 1, fontFamily: tokens.sans, fontSize: 13, lineHeight: 1.5, color: tokens.ink2 }}>
+            {settings.aiConsent ? t('aiConsent.settingsHintEnabled') : t('aiConsent.settingsHintDisabled')}
+          </div>
+          <button
+            onClick={() => setSettings({ ...settings, aiConsent: !settings.aiConsent })}
+            style={{
+              width: 52, height: 32, borderRadius: 32, border: 'none',
+              background: settings.aiConsent ? tokens.primary : tokens.surfaceAlt,
+              position: 'relative', cursor: 'pointer', flexShrink: 0,
+              transition: 'background .15s',
+            }}>
+            <div style={{
+              position: 'absolute', top: 4, left: settings.aiConsent ? 24 : 4,
+              width: 24, height: 24, borderRadius: 24, background: '#fff',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+              transition: 'left .15s',
+            }}/>
+          </button>
+        </div>
+      </Card>
+
       <Label>{t('settings.dataLabel')}</Label>
       <Card pad={14}>
         <div style={{ fontFamily: tokens.sans, fontSize: 13, lineHeight: 1.5, color: tokens.ink2, marginBottom: 10 }}>

@@ -281,5 +281,19 @@
     "history": "Historial",
     "kids": "Hijos",
     "settings": "Ajustes"
+  },
+  "aiConsent": {
+    "title": "Compartir tu historia con IA",
+    "body1": "Para darte orientación, Kidsit AI envía dos cosas a OpenAI:",
+    "bullet1": "El audio que grabas, transcrito a texto por OpenAI Whisper.",
+    "bullet2": "El texto transcrito, junto al contexto que eliges (lugar, estado de ánimo, nombre y edad de tu hijo), enviado a OpenAI GPT-4o-mini para la respuesta.",
+    "body2": "OpenAI no conserva estos datos, no los asocia a tu identidad y no los usa para entrenar modelos. Los perfiles e historial de tus hijos permanecen solo en este dispositivo.",
+    "body3": "Al tocar Aceptar abajo, consientes este procesamiento. Puedes revocarlo en cualquier momento desde Ajustes.",
+    "agree": "Acepto — empezar a usar Kidsit AI",
+    "decline": "Ahora no",
+    "declinedNote": "Puedes activar la orientación con IA en cualquier momento desde Ajustes → Privacidad.",
+    "settingsLabel": "Consentimiento de procesamiento por IA",
+    "settingsHintEnabled": "El texto se envía a OpenAI para transcripción y orientación.",
+    "settingsHintDisabled": "Orientación con IA desactivada. Tocar para activar."
   }
 }

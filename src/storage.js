@@ -30,6 +30,7 @@ const DEFAULT_BILLING = {
 export function loadSettings() {
   const s = read(KEYS.settings, { theme: 'warm', flow: 'A' });
   if (!s.billing) s.billing = DEFAULT_BILLING;
+  if (typeof s.aiConsent !== 'boolean') s.aiConsent = false;
   return s;
 }
 
