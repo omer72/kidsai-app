@@ -150,6 +150,41 @@
       "getGuidance": "קבל הכוונה"
     }
   },
+  "chips": {
+    "location": {
+      "inside": "בבית",
+      "insideHint": "בית",
+      "outside": "בחוץ",
+      "outsideHint": "חצר / פארק",
+      "public": "במקום ציבורי",
+      "publicHint": "חנות, רחוב",
+      "car": "ברכב",
+      "carHint": "בנסיעה"
+    },
+    "mood": {
+      "upset": "נסער",
+      "anxious": "חרד",
+      "angry": "כועס",
+      "tired": "עייף",
+      "happy": "שמח",
+      "defiant": "מתריס"
+    },
+    "involved": {
+      "alone": "רק אנחנו",
+      "sibling": "אח/אחות",
+      "coparent": "בן/בת זוג",
+      "family": "משפחה",
+      "stranger": "זר"
+    },
+    "urgency": {
+      "low": "נמוכה",
+      "lowDesc": "יש לי דקה",
+      "medium": "בינונית",
+      "mediumDesc": "מסלים",
+      "high": "גבוהה",
+      "highDesc": "עכשיו"
+    }
+  },
   "thinking": {
     "title": "חושבת לעומק",
     "step1": "מקשיבה למה ששיתפתם…",

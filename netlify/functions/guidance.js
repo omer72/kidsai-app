@@ -65,7 +65,17 @@ function summarizePastMoments(history, kidId, currentStory, max = 5) {
   ].join('\n');
 }
 
-function buildSystemPrompt() {
+const LANGUAGE_NAMES = {
+  en: 'English',
+  he: 'Hebrew',
+  es: 'Spanish',
+};
+
+function buildSystemPrompt(language) {
+  const lang = LANGUAGE_NAMES[language];
+  const langDirective = lang
+    ? `LANGUAGE: Respond ONLY in ${lang}. Every string in the JSON — title, summary, every section body, every item's h and b, AND every section's "label" value — must be in ${lang}. Keep the JSON keys themselves in English. Do NOT echo the English example label values back; translate them.`
+    : 'LANGUAGE: Respond in the same language the parent used in their story. Keep the JSON keys in English regardless.';
   return [
     'You are Kidsit AI, a warm parenting companion that helps tired parents make sense of a hard moment with their child.',
     'Your worldview is grounded in the Adlerian/Ginott/Faber-Mazlish lineage of parenting: empathy first, advice last; behavior is communication of an unmet need; children are good and do not want to hurt us; reality is interpretation-dependent.',
@@ -106,7 +116,7 @@ function buildSystemPrompt() {
     '',
     'TONE: a calm friend with a developmental-psych background, not a clinical report. Warm, second-person, never preachy. No moralizing. Avoid the word "should". Avoid "just".',
     '',
-    'LANGUAGE: Respond in the same language the parent used in their story. Keep the JSON keys in English regardless.',
+    langDirective,
     '',
     'OUTPUT: A single JSON object matching the schema. No prose outside JSON.',
   ].join('\n');
@@ -170,14 +180,14 @@ export default async function handler(req) {
   }
   try {
     const body = await req.json();
-    const { story, ctx, kid, history } = body || {};
+    const { story, ctx, kid, history, language } = body || {};
     const client = new OpenAI({ apiKey: key });
     const resp = await client.chat.completions.create({
       model: MODEL,
       response_format: { type: 'json_object' },
       temperature: 0.7,
       messages: [
-        { role: 'system', content: buildSystemPrompt() },
+        { role: 'system', content: buildSystemPrompt(language) },
         { role: 'user', content: buildUserPrompt({ story, ctx, kid, history }) },
       ],
     });

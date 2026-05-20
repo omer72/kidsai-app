@@ -319,20 +319,20 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid }) {
     const steps = [
       { key: 'location', q: t('flowA.context.whereDidItHappen'), options: LOCATIONS, render: (o, active, set) => (
         <Chip key={o.id} active={active} onClick={set} style={{ padding: '14px 18px', fontSize: 15 }}>
-          {o.label} <span style={{ color: active ? 'rgba(255,255,255,0.7)' : tokens.ink3, fontSize: 12, marginLeft: 4 }}>{o.hint}</span>
+          {t(o.labelKey)} <span style={{ color: active ? 'rgba(255,255,255,0.7)' : tokens.ink3, fontSize: 12, marginLeft: 4 }}>{t(o.hintKey)}</span>
         </Chip>
       )},
       { key: 'mood', q: t('flowA.context.howWereTheyFeeling'), options: MOODS, render: (o, active, set) => (
         <Chip key={o.id} active={active} onClick={set} style={{ padding: '14px 18px', fontSize: 15 }}>
-          <span style={{ fontSize: 16, marginRight: 2 }}>{o.glyph}</span>{o.label}
+          <span style={{ fontSize: 16, marginRight: 2 }}>{o.glyph}</span>{t(o.labelKey)}
         </Chip>
       )},
       { key: 'involved', q: t('flowA.context.whoElseWasThere'), options: INVOLVED, render: (o, active, set) => (
-        <Chip key={o.id} active={active} onClick={set} style={{ padding: '14px 18px', fontSize: 15 }}>{o.label}</Chip>
+        <Chip key={o.id} active={active} onClick={set} style={{ padding: '14px 18px', fontSize: 15 }}>{t(o.labelKey)}</Chip>
       )},
       { key: 'urgency', q: t('flowA.context.howUrgent'), options: URGENCY, render: (o, active, set) => (
         <Chip key={o.id} active={active} onClick={set} dot={o.dot} style={{ padding: '14px 18px', fontSize: 15 }}>
-          {o.label} <span style={{ color: active ? 'rgba(255,255,255,0.7)' : tokens.ink3, fontSize: 12, marginLeft: 4 }}>{o.desc}</span>
+          {t(o.labelKey)} <span style={{ color: active ? 'rgba(255,255,255,0.7)' : tokens.ink3, fontSize: 12, marginLeft: 4 }}>{t(o.descKey)}</span>
         </Chip>
       )},
     ];

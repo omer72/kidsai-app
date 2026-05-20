@@ -1,34 +1,36 @@
 export const DEFAULT_KIDS = [
 ];
 
+// `label` is the English source-of-truth used by the backend prompt to GPT.
+// `labelKey` / `hintKey` / `descKey` are i18n keys for UI rendering.
 export const LOCATIONS = [
-  { id: 'inside', label: 'Inside', hint: 'Home' },
-  { id: 'outside', label: 'Outside', hint: 'Yard / park' },
-  { id: 'public', label: 'Public', hint: 'Store, street' },
-  { id: 'car', label: 'In the car', hint: 'Moving' },
+  { id: 'inside', label: 'Inside', hint: 'Home', labelKey: 'chips.location.inside', hintKey: 'chips.location.insideHint' },
+  { id: 'outside', label: 'Outside', hint: 'Yard / park', labelKey: 'chips.location.outside', hintKey: 'chips.location.outsideHint' },
+  { id: 'public', label: 'Public', hint: 'Store, street', labelKey: 'chips.location.public', hintKey: 'chips.location.publicHint' },
+  { id: 'car', label: 'In the car', hint: 'Moving', labelKey: 'chips.location.car', hintKey: 'chips.location.carHint' },
 ];
 
 export const MOODS = [
-  { id: 'upset', label: 'Upset', glyph: '◐', tone: 'Crying, tantrum' },
-  { id: 'anxious', label: 'Anxious', glyph: '○', tone: 'Clingy, withdrawn' },
-  { id: 'angry', label: 'Angry', glyph: '◉', tone: 'Yelling, hitting' },
-  { id: 'tired', label: 'Tired', glyph: '◑', tone: 'Overstimulated' },
-  { id: 'happy', label: 'Happy', glyph: '●', tone: 'Engaged, playing' },
-  { id: 'defiant', label: 'Defiant', glyph: '◎', tone: 'Pushing limits' },
+  { id: 'upset', label: 'Upset', glyph: '◐', labelKey: 'chips.mood.upset' },
+  { id: 'anxious', label: 'Anxious', glyph: '○', labelKey: 'chips.mood.anxious' },
+  { id: 'angry', label: 'Angry', glyph: '◉', labelKey: 'chips.mood.angry' },
+  { id: 'tired', label: 'Tired', glyph: '◑', labelKey: 'chips.mood.tired' },
+  { id: 'happy', label: 'Happy', glyph: '●', labelKey: 'chips.mood.happy' },
+  { id: 'defiant', label: 'Defiant', glyph: '◎', labelKey: 'chips.mood.defiant' },
 ];
 
 export const INVOLVED = [
-  { id: 'alone', label: 'Just us' },
-  { id: 'sibling', label: 'Sibling' },
-  { id: 'coparent', label: 'Co-parent' },
-  { id: 'family', label: 'Family' },
-  { id: 'stranger', label: 'Stranger' },
+  { id: 'alone', label: 'Just us', labelKey: 'chips.involved.alone' },
+  { id: 'sibling', label: 'Sibling', labelKey: 'chips.involved.sibling' },
+  { id: 'coparent', label: 'Co-parent', labelKey: 'chips.involved.coparent' },
+  { id: 'family', label: 'Family', labelKey: 'chips.involved.family' },
+  { id: 'stranger', label: 'Stranger', labelKey: 'chips.involved.stranger' },
 ];
 
 export const URGENCY = [
-  { id: 'low', label: 'Low', desc: 'I have a minute', dot: '#4AAE8C' },
-  { id: 'med', label: 'Medium', desc: 'Escalating', dot: '#E5A64B' },
-  { id: 'high', label: 'High', desc: 'Right now', dot: '#D94A5C' },
+  { id: 'low', label: 'Low', desc: 'I have a minute', dot: '#4AAE8C', labelKey: 'chips.urgency.low', descKey: 'chips.urgency.lowDesc' },
+  { id: 'med', label: 'Medium', desc: 'Escalating', dot: '#E5A64B', labelKey: 'chips.urgency.medium', descKey: 'chips.urgency.mediumDesc' },
+  { id: 'high', label: 'High', desc: 'Right now', dot: '#D94A5C', labelKey: 'chips.urgency.high', descKey: 'chips.urgency.highDesc' },
 ];
 
 // Fallback response used when no API key is set, or as a placeholder.

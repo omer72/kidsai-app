@@ -1,3 +1,5 @@
+import i18n from './i18n';
+
 const API_BASE = (import.meta.env.VITE_API_BASE || '').trim().replace(/\/$/, '');
 
 export function hasApiKey() {
@@ -6,10 +8,11 @@ export function hasApiKey() {
 
 export async function getGuidance({ story, ctx, kid, history }) {
   if (!API_BASE) throw new Error('VITE_API_BASE not configured');
+  const language = (i18n.language || 'en').split('-')[0];
   const r = await fetch(`${API_BASE}/api/guidance`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ story, ctx, kid, history }),
+    body: JSON.stringify({ story, ctx, kid, history, language }),
   });
   if (!r.ok) {
     const t = await r.text().catch(() => '');

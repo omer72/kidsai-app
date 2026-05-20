@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
 import { Avatar, Card, Segmented } from './primitives';
-import { MOODS, SAMPLE_PATTERNS } from '../constants';
+import { MOODS, LOCATIONS, SAMPLE_PATTERNS } from '../constants';
 
 export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
   const { t } = useTranslation();
@@ -74,6 +74,7 @@ export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
           {items.map((h) => {
             const kid = kids.find((k) => k.id === h.kidId) || kids[0];
             const mood = MOODS.find((m) => m.id === h.mood);
+            const location = LOCATIONS.find((l) => l.id === h.where);
             const open = openId === h.id;
             return (
               <Card key={h.id} pad={14}>
@@ -97,13 +98,13 @@ export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
                         <span style={{
                           fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3,
                           padding: '2px 7px', borderRadius: 4, background: tokens.surfaceAlt,
-                        }}>{h.where}</span>
+                        }}>{location ? t(location.labelKey) : h.where}</span>
                       )}
                       {mood && (
                         <span style={{
                           fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3,
                           padding: '2px 7px', borderRadius: 4, background: tokens.surfaceAlt,
-                        }}>{mood.glyph} {mood.label}</span>
+                        }}>{mood.glyph} {t(mood.labelKey)}</span>
                       )}
                     </div>
                   </div>

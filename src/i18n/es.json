@@ -150,6 +150,41 @@
       "getGuidance": "Obtener orientación"
     }
   },
+  "chips": {
+    "location": {
+      "inside": "Dentro",
+      "insideHint": "Casa",
+      "outside": "Fuera",
+      "outsideHint": "Jardín / parque",
+      "public": "Público",
+      "publicHint": "Tienda, calle",
+      "car": "En el coche",
+      "carHint": "En movimiento"
+    },
+    "mood": {
+      "upset": "Disgustado",
+      "anxious": "Ansioso",
+      "angry": "Enojado",
+      "tired": "Cansado",
+      "happy": "Feliz",
+      "defiant": "Desafiante"
+    },
+    "involved": {
+      "alone": "Solo nosotros",
+      "sibling": "Hermano/a",
+      "coparent": "Co-progenitor",
+      "family": "Familia",
+      "stranger": "Desconocido"
+    },
+    "urgency": {
+      "low": "Baja",
+      "lowDesc": "Tengo un minuto",
+      "medium": "Media",
+      "mediumDesc": "Escalando",
+      "high": "Alta",
+      "highDesc": "Ahora mismo"
+    }
+  },
   "thinking": {
     "title": "Pensándolo bien",
     "step1": "Escuchando lo que compartiste…",

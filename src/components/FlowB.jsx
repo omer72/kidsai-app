@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
 import { Avatar, Card, Chip, Label, LiveWaveform, MicButton, PrimaryButton } from './primitives';
@@ -7,6 +8,7 @@ import { startRecording, stopRecording, cancelRecording } from '../recorder';
 import { transcribeAudio, hasApiKey } from '../openai';
 
 export function FlowB({ kids, activeKid, setActiveKid, onSubmit }) {
+  const { t } = useTranslation();
   const [recording, setRecording] = useState(false);
   const [transcribing, setTranscribing] = useState(false);
   const [hasRecording, setHasRecording] = useState(false);
@@ -129,7 +131,7 @@ export function FlowB({ kids, activeKid, setActiveKid, onSubmit }) {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
           {LOCATIONS.map((o) => (
             <Chip key={o.id} dense active={ctx.location === o.id} onClick={() => setCtx({ ...ctx, location: o.id })}>
-              {o.label}
+              {t(o.labelKey)}
             </Chip>
           ))}
         </div>
@@ -148,7 +150,7 @@ export function FlowB({ kids, activeKid, setActiveKid, onSubmit }) {
                 transition: 'all .15s',
               }}>
                 <span style={{ fontSize: 16 }}>{o.glyph}</span>
-                {o.label}
+                {t(o.labelKey)}
               </button>
             );
           })}
@@ -158,7 +160,7 @@ export function FlowB({ kids, activeKid, setActiveKid, onSubmit }) {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
           {INVOLVED.map((o) => (
             <Chip key={o.id} dense active={ctx.involved === o.id} onClick={() => setCtx({ ...ctx, involved: o.id })}>
-              {o.label}
+              {t(o.labelKey)}
             </Chip>
           ))}
         </div>
@@ -178,10 +180,10 @@ export function FlowB({ kids, activeKid, setActiveKid, onSubmit }) {
               }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   <span style={{ width: 6, height: 6, borderRadius: 6, background: o.dot }}/>
-                  {o.label}
+                  {t(o.labelKey)}
                 </span>
                 <span style={{ fontSize: 11, fontWeight: 500, color: active ? 'rgba(255,255,255,0.7)' : tokens.ink3 }}>
-                  {o.desc}
+                  {t(o.descKey)}
                 </span>
               </button>
             );

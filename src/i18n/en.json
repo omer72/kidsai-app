@@ -150,6 +150,41 @@
       "getGuidance": "Get guidance"
     }
   },
+  "chips": {
+    "location": {
+      "inside": "Inside",
+      "insideHint": "Home",
+      "outside": "Outside",
+      "outsideHint": "Yard / park",
+      "public": "Public",
+      "publicHint": "Store, street",
+      "car": "In the car",
+      "carHint": "Moving"
+    },
+    "mood": {
+      "upset": "Upset",
+      "anxious": "Anxious",
+      "angry": "Angry",
+      "tired": "Tired",
+      "happy": "Happy",
+      "defiant": "Defiant"
+    },
+    "involved": {
+      "alone": "Just us",
+      "sibling": "Sibling",
+      "coparent": "Co-parent",
+      "family": "Family",
+      "stranger": "Stranger"
+    },
+    "urgency": {
+      "low": "Low",
+      "lowDesc": "I have a minute",
+      "medium": "Medium",
+      "mediumDesc": "Escalating",
+      "high": "High",
+      "highDesc": "Right now"
+    }
+  },
   "thinking": {
     "title": "Thinking it through",
     "step1": "Listening to what you shared…",
