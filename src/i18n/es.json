@@ -107,7 +107,9 @@
     "genericError": "Algo salió mal.",
     "restoreFailed": "Fallo al restaurar.",
     "noSubscriptionFound": "No se encontró una suscripción activa en este Apple ID.",
-    "restoreUnavailable": "Compras no disponibles en la vista previa del navegador."
+    "restoreUnavailable": "Compras no disponibles en la vista previa del navegador.",
+    "redeemCode": "¿Tienes un código promocional?",
+    "promoCodeUnavailable": "Los códigos promocionales solo pueden canjearse en la versión de App Store."
   },
   "flowA": {
     "greeting": {

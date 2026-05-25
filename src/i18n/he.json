@@ -107,7 +107,9 @@
     "genericError": "משהו השתבש.",
     "restoreFailed": "השחזור נכשל.",
     "noSubscriptionFound": "לא נמצא מנוי פעיל בחשבון Apple ID הזה.",
-    "restoreUnavailable": "רכישות לא זמינות בתצוגה מקדימה בדפדפן."
+    "restoreUnavailable": "רכישות לא זמינות בתצוגה מקדימה בדפדפן.",
+    "redeemCode": "יש לכם קוד קופון?",
+    "promoCodeUnavailable": "קודי קופון ניתנים למימוש רק בגרסת App Store."
   },
   "flowA": {
     "greeting": {

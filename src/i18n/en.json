@@ -107,7 +107,9 @@
     "genericError": "Something went wrong.",
     "restoreFailed": "Restore failed.",
     "noSubscriptionFound": "No active subscription found on this Apple ID.",
-    "restoreUnavailable": "Purchases unavailable in browser preview."
+    "restoreUnavailable": "Purchases unavailable in browser preview.",
+    "redeemCode": "Have a promo code?",
+    "promoCodeUnavailable": "Promo codes can only be redeemed in the App Store build."
   },
   "flowA": {
     "greeting": {

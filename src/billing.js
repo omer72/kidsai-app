@@ -56,13 +56,40 @@ export async function refreshEntitlement() {
 }
 
 export async function getOfferings() {
-  if (!billingAvailable()) return { monthly: null, yearly: null };
-  const { current } = await Purchases.getOfferings();
-  if (!current) return { monthly: null, yearly: null };
-  return {
-    monthly: current.monthly || current.availablePackages?.find((p) => /month/i.test(p.identifier)) || null,
-    yearly: current.annual || current.availablePackages?.find((p) => /year|annual/i.test(p.identifier)) || null,
-  };
+  if (!billingAvailable()) {
+    console.log('[billing] getOfferings: billing not available');
+    return { monthly: null, yearly: null };
+  }
+  try {
+    const offerings = await Purchases.getOfferings();
+    console.log('[billing] getOfferings: full raw response', JSON.stringify({
+      currentId: offerings.current?.identifier,
+      currentMonthlyExists: !!offerings.current?.monthly,
+      currentMonthlyProductId: offerings.current?.monthly?.product?.identifier,
+      currentAnnualExists: !!offerings.current?.annual,
+      currentAnnualProductId: offerings.current?.annual?.product?.identifier,
+      availablePackagesCount: offerings.current?.availablePackages?.length,
+      availablePackageIds: offerings.current?.availablePackages?.map((p) => ({
+        id: p.identifier, productId: p.product?.identifier, productType: p.product?.productCategory,
+      })),
+      allOfferingIds: Object.keys(offerings.all || {}),
+    }, null, 2));
+    const { current } = offerings;
+    if (!current) {
+      console.log('[billing] getOfferings: no current offering set');
+      return { monthly: null, yearly: null };
+    }
+    const monthly = current.monthly || current.availablePackages?.find((p) => /month/i.test(p.identifier)) || null;
+    const yearly = current.annual || current.availablePackages?.find((p) => /year|annual/i.test(p.identifier)) || null;
+    console.log('[billing] getOfferings: resolved', {
+      monthly: monthly ? { id: monthly.identifier, productId: monthly.product?.identifier } : null,
+      yearly: yearly ? { id: yearly.identifier, productId: yearly.product?.identifier } : null,
+    });
+    return { monthly, yearly };
+  } catch (err) {
+    console.log('[billing] getOfferings: error', err?.message || String(err));
+    throw err;
+  }
 }
 
 export async function purchasePackage(pkg) {
@@ -75,6 +102,11 @@ export async function restorePurchases() {
   if (!billingAvailable()) throw new Error('Purchases unavailable on this platform.');
   const { customerInfo } = await Purchases.restorePurchases();
   return entitlementFromCustomerInfo(customerInfo);
+}
+
+export async function presentCodeRedemptionSheet() {
+  if (!billingAvailable()) throw new Error('Promo codes can only be redeemed in the App Store build.');
+  await Purchases.presentCodeRedemptionSheet();
 }
 
 export function priceString(pkg) {

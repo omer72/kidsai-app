@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
 import { IOSStatusBar } from './IOSFrame';
-import { billingAvailable, getOfferings, introOfferPeriod, priceString, purchasePackage, restorePurchases } from '../billing';
+import { billingAvailable, getOfferings, introOfferPeriod, presentCodeRedemptionSheet, priceString, purchasePackage, restorePurchases } from '../billing';
 
 export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart, fullscreen, onPurchased }) {
   const { t } = useTranslation();
@@ -53,6 +53,19 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
       setError(err?.message || t('paywall.genericError'));
     } finally {
       setBusy(false);
+    }
+  };
+
+  const handleRedeemCode = async () => {
+    setError('');
+    if (!billingAvailable()) {
+      setError(t('paywall.promoCodeUnavailable'));
+      return;
+    }
+    try {
+      await presentCodeRedemptionSheet();
+    } catch (err) {
+      setError(err?.message || t('paywall.genericError'));
     }
   };
 
@@ -269,6 +282,11 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
                 background: 'transparent', border: 'none', padding: 0, cursor: busy ? 'not-allowed' : 'pointer',
                 color: tokens.ink2, fontFamily: tokens.sans, fontSize: 11, textDecoration: 'underline',
               }}>{t('common.restorePurchase')}</button>
+              {' · '}
+              <button onClick={handleRedeemCode} disabled={busy} style={{
+                background: 'transparent', border: 'none', padding: 0, cursor: busy ? 'not-allowed' : 'pointer',
+                color: tokens.ink2, fontFamily: tokens.sans, fontSize: 11, textDecoration: 'underline',
+              }}>{t('paywall.redeemCode')}</button>
               {' · '}
             </>
           )}
