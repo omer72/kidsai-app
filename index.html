@@ -38,6 +38,19 @@
     0%, 100% { opacity: 1; }
     50% { opacity: 0.35; }
   }
+  @keyframes pg-breathe {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.06); }
+  }
+  @keyframes pg-drift {
+    0%   { transform: translate(-8%, -6%) scale(1); opacity: 0.55; }
+    50%  { transform: translate(6%, 4%) scale(1.08); opacity: 0.75; }
+    100% { transform: translate(-8%, -6%) scale(1); opacity: 0.55; }
+  }
+  @keyframes pg-fade-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 
   /* ── RTL ─────────────────────────────────────────────────────────── */
   html[dir="rtl"] body { direction: rtl; text-align: right; }

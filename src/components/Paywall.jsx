@@ -128,7 +128,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 22 }}>
           <div style={{
             width: 78, height: 78, borderRadius: 78, position: 'relative',
-            background: `radial-gradient(circle at 35% 30%, #5A7EFF 0%, ${tokens.primary} 70%)`,
+            background: `radial-gradient(circle at 35% 30%, ${tokens.primary} 0%, ${tokens.primaryInk} 80%)`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             boxShadow: `0 16px 36px ${tokens.primary}40`,
           }}>
@@ -266,6 +266,16 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
             {ctaLabel}
           </button>
         )}
+        {onStart && !isTrialStart && (
+          <div style={{ textAlign: 'center', marginTop: 14, marginBottom: 4 }}>
+            <button onClick={onStart} disabled={busy} style={{
+              background: 'transparent', border: 'none',
+              padding: '10px 16px', cursor: busy ? 'not-allowed' : 'pointer',
+              color: tokens.ink2, fontFamily: tokens.sans, fontSize: 14, fontWeight: 500,
+              textDecoration: 'underline', textUnderlineOffset: 4,
+            }}>{t('paywall.maybeLater')}</button>
+          </div>
+        )}
         <div style={{
           textAlign: 'center', marginTop: 12,
           fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3, lineHeight: 1.6,
@@ -295,15 +305,6 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
           {' · '}
           <a href="https://kidsit.ai/privacy" target="_blank" rel="noopener noreferrer"
              style={{ color: tokens.ink2, textDecoration: 'underline' }}>{t('common.privacy')}</a>
-          {onStart && !isTrialStart && (
-            <>
-              <br/>
-              <button onClick={onStart} disabled={busy} style={{
-                background: 'transparent', border: 'none', padding: '10px 0 0', cursor: busy ? 'not-allowed' : 'pointer',
-                color: tokens.ink3, fontFamily: tokens.sans, fontSize: 12,
-              }}>{t('paywall.maybeLater')}</button>
-            </>
-          )}
         </div>
       </div>
     </div>

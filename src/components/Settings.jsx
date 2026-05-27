@@ -101,36 +101,41 @@ export function SettingsScreen({ settings, setSettings, onClearData, billing, in
       <Label>{t('aiConsent.settingsLabel')}</Label>
       <Card pad={14} style={{ marginBottom: 18 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ flex: 1, fontFamily: tokens.sans, fontSize: 13, lineHeight: 1.5, color: tokens.ink2 }}>
+          <div style={{ flex: 1, ...tokens.type.bodySm, color: tokens.ink2 }}>
             {settings.aiConsent ? t('aiConsent.settingsHintEnabled') : t('aiConsent.settingsHintDisabled')}
           </div>
-          <button
-            onClick={() => setSettings({ ...settings, aiConsent: !settings.aiConsent })}
-            style={{
-              width: 52, height: 32, borderRadius: 32, border: 'none',
-              background: settings.aiConsent ? tokens.primary : tokens.surfaceAlt,
-              position: 'relative', cursor: 'pointer', flexShrink: 0,
-              transition: 'background .15s',
-            }}>
-            <div style={{
-              position: 'absolute', top: 4, left: settings.aiConsent ? 24 : 4,
-              width: 24, height: 24, borderRadius: 24, background: '#fff',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-              transition: 'left .15s',
-            }}/>
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0, alignSelf: 'center' }}>
+            <button
+              onClick={() => setSettings({ ...settings, aiConsent: !settings.aiConsent })}
+              style={{
+                width: 52, height: 32, borderRadius: 32, border: 'none',
+                background: settings.aiConsent ? tokens.primary : tokens.surfaceAlt,
+                position: 'relative', cursor: 'pointer',
+                transition: 'background .15s',
+                padding: 0,
+              }}>
+              <div style={{
+                position: 'absolute', top: 4, left: settings.aiConsent ? 24 : 4,
+                width: 24, height: 24, borderRadius: 24, background: '#fff',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                transition: 'left .15s',
+              }}/>
+            </button>
+          </div>
         </div>
       </Card>
 
       <Label>{t('settings.dataLabel')}</Label>
       <Card pad={14}>
-        <div style={{ fontFamily: tokens.sans, fontSize: 13, lineHeight: 1.5, color: tokens.ink2, marginBottom: 10 }}>
+        <div style={{ ...tokens.type.bodySm, color: tokens.ink2, marginBottom: 12 }}>
           {t('settings.dataBody')}
         </div>
         <button onClick={onClearData} style={{
-          padding: '12px 16px', borderRadius: 12, border: `1px solid ${tokens.line}`,
-          background: 'transparent', color: tokens.danger,
-          fontFamily: tokens.sans, fontSize: 14, fontWeight: 500, cursor: 'pointer', width: '100%',
+          padding: '12px 16px', borderRadius: 12, border: 'none',
+          background: tokens.danger, color: '#fff',
+          fontFamily: tokens.sans, fontSize: 14, fontWeight: 600,
+          cursor: 'pointer', width: '100%',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
         }}>
           {t('settings.clearAll')}
         </button>

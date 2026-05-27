@@ -18,19 +18,23 @@ export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
   const items = history.filter((h) => (filter === 'all' ? true : h.kidId === filter));
   const showPatterns = history.length >= 3;
 
+  const isNight = (timestamp) => {
+    const d = new Date(timestamp);
+    const h = isNaN(d) ? 12 : d.getHours();
+    return h >= 19 || h < 6;
+  };
+
   return (
     <div style={{ padding: '14px 20px 140px' }}>
-      <div style={{
-        fontFamily: tokens.serif, fontSize: 28, color: tokens.ink,
-        letterSpacing: -0.3, fontWeight: 500, marginBottom: 14,
-      }}>{t('history.title')}</div>
+      <div style={{ ...tokens.type.h2, fontSize: 28, color: tokens.ink, marginBottom: 14 }}>
+        {t('history.title')}
+      </div>
 
       {showPatterns && (
         <div style={{ marginBottom: 20 }}>
-          <div style={{
-            fontFamily: tokens.sans, fontSize: 11, fontWeight: 700,
-            color: tokens.ink3, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 10,
-          }}>{t('history.patternsHeader')}</div>
+          <div style={{ ...tokens.type.label, color: tokens.ink3, marginBottom: 10 }}>
+            {t('history.patternsHeader')}
+          </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {SAMPLE_PATTERNS.map((p, i) => (
               <Card key={i} pad={14} style={{ borderLeft: `3px solid ${tokens.primary}` }}>
@@ -76,8 +80,10 @@ export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
             const mood = MOODS.find((m) => m.id === h.mood);
             const location = LOCATIONS.find((l) => l.id === h.where);
             const open = openId === h.id;
+            const night = isNight(h.id);
+            const accent = mood?.tint || tokens.line;
             return (
-              <Card key={h.id} pad={14}>
+              <Card key={h.id} pad={14} style={{ borderLeft: `3px solid ${accent}` }}>
                 <button onClick={() => setOpenId(open ? null : h.id)} style={{
                   display: 'flex', gap: 12, width: '100%', textAlign: 'left',
                   background: 'transparent', border: 'none', padding: 0, cursor: 'pointer',
@@ -85,24 +91,25 @@ export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
                   <Avatar kid={kid} size={32}/>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
-                      <div style={{ fontFamily: tokens.sans, fontSize: 11, fontWeight: 600, color: tokens.ink3 }}>
+                      <span style={{ fontSize: 12, lineHeight: 1, opacity: 0.8 }}>{night ? '🌙' : '☀️'}</span>
+                      <div style={{ ...tokens.type.caption, fontWeight: 600, color: tokens.ink3 }}>
                         {h.when || new Date(h.id).toLocaleString()}
                       </div>
                     </div>
                     <div style={{
-                      fontFamily: tokens.sans, fontSize: 14.5, fontWeight: 600,
+                      ...tokens.type.bodyLg, fontWeight: 600,
                       color: tokens.ink, marginBottom: 4, letterSpacing: -0.1,
                     }}>{h.title}</div>
                     <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
                       {h.where && (
                         <span style={{
-                          fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3,
+                          ...tokens.type.caption, color: tokens.ink3,
                           padding: '2px 7px', borderRadius: 4, background: tokens.surfaceAlt,
                         }}>{location ? t(location.labelKey) : h.where}</span>
                       )}
                       {mood && (
                         <span style={{
-                          fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3,
+                          ...tokens.type.caption, color: tokens.ink3,
                           padding: '2px 7px', borderRadius: 4, background: tokens.surfaceAlt,
                         }}>{mood.glyph} {t(mood.labelKey)}</span>
                       )}

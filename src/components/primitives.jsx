@@ -24,13 +24,58 @@ export function Chip({ active, onClick, children, dot, dense, style = {} }) {
       background: active ? tokens.primary : tokens.surface,
       color: active ? '#fff' : tokens.ink,
       border: `1px solid ${active ? tokens.primary : tokens.line}`,
-      fontFamily: tokens.sans, fontSize: 14, fontWeight: 500,
+      fontFamily: tokens.sans, fontSize: 14, fontWeight: active ? 600 : 500,
       cursor: 'pointer', transition: 'all .15s',
+      boxShadow: active ? `0 0 0 3px ${tokens.primarySoft}` : 'none',
       ...style,
     }}>
       {dot && <span style={{ width: 7, height: 7, borderRadius: 7, background: dot }}/>}
       {children}
     </button>
+  );
+}
+
+export function ConfirmDialog({ open, title, body, confirmLabel, cancelLabel, danger, onConfirm, onCancel }) {
+  if (!open) return null;
+  return (
+    <div
+      onClick={onCancel}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 100,
+        background: 'rgba(11,29,58,0.45)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: 24, animation: 'pg-fade-in .15s ease-out',
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: tokens.surface, borderRadius: 20, padding: 22,
+          maxWidth: 340, width: '100%',
+          boxShadow: '0 20px 50px rgba(11,29,58,0.25)',
+          border: `1px solid ${tokens.line}`,
+        }}
+      >
+        <div style={{ ...tokens.type.h3, color: tokens.ink, marginBottom: 8 }}>{title}</div>
+        {body && (
+          <div style={{ ...tokens.type.body, color: tokens.ink2, marginBottom: 18 }}>{body}</div>
+        )}
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={onCancel} style={{
+            flex: 1, padding: '12px 16px', borderRadius: 12,
+            border: `1px solid ${tokens.line}`, background: tokens.surface,
+            color: tokens.ink, fontFamily: tokens.sans, fontSize: 14, fontWeight: 600,
+            cursor: 'pointer',
+          }}>{cancelLabel}</button>
+          <button onClick={onConfirm} style={{
+            flex: 1, padding: '12px 16px', borderRadius: 12, border: 'none',
+            background: danger ? tokens.danger : tokens.primary,
+            color: '#fff', fontFamily: tokens.sans, fontSize: 14, fontWeight: 600,
+            cursor: 'pointer',
+          }}>{confirmLabel}</button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -110,13 +155,13 @@ export function MicButton({ recording, onStart, onStop, size = 164, disabled = f
           background: disabled
             ? tokens.surfaceAlt
             : recording
-              ? `radial-gradient(circle at 35% 30%, #5A7EFF 0%, ${tokens.primary} 60%, ${tokens.primaryInk} 100%)`
-              : `radial-gradient(circle at 35% 30%, #5A7EFF 0%, ${tokens.primary} 70%)`,
+              ? `radial-gradient(circle at 35% 30%, ${tokens.primary} 0%, ${tokens.primaryInk} 80%)`
+              : `radial-gradient(circle at 35% 30%, ${tokens.primary} 0%, ${tokens.primaryInk} 90%)`,
           boxShadow: disabled
             ? 'none'
             : recording
-              ? `0 18px 38px rgba(46,91,255,0.5), inset 0 2px 4px rgba(255,255,255,0.3)`
-              : `0 14px 28px rgba(46,91,255,0.35), inset 0 2px 4px rgba(255,255,255,0.3)`,
+              ? `0 18px 38px ${tokens.primary}55, inset 0 2px 4px rgba(255,255,255,0.3)`
+              : `0 14px 28px ${tokens.primary}40, inset 0 2px 4px rgba(255,255,255,0.3)`,
           transition: 'transform .1s ease',
           transform: recording && !disabled ? 'scale(0.97)' : 'scale(1)',
           color: disabled ? tokens.ink3 : '#fff',

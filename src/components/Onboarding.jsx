@@ -17,7 +17,7 @@ function MicArt() {
       ))}
       <div style={{
         position: 'absolute', inset: 50, borderRadius: 200,
-        background: `radial-gradient(circle at 35% 30%, #5A7EFF 0%, ${tokens.primary} 70%)`,
+        background: `radial-gradient(circle at 35% 30%, ${tokens.primary} 0%, ${tokens.primaryInk} 80%)`,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         boxShadow: `0 18px 40px ${tokens.primary}55`,
       }}>

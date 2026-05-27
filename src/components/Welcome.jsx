@@ -56,7 +56,7 @@ export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 'auto' }}>
           <div style={{
             width: 32, height: 32, borderRadius: 9,
-            background: `radial-gradient(circle at 30% 30%, #5A7EFF 0%, ${tokens.primary} 100%)`,
+            background: `radial-gradient(circle at 30% 30%, ${tokens.primary} 0%, ${tokens.primaryInk} 100%)`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             boxShadow: `0 6px 14px ${tokens.primary}40`,
           }}>

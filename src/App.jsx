@@ -7,7 +7,7 @@ import { initBilling, offUpdate, refreshEntitlement, billingAvailable } from './
 import { DEMO_RESPONSE } from './constants';
 import { Icon } from './components/Icons';
 import { IOSDevice } from './components/IOSFrame';
-import { TabBar } from './components/primitives';
+import { TabBar, ConfirmDialog } from './components/primitives';
 import { WelcomeScreen } from './components/Welcome';
 import { OnboardingScreen } from './components/Onboarding';
 import { PaywallScreen } from './components/Paywall';
@@ -189,7 +189,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <div style={{
           width: 28, height: 28, borderRadius: 8,
-          background: `radial-gradient(circle at 30% 30%, #5A7EFF 0%, ${tokens.primary} 100%)`,
+          background: `radial-gradient(circle at 30% 30%, ${tokens.primary} 0%, ${tokens.primaryInk} 100%)`,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           boxShadow: `0 4px 10px ${tokens.primary}40`,
         }}><Icon.Sparkle s={14} c="#fff"/></div>
@@ -283,8 +283,10 @@ export function App() {
   };
   const setEntryFeedback = (id, patch) => setHistory(updateHistoryEntry(id, patch));
   const { t: tApp } = useTranslation();
-  const onClearData = () => {
-    if (!confirm(tApp('settings.clearConfirm'))) return;
+  const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
+  const onClearData = () => setClearConfirmOpen(true);
+  const confirmClearData = () => {
+    setClearConfirmOpen(false);
     clearAll();
     const fresh = loadSettings();
     setSettingsState(fresh);
@@ -326,6 +328,7 @@ export function App() {
       <PaywallScreen
         mode="upgrade"
         fullscreen={fullscreen}
+        onClose={finishOnboarding}
         onStart={finishOnboarding}
         onPurchased={(next) => { applyBilling(next); finishOnboarding(); }}
       />
@@ -344,18 +347,33 @@ export function App() {
     );
   }
 
+  const confirmDialog = (
+    <ConfirmDialog
+      open={clearConfirmOpen}
+      danger
+      title={tApp('settings.clearConfirmTitle')}
+      body={tApp('settings.clearConfirm')}
+      confirmLabel={tApp('settings.clearAll')}
+      cancelLabel={tApp('common.cancel')}
+      onCancel={() => setClearConfirmOpen(false)}
+      onConfirm={confirmClearData}
+    />
+  );
+
   if (fullscreen) {
     return (
       <div style={{
         position: 'fixed', inset: 0, overflow: 'hidden', background: tokens.bg,
       }}>
         {inner}
+        {confirmDialog}
       </div>
     );
   }
   return (
     <div style={{ transform: `scale(${scale})`, transformOrigin: 'center center' }}>
       <IOSDevice width={FRAME_W} height={FRAME_H}>{inner}</IOSDevice>
+      {confirmDialog}
     </div>
   );
 }

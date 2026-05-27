@@ -202,7 +202,7 @@
     "tonightExpand": "Entiende por qué pasó",
     "whatExpand": "Lo que escuché que describiste",
     "closingLine": "Lo estás haciendo mejor de lo que crees. — Kidsit AI",
-    "markHowItWent": "Marca cómo salió",
+    "markHowItWent": "¿Cómo salió?",
     "closeForNow": "Cerrar por ahora"
   },
   "followup": {
@@ -272,7 +272,8 @@
     "dataLabel": "Datos",
     "dataBody": "Todos los momentos e hijos se guardan localmente en este dispositivo. Borrarlos es permanente.",
     "clearAll": "Borrar todos los datos",
-    "clearConfirm": "¿Borrar todos los datos? Esto no se puede deshacer.",
+    "clearConfirm": "Esto no se puede deshacer. Se eliminarán todos los niños, momentos e historial de este dispositivo.",
+    "clearConfirmTitle": "¿Borrar todos los datos?",
     "aboutLabel": "Sobre la app y aviso",
     "aboutNotMedical": "Kidsit AI no es un servicio médico ni psicológico.",
     "aboutBody1": " Es una compañera reflexiva de crianza que ofrece orientación cálida y basada en ciencia para los momentos cotidianos con tu hijo.",

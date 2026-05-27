@@ -202,7 +202,7 @@
     "tonightExpand": "Understand why this happened",
     "whatExpand": "What I heard you describe",
     "closingLine": "You're doing better than you think. — Kidsit AI",
-    "markHowItWent": "Mark how it went",
+    "markHowItWent": "How did it go?",
     "closeForNow": "Close for now"
   },
   "followup": {
@@ -272,7 +272,8 @@
     "dataLabel": "Data",
     "dataBody": "All moments and kids are stored locally on this device. Clearing data is permanent.",
     "clearAll": "Clear all data",
-    "clearConfirm": "Clear all data? This cannot be undone.",
+    "clearConfirm": "This cannot be undone. All kids, moments, and history on this device will be removed.",
+    "clearConfirmTitle": "Clear all data?",
     "aboutLabel": "About & disclaimer",
     "aboutNotMedical": "Kidsit AI is not a medical or psychological service.",
     "aboutBody1": " It is a reflective parenting companion that offers warm, science-informed guidance for everyday moments with your child.",

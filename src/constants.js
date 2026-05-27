@@ -10,13 +10,16 @@ export const LOCATIONS = [
   { id: 'car', label: 'In the car', hint: 'Moving', labelKey: 'chips.location.car', hintKey: 'chips.location.carHint' },
 ];
 
+// `tint` is a semantic mood color used by the History list to give each
+// entry a quick-scan accent. Keep these distinct enough to differentiate
+// at a glance without being alarming.
 export const MOODS = [
-  { id: 'upset', label: 'Upset', glyph: '◐', labelKey: 'chips.mood.upset' },
-  { id: 'anxious', label: 'Anxious', glyph: '○', labelKey: 'chips.mood.anxious' },
-  { id: 'angry', label: 'Angry', glyph: '◉', labelKey: 'chips.mood.angry' },
-  { id: 'tired', label: 'Tired', glyph: '◑', labelKey: 'chips.mood.tired' },
-  { id: 'happy', label: 'Happy', glyph: '●', labelKey: 'chips.mood.happy' },
-  { id: 'defiant', label: 'Defiant', glyph: '◎', labelKey: 'chips.mood.defiant' },
+  { id: 'upset',   label: 'Upset',   glyph: '😣', tint: '#C97A50', labelKey: 'chips.mood.upset' },
+  { id: 'anxious', label: 'Anxious', glyph: '😟', tint: '#A78A52', labelKey: 'chips.mood.anxious' },
+  { id: 'angry',   label: 'Angry',   glyph: '😠', tint: '#C25A4A', labelKey: 'chips.mood.angry' },
+  { id: 'tired',   label: 'Tired',   glyph: '😴', tint: '#8B91A8', labelKey: 'chips.mood.tired' },
+  { id: 'happy',   label: 'Happy',   glyph: '😊', tint: '#5BA888', labelKey: 'chips.mood.happy' },
+  { id: 'defiant', label: 'Defiant', glyph: '😤', tint: '#B07246', labelKey: 'chips.mood.defiant' },
 ];
 
 export const INVOLVED = [
@@ -52,9 +55,9 @@ export const DEMO_RESPONSE = {
       kind: 'try',
       label: 'What to try next time',
       items: [
-        { h: 'Signal transitions early', b: 'Give two warnings before leaving — a 10-minute and a 2-minute. Let her pick the last thing she does.' },
-        { h: 'Name the feeling first', b: '"You were having so much fun. It’s really hard to stop." Don’t fix, just name it.' },
-        { h: 'Offer a small choice', b: '"Do you want to walk to the car holding my hand, or hopping?" Control returns, meltdown softens.' },
+        { icon: '🎯', h: 'Signal transitions early', b: 'Give two warnings before leaving — a 10-minute and a 2-minute. Let her pick the last thing she does.' },
+        { icon: '❤️', h: 'Name the feeling first', b: '"You were having so much fun. It’s really hard to stop." Don’t fix, just name it.' },
+        { icon: '🤝', h: 'Offer a small choice', b: '"Do you want to walk to the car holding my hand, or hopping?" Control returns, meltdown softens.' },
       ],
     },
     {
