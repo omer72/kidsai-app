@@ -1,0 +1,1 @@
+/Users/omere/projects/kidsai/.claude/skills/gstack/ios-clean/SKILL.md
