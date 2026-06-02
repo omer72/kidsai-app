@@ -7,6 +7,10 @@
     "scrollEnabled": false,
     "backgroundColor": "#E8ECF3"
   },
+  "android": {
+    "backgroundColor": "#E8ECF3",
+    "allowMixedContent": false
+  },
   "plugins": {
     "Keyboard": {
       "resize": "none",

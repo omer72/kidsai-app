@@ -1,9 +1,10 @@
-// RevenueCat wrapper. The SDK is iOS-only here, so on web/desktop preview we
-// short-circuit to a "not entitled" state and skip native calls.
+// RevenueCat wrapper. Configured per-platform (iOS / Android). On web/desktop
+// preview we short-circuit to a "not entitled" state and skip native calls.
 
 import { Purchases, LOG_LEVEL } from '@revenuecat/purchases-capacitor';
 
 const IOS_API_KEY = (import.meta.env.VITE_RC_IOS_KEY || '').trim();
+const ANDROID_API_KEY = (import.meta.env.VITE_RC_ANDROID_KEY || '').trim();
 const ENTITLEMENT_ID = (import.meta.env.VITE_RC_ENTITLEMENT_ID || 'premium').trim();
 
 let configured = false;
@@ -13,8 +14,19 @@ function isNative() {
   return !!(typeof window !== 'undefined' && window.Capacitor?.isNativePlatform?.());
 }
 
+function platform() {
+  return typeof window !== 'undefined' ? window.Capacitor?.getPlatform?.() : null;
+}
+
+function platformKey() {
+  const p = platform();
+  if (p === 'ios') return IOS_API_KEY;
+  if (p === 'android') return ANDROID_API_KEY;
+  return '';
+}
+
 export function billingAvailable() {
-  return isNative() && !!IOS_API_KEY;
+  return isNative() && !!platformKey();
 }
 
 function entitlementFromCustomerInfo(info) {
@@ -33,7 +45,7 @@ export async function initBilling(onUpdate) {
   if (!billingAvailable()) return { entitled: false, productId: null, expiresAt: null, inTrial: false, willRenew: false };
   if (!configured) {
     await Purchases.setLogLevel({ level: LOG_LEVEL.WARN });
-    await Purchases.configure({ apiKey: IOS_API_KEY });
+    await Purchases.configure({ apiKey: platformKey() });
     Purchases.addCustomerInfoUpdateListener((info) => {
       const next = entitlementFromCustomerInfo(info);
       listeners.forEach((cb) => cb(next));
@@ -105,7 +117,11 @@ export async function restorePurchases() {
 }
 
 export async function presentCodeRedemptionSheet() {
-  if (!billingAvailable()) throw new Error('Promo codes can only be redeemed in the App Store build.');
+  if (!billingAvailable()) throw new Error('Promo codes can only be redeemed in the store build.');
+  if (platform() === 'android') {
+    window.open('https://play.google.com/redeem', '_blank');
+    return;
+  }
   await Purchases.presentCodeRedemptionSheet();
 }
 

@@ -9,9 +9,11 @@
     "build": "vite build",
     "preview": "vite preview",
     "ios": "vite build && cap sync ios && cap open ios",
+    "android": "vite build && cap sync android && cap open android",
     "cap:sync": "vite build && cap sync"
   },
   "dependencies": {
+    "@capacitor/android": "^8.4.0",
     "@capacitor/core": "^8.3.4",
     "@capacitor/ios": "^8.3.4",
     "@capacitor/keyboard": "^8.0.3",
