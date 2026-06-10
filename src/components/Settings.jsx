@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
@@ -6,6 +7,14 @@ import { setLanguage, getLanguage } from '../i18n';
 
 export function SettingsScreen({ settings, setSettings, onClearData, billing, inTrial, onOpenSubscription, onOpenUpgrade }) {
   const { t } = useTranslation();
+  const [appVersion, setAppVersion] = useState('');
+  useEffect(() => {
+    if (!window.Capacitor?.isNativePlatform?.()) return;
+    import('@capacitor/app')
+      .then(({ App }) => App.getInfo())
+      .then((info) => setAppVersion(`${info.version} (${info.build})`))
+      .catch(() => {});
+  }, []);
   return (
     <div style={{ padding: '14px 20px 140px' }}>
       <div style={{
@@ -156,6 +165,15 @@ export function SettingsScreen({ settings, setSettings, onClearData, billing, in
           </p>
         </div>
       </Card>
+
+      {appVersion && (
+        <div style={{
+          marginTop: 16, textAlign: 'center',
+          fontFamily: tokens.sans, fontSize: 12, color: tokens.ink3,
+        }}>
+          {t('settings.version', { version: appVersion })}
+        </div>
+      )}
     </div>
   );
 }

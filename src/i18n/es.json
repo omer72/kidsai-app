@@ -293,6 +293,7 @@
     "clearConfirm": "Esto no se puede deshacer. Se eliminarán todos los niños, momentos e historial de este dispositivo.",
     "clearConfirmTitle": "¿Borrar todos los datos?",
     "aboutLabel": "Sobre la app y aviso",
+    "version": "Kidsit AI v{{version}}",
     "aboutNotMedical": "Kidsit AI no es un servicio médico ni psicológico.",
     "aboutBody1": " Es una compañera reflexiva de crianza que ofrece orientación cálida y basada en ciencia para los momentos cotidianos con tu hijo.",
     "aboutBody2": "La app no diagnostica, ni trata, ni reemplaza la atención de un profesional cualificado. Si te preocupa la seguridad, el desarrollo o la salud mental de tu hijo — o la tuya — habla con un pediatra, terapeuta u otro profesional con licencia. En una emergencia, contacta a los servicios locales de emergencia.",
