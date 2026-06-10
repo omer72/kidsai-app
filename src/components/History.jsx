@@ -37,12 +37,12 @@ export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {SAMPLE_PATTERNS.map((p, i) => (
-              <Card key={i} pad={14} style={{ borderLeft: `3px solid ${tokens.primary}` }}>
+              <Card key={i} pad={14} style={{ borderInlineStart: `3px solid ${tokens.primary}` }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                   <Icon.TrendUp s={14} c={tokens.primary}/>
                   <div style={{ fontFamily: tokens.sans, fontSize: 14, fontWeight: 600, color: tokens.ink }}>{p.title}</div>
                   <div style={{
-                    marginLeft: 'auto', fontFamily: tokens.mono, fontSize: 12,
+                    marginInlineStart: 'auto', fontFamily: tokens.mono, fontSize: 12,
                     color: tokens.primaryInk, background: tokens.primarySoft,
                     padding: '2px 8px', borderRadius: 10, fontWeight: 600,
                   }}>×{p.count}</div>
@@ -83,7 +83,7 @@ export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
             const night = isNight(h.id);
             const accent = mood?.tint || tokens.line;
             return (
-              <Card key={h.id} pad={14} style={{ borderLeft: `3px solid ${accent}` }}>
+              <Card key={h.id} pad={14} style={{ borderInlineStart: `3px solid ${accent}` }}>
                 <button onClick={() => setOpenId(open ? null : h.id)} style={{
                   display: 'flex', gap: 12, width: '100%', textAlign: 'start',
                   background: 'transparent', border: 'none', padding: 0, cursor: 'pointer',
@@ -96,7 +96,7 @@ export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
                         {h.when || new Date(h.id).toLocaleString()}
                       </div>
                     </div>
-                    <div style={{
+                    <div dir="auto" style={{
                       ...tokens.type.bodyLg, fontWeight: 600,
                       color: tokens.ink, marginBottom: 4, letterSpacing: -0.1,
                     }}>{h.title}</div>
@@ -123,25 +123,25 @@ export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
                     {h.story && (
                       <div style={{ marginBottom: 14 }}>
                         <div style={{ fontFamily: tokens.sans, fontSize: 10, fontWeight: 700, color: tokens.ink3, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 6 }}>{t('history.yourStoryLabel')}</div>
-                        <div style={{ fontFamily: tokens.sans, fontSize: 13.5, lineHeight: 1.55, color: tokens.ink2 }}>{h.story}</div>
+                        <div dir="auto" style={{ fontFamily: tokens.sans, fontSize: 13.5, lineHeight: 1.55, color: tokens.ink2 }}>{h.story}</div>
                       </div>
                     )}
                     {h.response?.summary && (
-                      <div style={{
+                      <div dir="auto" style={{
                         fontFamily: tokens.serif, fontSize: 16, lineHeight: 1.5, color: tokens.ink,
                         fontStyle: 'italic', marginBottom: 14,
                       }}>{h.response.summary}</div>
                     )}
                     {h.response?.sections?.map((s, si) => (
                       <div key={si} style={{ marginBottom: 14 }}>
-                        <div style={{ fontFamily: tokens.sans, fontSize: 10, fontWeight: 700, color: tokens.primaryInk, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 6 }}>{s.label}</div>
+                        <div dir="auto" style={{ fontFamily: tokens.sans, fontSize: 10, fontWeight: 700, color: tokens.primaryInk, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 6 }}>{s.label}</div>
                         {s.body && (
-                          <div style={{ fontFamily: tokens.sans, fontSize: 13.5, lineHeight: 1.55, color: tokens.ink }}>{s.body}</div>
+                          <div dir="auto" style={{ fontFamily: tokens.sans, fontSize: 13.5, lineHeight: 1.55, color: tokens.ink }}>{s.body}</div>
                         )}
                         {Array.isArray(s.items) && s.items.length > 0 && (
                           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 4 }}>
                             {s.items.map((it, ii) => (
-                              <div key={ii} style={{ padding: '8px 10px', background: tokens.surfaceAlt, borderRadius: 10 }}>
+                              <div key={ii} dir="auto" style={{ padding: '8px 10px', background: tokens.surfaceAlt, borderRadius: 10 }}>
                                 <div style={{ fontFamily: tokens.sans, fontSize: 13, fontWeight: 600, color: tokens.ink, marginBottom: 2 }}>{it.h}</div>
                                 <div style={{ fontFamily: tokens.sans, fontSize: 13, lineHeight: 1.45, color: tokens.ink2 }}>{it.b}</div>
                               </div>
@@ -174,7 +174,7 @@ export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
                         })}
                       </div>
                       {h.note && (
-                        <div style={{ marginTop: 10, padding: '8px 10px', background: tokens.surfaceAlt, borderRadius: 8, fontFamily: tokens.sans, fontSize: 12, lineHeight: 1.45, color: tokens.ink2, fontStyle: 'italic' }}>
+                        <div dir="auto" style={{ marginTop: 10, padding: '8px 10px', background: tokens.surfaceAlt, borderRadius: 8, fontFamily: tokens.sans, fontSize: 12, lineHeight: 1.45, color: tokens.ink2, fontStyle: 'italic' }}>
                           "{h.note}"
                         </div>
                       )}
