@@ -62,6 +62,24 @@
     "headline2": "בקצות האצבעות.",
     "subhead": "ביטול בכל רגע. תקופת ניסיון של {{trial}} חינם. בלי הפתעות בחיוב.",
     "trialDefault": "7 ימים",
+    "trialPeriod": {
+      "day_one": "יום אחד",
+      "day_two": "יומיים",
+      "day_many": "{{count}} ימים",
+      "day_other": "{{count}} ימים",
+      "week_one": "שבוע",
+      "week_two": "שבועיים",
+      "week_many": "{{count}} שבועות",
+      "week_other": "{{count}} שבועות",
+      "month_one": "חודש",
+      "month_two": "חודשיים",
+      "month_many": "{{count}} חודשים",
+      "month_other": "{{count}} חודשים",
+      "year_one": "שנה",
+      "year_two": "שנתיים",
+      "year_many": "{{count}} שנים",
+      "year_other": "{{count}} שנים"
+    },
     "features": {
       "trackEveryChild": {
         "title": "לכל ילד פרופיל משלו",
@@ -109,6 +127,8 @@
     "noSubscriptionFound": "לא נמצא מנוי פעיל בחשבון Apple ID הזה.",
     "restoreUnavailable": "רכישות לא זמינות בתצוגה מקדימה בדפדפן.",
     "redeemCode": "יש לכם קוד קופון?",
+    "redeemWaiting": "תנו לקוד רגע…",
+    "redeemInProgress": "רגע — תנו לקוד הקודם זמן להירשם. אם לא קרה כלום, סגרו את המסך הזה ופתחו אותו מחדש לפני שתנסו שוב.",
     "promoCodeUnavailable": "קודי קופון ניתנים למימוש רק בגרסת App Store."
   },
   "flowA": {
@@ -141,7 +161,9 @@
       "micFailed": "לא הצלחנו להגיע למיקרופון.",
       "couldNotHear": "לא שמענו כלום. הקלידו למטה או נסו שוב.",
       "transcriptionFailed": "התמלול נכשל. הקלידו במקום.",
-      "emptyRecording": "הקלטה ריקה"
+      "emptyRecording": "הקלטה ריקה",
+      "tooShort": "כמעט ולא נקלט שמע — החזיקו את המיקרופון בזמן שאתם מדברים, ושחררו בסיום.",
+      "consentNeeded": "כדי להשתמש בקול ובהדרכת AI צריך קודם את האישור שלכם. אפשר להפעיל בכל רגע בהגדרות."
     },
     "context": {
       "stepOf": "שלב {{step}} מתוך {{total}}",

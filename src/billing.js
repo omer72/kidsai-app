@@ -61,6 +61,11 @@ export function offUpdate(cb) {
   listeners.delete(cb);
 }
 
+export function onBillingUpdate(cb) {
+  listeners.add(cb);
+  return () => listeners.delete(cb);
+}
+
 export async function refreshEntitlement() {
   if (!billingAvailable()) return { entitled: false, productId: null, expiresAt: null, inTrial: false, willRenew: false };
   const { customerInfo } = await Purchases.getCustomerInfo();
@@ -136,5 +141,6 @@ export function introOfferPeriod(pkg) {
   const n = intro.periodNumberOfUnits;
   const unit = (intro.periodUnit || '').toLowerCase();
   if (!n || !unit) return null;
-  return `${n}-${unit}`;
+  // Structured so the UI can localize ("7-day" / "7 ימים") via i18n plurals.
+  return { n, unit };
 }

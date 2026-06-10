@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
 import { IOSStatusBar } from './IOSFrame';
-import { billingAvailable, getOfferings, introOfferPeriod, presentCodeRedemptionSheet, priceString, purchasePackage, restorePurchases } from '../billing';
+import { billingAvailable, getOfferings, introOfferPeriod, onBillingUpdate, presentCodeRedemptionSheet, priceString, purchasePackage, restorePurchases } from '../billing';
+
+const REDEEM_COOLDOWN_MS = 20000;
 
 export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart, fullscreen, onPurchased }) {
   const { t } = useTranslation();
@@ -13,6 +15,8 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
   const [packagesLoaded, setPackagesLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [redeemLockedUntil, setRedeemLockedUntil] = useState(0);
+  const [, setNowTick] = useState(0);
 
   useEffect(() => {
     if (isTrialStart) { setPackagesLoaded(true); return; }
@@ -29,7 +33,10 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
   const selectedPkg = plan === 'yearly' ? yearlyPkg : monthlyPkg;
   const yearlyPrice = priceString(yearlyPkg) || '$59.99';
   const monthlyPrice = priceString(monthlyPkg) || '$9.99';
-  const trial = introOfferPeriod(yearlyPkg) || introOfferPeriod(monthlyPkg) || t('paywall.trialDefault');
+  const introPeriod = introOfferPeriod(yearlyPkg) || introOfferPeriod(monthlyPkg);
+  const trial = introPeriod
+    ? t(`paywall.trialPeriod.${introPeriod.unit}`, { count: introPeriod.n, defaultValue: t('paywall.trialDefault') })
+    : t('paywall.trialDefault');
 
   const handlePurchase = async (which) => {
     setError('');
@@ -62,12 +69,32 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
       setError(t('paywall.promoCodeUnavailable'));
       return;
     }
+    if (Date.now() < redeemLockedUntil) {
+      setError(t('paywall.redeemInProgress'));
+      return;
+    }
+    setRedeemLockedUntil(Date.now() + REDEEM_COOLDOWN_MS);
     try {
       await presentCodeRedemptionSheet();
     } catch (err) {
       setError(err?.message || t('paywall.genericError'));
     }
   };
+
+  useEffect(() => {
+    if (!billingAvailable()) return;
+    return onBillingUpdate((next) => {
+      if (next?.entitled) onPurchased?.(next);
+    });
+  }, [onPurchased]);
+
+  useEffect(() => {
+    if (redeemLockedUntil <= Date.now()) return;
+    const id = setTimeout(() => setNowTick((n) => n + 1), redeemLockedUntil - Date.now());
+    return () => clearTimeout(id);
+  }, [redeemLockedUntil]);
+
+  const redeemLocked = Date.now() < redeemLockedUntil;
 
   const handleRestore = async () => {
     setError('');
@@ -112,7 +139,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
       {onClose && (
         <button onClick={onClose} style={{
           position: 'absolute', top: fullscreen ? 'max(20px, env(safe-area-inset-top))' : 58,
-          right: 18, zIndex: 20,
+          insetInlineEnd: 18, zIndex: 20,
           width: 32, height: 32, borderRadius: 32, border: 'none',
           background: '#FFFFFFCC', cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -191,13 +218,13 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
             style={{
               padding: '18px 18px 16px', borderRadius: 16,
               cursor: (busy || (billingAvailable() && (!packagesLoaded || !yearlyPkg))) ? 'progress' : 'pointer',
-              textAlign: 'left',
+              textAlign: 'start',
               background: tokens.ink, border: 'none', color: '#fff', position: 'relative',
               boxShadow: (busy || (billingAvailable() && (!packagesLoaded || !yearlyPkg))) ? 'none' : `0 14px 28px ${tokens.ink}30`,
               opacity: (billingAvailable() && (!packagesLoaded || !yearlyPkg)) ? 0.6 : 1,
             }}>
             <div style={{
-              position: 'absolute', top: -10, right: 16,
+              position: 'absolute', top: -10, insetInlineEnd: 16,
               background: tokens.primary, color: '#fff',
               fontFamily: tokens.sans, fontSize: 10, fontWeight: 700,
               padding: '4px 10px', borderRadius: 999, letterSpacing: 0.6,
@@ -224,7 +251,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
             style={{
               padding: '18px 18px 16px', borderRadius: 16,
               cursor: (busy || (billingAvailable() && (!packagesLoaded || !monthlyPkg))) ? 'progress' : 'pointer',
-              textAlign: 'left',
+              textAlign: 'start',
               background: '#FFF', border: `2px solid ${tokens.line}`,
               opacity: (billingAvailable() && (!packagesLoaded || !monthlyPkg)) ? 0.6 : 1,
             }}>
@@ -243,6 +270,18 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
             </div>
           </button>
         </div>
+
+        <button onClick={handleRedeemCode} disabled={busy || redeemLocked} style={{
+          width: '100%', marginBottom: 16, padding: '12px 14px', borderRadius: 12,
+          background: tokens.primarySoft, border: `1px solid ${tokens.primary}33`,
+          cursor: (busy || redeemLocked) ? 'not-allowed' : 'pointer',
+          opacity: redeemLocked ? 0.6 : 1,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+          color: tokens.primary, fontFamily: tokens.sans, fontSize: 14, fontWeight: 600,
+        }}>
+          <Icon.Sparkle s={14} c={tokens.primary}/>
+          {redeemLocked ? t('paywall.redeemWaiting') : t('paywall.redeemCode')}
+        </button>
         </>)}
 
         {error && (
@@ -292,11 +331,6 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
                 background: 'transparent', border: 'none', padding: 0, cursor: busy ? 'not-allowed' : 'pointer',
                 color: tokens.ink2, fontFamily: tokens.sans, fontSize: 11, textDecoration: 'underline',
               }}>{t('common.restorePurchase')}</button>
-              {' · '}
-              <button onClick={handleRedeemCode} disabled={busy} style={{
-                background: 'transparent', border: 'none', padding: 0, cursor: busy ? 'not-allowed' : 'pointer',
-                color: tokens.ink2, fontFamily: tokens.sans, fontSize: 11, textDecoration: 'underline',
-              }}>{t('paywall.redeemCode')}</button>
               {' · '}
             </>
           )}

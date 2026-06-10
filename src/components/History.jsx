@@ -85,7 +85,7 @@ export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
             return (
               <Card key={h.id} pad={14} style={{ borderLeft: `3px solid ${accent}` }}>
                 <button onClick={() => setOpenId(open ? null : h.id)} style={{
-                  display: 'flex', gap: 12, width: '100%', textAlign: 'left',
+                  display: 'flex', gap: 12, width: '100%', textAlign: 'start',
                   background: 'transparent', border: 'none', padding: 0, cursor: 'pointer',
                 }}>
                   <Avatar kid={kid} size={32}/>

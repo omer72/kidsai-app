@@ -62,6 +62,20 @@
     "headline2": "al alcance de tu mano.",
     "subhead": "Cancela cuando quieras. Prueba gratis de {{trial}}. Sin sorpresas en el cobro.",
     "trialDefault": "7 días",
+    "trialPeriod": {
+      "day_one": "1 día",
+      "day_many": "{{count}} días",
+      "day_other": "{{count}} días",
+      "week_one": "1 semana",
+      "week_many": "{{count}} semanas",
+      "week_other": "{{count}} semanas",
+      "month_one": "1 mes",
+      "month_many": "{{count}} meses",
+      "month_other": "{{count}} meses",
+      "year_one": "1 año",
+      "year_many": "{{count}} años",
+      "year_other": "{{count}} años"
+    },
     "features": {
       "trackEveryChild": {
         "title": "Cada hijo, su propio perfil",
@@ -109,6 +123,8 @@
     "noSubscriptionFound": "No se encontró una suscripción activa en este Apple ID.",
     "restoreUnavailable": "Compras no disponibles en la vista previa del navegador.",
     "redeemCode": "¿Tienes un código promocional?",
+    "redeemWaiting": "Dale un momento al código…",
+    "redeemInProgress": "Un momento — deja que tu código anterior se registre. Si no pasa nada, cierra esta pantalla y vuelve a abrirla antes de intentarlo otra vez.",
     "promoCodeUnavailable": "Los códigos promocionales solo pueden canjearse en la versión de App Store."
   },
   "flowA": {
@@ -141,7 +157,9 @@
       "micFailed": "No se pudo acceder al micrófono.",
       "couldNotHear": "No pudimos oír nada. Escribe abajo o vuelve a intentarlo.",
       "transcriptionFailed": "La transcripción falló. Escríbelo.",
-      "emptyRecording": "Grabación vacía"
+      "emptyRecording": "Grabación vacía",
+      "tooShort": "Casi no captamos audio: mantén pulsado el micrófono mientras hablas y suéltalo al terminar.",
+      "consentNeeded": "La voz y la guía con IA necesitan primero tu permiso. Puedes activarlo cuando quieras en Ajustes."
     },
     "context": {
       "stepOf": "Paso {{step}} de {{total}}",

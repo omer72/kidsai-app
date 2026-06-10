@@ -40,7 +40,7 @@ export function FollowupScreen({ kid, onDone }) {
               background: tokens.surface,
               border: `1.5px solid ${active ? r.color : tokens.line}`,
               fontFamily: tokens.sans, fontSize: 15, fontWeight: 600,
-              color: tokens.ink, textAlign: 'left',
+              color: tokens.ink, textAlign: 'start',
               display: 'flex', alignItems: 'center', gap: 12,
               transition: 'all .15s',
             }}>

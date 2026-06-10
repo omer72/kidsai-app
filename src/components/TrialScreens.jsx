@@ -154,7 +154,7 @@ export function LapsedScreen({ history, kids, fullscreen, onPurchased }) {
             }}>
               <Icon.Sparkle s={18} c={tokens.primary}/>
             </div>
-            <div style={{ flex: 1, textAlign: 'left' }}>
+            <div style={{ flex: 1, textAlign: 'start' }}>
               <div style={{ fontFamily: tokens.sans, fontSize: 13, fontWeight: 600, color: tokens.ink, marginBottom: 2 }}>
                 {kidsCount > 0
                   ? t(momentsCount === 1 && kidsCount === 1 ? 'lapsed.momentsAndKids' : 'lapsed.momentsAndKidsPlural', { moments: momentsCount, kids: kidsCount })
@@ -296,7 +296,7 @@ export function SubscriptionScreen({ billing, onBack, onChanged, fullscreen }) {
             { label: t('common.restorePurchase'), detail: t('subscription.restoreDetail'), onClick: handleRestore },
           ].map((row, i, arr) => (
             <button key={i} onClick={row.onClick} disabled={busy} style={{
-              width: '100%', padding: '14px 16px', textAlign: 'left',
+              width: '100%', padding: '14px 16px', textAlign: 'start',
               background: 'transparent', border: 'none', cursor: busy ? 'not-allowed' : 'pointer',
               borderBottom: i < arr.length - 1 ? `1px solid ${tokens.line}` : 'none',
               display: 'flex', alignItems: 'center',

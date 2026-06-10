@@ -39,7 +39,7 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
         position: 'relative', overflow: 'hidden',
       }}>
         <div style={{
-          position: 'absolute', top: 22, right: 22,
+          position: 'absolute', top: 22, insetInlineEnd: 22,
           width: 36, height: 36, borderRadius: 36,
           background: `radial-gradient(circle at 35% 30%, ${tokens.primary} 0%, ${tokens.primaryInk} 80%)`,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -47,12 +47,12 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
         }}>
           <Icon.Sparkle s={16} c="#fff"/>
         </div>
-        <div style={{ ...tokens.type.label, color: tokens.primaryInk, marginBottom: 12 }}>
+        <div style={{ ...tokens.type.label, color: tokens.primaryInk, marginBottom: 12, paddingInlineEnd: 48 }}>
           {kid?.name ? t('response.forKidJustNow', { kidName: kid.name }) : t('response.forYourChildJustNow')}
         </div>
         <div style={{
           ...tokens.type.h2,
-          color: tokens.ink, paddingRight: 40, marginBottom: 14,
+          color: tokens.ink, paddingInlineEnd: 48, marginBottom: 14,
         }}>
           {response.title}.
         </div>
@@ -136,7 +136,7 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
 
       {whySection?.body && (
         <button onClick={() => setWhyOpen(!whyOpen)} style={{
-          width: '100%', textAlign: 'left', cursor: 'pointer',
+          width: '100%', textAlign: 'start', cursor: 'pointer',
           background: 'transparent', border: `1px solid ${tokens.line}`,
           borderRadius: 14, padding: '12px 14px', marginBottom: 8,
           display: 'flex', alignItems: 'center', gap: 10,
@@ -159,7 +159,7 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
 
       {whatSection?.body && (
         <button onClick={() => setWhatOpen(!whatOpen)} style={{
-          width: '100%', textAlign: 'left', cursor: 'pointer',
+          width: '100%', textAlign: 'start', cursor: 'pointer',
           background: 'transparent', border: `1px solid ${tokens.line}`,
           borderRadius: 14, padding: '12px 14px', marginBottom: 18,
           display: 'flex', alignItems: 'center', gap: 10,

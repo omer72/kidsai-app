@@ -2,8 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './i18n';
 import { App } from './App';
+import { initKeyboardGuard } from './keyboard';
+import { initBackButton } from './backbutton';
 
 if (typeof window !== 'undefined' && window.Capacitor?.isNativePlatform?.()) {
+  initKeyboardGuard();
+  initBackButton();
   import('@capacitor/keyboard').then(({ Keyboard, KeyboardResize }) => {
     Keyboard.setResizeMode({ mode: KeyboardResize.None }).catch(() => {});
     Keyboard.setScroll({ isDisabled: true }).catch(() => {});

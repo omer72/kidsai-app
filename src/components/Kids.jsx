@@ -133,7 +133,7 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
 
           return (
             <button key={k.id} onClick={() => startEdit(k)} style={{
-              padding: 18, borderRadius: 20, textAlign: 'left', cursor: 'pointer',
+              padding: 18, borderRadius: 20, textAlign: 'start', cursor: 'pointer',
               background: tokens.surface,
               border: `1.5px solid ${active ? k.color : tokens.line}`,
               display: 'flex', alignItems: 'center', gap: 14,
@@ -200,7 +200,7 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
 
         {lockedKidCount > 0 && (
           <button onClick={onRequestUpgrade} style={{
-            padding: 16, borderRadius: 20, cursor: 'pointer', textAlign: 'left',
+            padding: 16, borderRadius: 20, cursor: 'pointer', textAlign: 'start',
             background: tokens.primarySoft, border: `1px solid ${tokens.primary}40`,
             display: 'flex', alignItems: 'center', gap: 12,
           }}>

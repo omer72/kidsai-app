@@ -18,7 +18,7 @@ export function SettingsScreen({ settings, setSettings, onClearData, billing, in
         {billing?.entitled ? (
           <button onClick={onOpenSubscription} style={{
             width: '100%', padding: '14px 16px', borderRadius: 14, cursor: 'pointer',
-            background: tokens.surface, border: `1px solid ${tokens.line}`, textAlign: 'left',
+            background: tokens.surface, border: `1px solid ${tokens.line}`, textAlign: 'start',
             display: 'flex', alignItems: 'center', gap: 12,
           }}>
             <div style={{
@@ -41,7 +41,7 @@ export function SettingsScreen({ settings, setSettings, onClearData, billing, in
         ) : (
           <button onClick={onOpenUpgrade} style={{
             width: '100%', padding: '14px 16px', borderRadius: 14, cursor: 'pointer',
-            background: tokens.ink, color: '#fff', border: 'none', textAlign: 'left',
+            background: tokens.ink, color: '#fff', border: 'none', textAlign: 'start',
             display: 'flex', alignItems: 'center', gap: 12,
           }}>
             <div style={{
@@ -115,7 +115,7 @@ export function SettingsScreen({ settings, setSettings, onClearData, billing, in
                 padding: 0,
               }}>
               <div style={{
-                position: 'absolute', top: 4, left: settings.aiConsent ? 24 : 4,
+                position: 'absolute', top: 4, insetInlineStart: settings.aiConsent ? 24 : 4,
                 width: 24, height: 24, borderRadius: 24, background: '#fff',
                 boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
                 transition: 'left .15s',

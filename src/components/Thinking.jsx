@@ -12,7 +12,7 @@ export function ThinkingScreen() {
   }, []);
   const lines = [t('thinking.step1'), t('thinking.step2'), t('thinking.step3')];
   return (
-    <div style={{ padding: '40px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+    <div style={{ padding: '40px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', height: '100%' }}>
       <div style={{ position: 'relative', width: 180, height: 180, marginBottom: 30, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{
           position: 'absolute', inset: 0, borderRadius: 180,

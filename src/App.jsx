@@ -22,6 +22,9 @@ import { SettingsScreen } from './components/Settings';
 import { SubscriptionScreen } from './components/TrialScreens';
 import { AIConsentModal } from './components/AIConsent';
 
+import { INSET_TOP_MIN } from './platform';
+import { useHardwareBack } from './backbutton';
+
 const FRAME_W = 402;
 const FRAME_H = 874;
 
@@ -54,7 +57,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
   const [flowState, setFlowState] = useState({ stage: 'compose', story: '', ctx: null, response: null, error: null });
   const [paywallOpen, setPaywallOpen] = useState(false);
   const [subscriptionOpen, setSubscriptionOpen] = useState(false);
-  const [consentPending, setConsentPending] = useState(null); // pending submit args if consent needed
+  const [consentRequest, setConsentRequest] = useState(null); // resolver for an in-flight consent ask
 
   const entitled = !!billing?.entitled;
   const inTrial = !!billing?.inTrial;
@@ -70,13 +73,18 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
   const activeKid = useMemo(() => visibleKids.find((k) => k.id === activeKidId) || visibleKids[0], [visibleKids, activeKidId]);
   const FlowComponent = settings.flow === 'B' ? FlowB : FlowA;
 
+  // Apple Review 5.1.2(i) — require explicit consent before any data leaves
+  // the device for OpenAI. Resolves true once the user has agreed (now or
+  // previously), false if they decline. Flows call this before recording so
+  // voice never reaches transcription without consent; submit re-checks as a
+  // backstop (typed-only path, or consent revoked in Settings).
+  const ensureConsent = () => {
+    if (settings.aiConsent) return Promise.resolve(true);
+    return new Promise((resolve) => setConsentRequest({ resolve }));
+  };
+
   const submit = async ({ story, ctx }) => {
-    // Apple Review 5.1.2(i) — require explicit consent before any data
-    // leaves the device for OpenAI.
-    if (!settings.aiConsent) {
-      setConsentPending({ story, ctx });
-      return;
-    }
+    if (!(await ensureConsent())) return;
     setFlowState({ stage: 'thinking', story, ctx, response: null, error: null });
     try {
       let response;
@@ -92,6 +100,21 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
       setFlowState((s) => ({ ...s, stage: 'response', error: err.message || 'Something went wrong' }));
     }
   };
+
+  // Hardware back: overlays close first, then the flow unwinds, then any
+  // non-home tab returns home. Unhandled presses minimize the app (backbutton.js).
+  useHardwareBack(() => {
+    if (consentRequest) { consentRequest.resolve(false); setConsentRequest(null); return true; }
+    if (paywallOpen) { setPaywallOpen(false); return true; }
+    if (subscriptionOpen) { setSubscriptionOpen(false); return true; }
+    return false;
+  }, 100);
+  useHardwareBack(() => {
+    if (tab !== 'home') { setTab('home'); return true; }
+    if (flowState.stage === 'response' || flowState.stage === 'followup') { closeMoment(); return true; }
+    if (flowState.stage === 'thinking') return true; // let it finish
+    return false;
+  }, 40);
 
   const closeMoment = (feedback = null) => {
     if (flowState.response && !flowState.error) {
@@ -139,15 +162,26 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
           setActiveKid={setActiveKidId}
           onSubmit={submit}
           onAddKid={() => setTab('kids')}
+          ensureConsent={ensureConsent}
         />
       );
     }
   } else if (tab === 'history') {
     content = <HistoryScreen kids={visibleKids} history={history} activeKid={activeKidId} onFeedback={setEntryFeedback}/>;
   } else if (tab === 'kids') {
+    // Adding the very first kid lands the user on the compose screen so the
+    // path to a first conversation is obvious (they start on this tab).
+    const setKidsAndMaybeStart = (next) => {
+      const firstKidAdded = kids.length === 0 && next.length > 0;
+      setKids(next);
+      if (firstKidAdded) {
+        setActiveKidId(next[0].id);
+        setTab('home');
+      }
+    };
     content = (
       <KidsScreen
-        kids={kids} setKids={setKids}
+        kids={kids} setKids={setKidsAndMaybeStart}
         activeKid={activeKidId} setActiveKid={setActiveKidId}
         history={history}
         entitled={entitled}
@@ -183,7 +217,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
     <div style={{
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       padding: fullscreen
-        ? 'max(96px, calc(env(safe-area-inset-top, 0px) + 36px)) 20px 8px'
+        ? `max(${INSET_TOP_MIN}px, calc(env(safe-area-inset-top, 0px) + 36px)) 20px 8px`
         : '58px 20px 8px',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -206,7 +240,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
       fontFamily: tokens.sans, color: tokens.ink,
     }}>
       {topBar}
-      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>{content}</div>
+      <div data-kb-scroll style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>{content}</div>
       <TabBar current={tab} onChange={setTab}/>
       {paywallOpen && (
         <div style={{ position: 'absolute', inset: 0, zIndex: 100, background: tokens.bg }}>
@@ -218,17 +252,18 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
           />
         </div>
       )}
-      {consentPending && (
+      {consentRequest && (
         <AIConsentModal
           fullscreen={fullscreen}
           onAgree={() => {
             setSettings({ ...settings, aiConsent: true });
-            const pending = consentPending;
-            setConsentPending(null);
-            // re-run submit now that consent is granted
-            setTimeout(() => submit(pending), 0);
+            consentRequest.resolve(true);
+            setConsentRequest(null);
           }}
-          onDecline={() => setConsentPending(null)}
+          onDecline={() => {
+            consentRequest.resolve(false);
+            setConsentRequest(null);
+          }}
         />
       )}
     </div>
@@ -295,6 +330,13 @@ export function App() {
     setPhase('welcome');
   };
 
+  useHardwareBack(() => {
+    if (clearConfirmOpen) { setClearConfirmOpen(false); return true; }
+    if (phase === 'onboarding') { setPhase('welcome'); return true; }
+    if (phase === 'consent') { setPhase('paywall'); return true; } // same as "not now"
+    return false;
+  }, 80);
+
   const finishOnboarding = () => {
     const next = { ...settings, onboarded: true };
     setSettings(next);
@@ -320,7 +362,9 @@ export function App() {
           setSettings({ ...settings, aiConsent: true });
           setPhase('paywall');
         }}
-        onDecline={() => setPhase('welcome')}
+        // "Not now" shouldn't dead-end onboarding — continue without consent;
+        // the first AI-touching action re-asks via ensureConsent.
+        onDecline={() => setPhase('paywall')}
       />
     );
   } else if (phase === 'paywall') {

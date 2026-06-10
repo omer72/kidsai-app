@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800&display=swap');
+  html, body { margin: 0; padding: 0; }
+  body {
+    width: 1024px;
+    height: 500px;
+    background: radial-gradient(120% 100% at 20% 20%, #2a1f6b 0%, #1a1242 40%, #0a0628 100%);
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+  }
+  .glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .glow-1 { width: 380px; height: 380px; background: #6b48ff; top: -120px; left: 480px; }
+  .glow-2 { width: 320px; height: 320px; background: #00d4ff; bottom: -100px; right: -60px; opacity: 0.4; }
+  .glow-3 { width: 260px; height: 260px; background: #ff6b9d; top: 220px; left: 60px; opacity: 0.25; }
+  .content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 64px;
+    gap: 48px;
+  }
+  .text { flex: 1; }
+  .badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 22px;
+    backdrop-filter: blur(8px);
+  }
+  h1 {
+    font-size: 60px;
+    font-weight: 800;
+    line-height: 1.05;
+    margin: 0 0 18px;
+    letter-spacing: -0.02em;
+    background: linear-gradient(180deg, #fff 0%, #cdd4ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  h1 .accent {
+    background: linear-gradient(135deg, #8b9eff 0%, #00d4ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  p {
+    font-size: 22px;
+    line-height: 1.35;
+    margin: 0;
+    color: rgba(255,255,255,0.78);
+    font-weight: 500;
+    max-width: 520px;
+  }
+  .icon-wrap {
+    width: 260px;
+    height: 260px;
+    border-radius: 56px;
+    overflow: hidden;
+    box-shadow:
+      0 30px 80px rgba(0,0,0,0.5),
+      0 0 0 1px rgba(255,255,255,0.08);
+    flex-shrink: 0;
+  }
+  .icon-wrap img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>
+</head>
+<body>
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+  <div class="glow glow-3"></div>
+  <div class="content">
+    <div class="text">
+      <div class="badge">AI Parenting Coach</div>
+      <h1>Calm guidance,<br/><span class="accent">in the moment.</span></h1>
+      <p>Describe what's happening. Get a thoughtful, expert-backed response — instantly.</p>
+    </div>
+    <div class="icon-wrap">
+      <img src="play/icon-512.png" />
+    </div>
+  </div>
+</body>
+</html>

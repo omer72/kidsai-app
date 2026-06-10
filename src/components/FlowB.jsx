@@ -6,8 +6,9 @@ import { Avatar, Card, Chip, Label, LiveWaveform, MicButton, PrimaryButton } fro
 import { LOCATIONS, MOODS, INVOLVED, URGENCY } from '../constants';
 import { startRecording, stopRecording, cancelRecording } from '../recorder';
 import { transcribeAudio, hasApiKey } from '../openai';
+import { useHardwareBack } from '../backbutton';
 
-export function FlowB({ kids, activeKid, setActiveKid, onSubmit }) {
+export function FlowB({ kids, activeKid, setActiveKid, onSubmit, ensureConsent }) {
   const { t } = useTranslation();
   const [recording, setRecording] = useState(false);
   const [transcribing, setTranscribing] = useState(false);
@@ -33,8 +34,16 @@ export function FlowB({ kids, activeKid, setActiveKid, onSubmit }) {
   const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
   const canSubmit = !transcribing && (story.trim() || hasRecording) && ctx.location && ctx.mood && ctx.urgency;
 
+  useHardwareBack(() => (recording || transcribing), 60); // don't interrupt capture
+
   const handleMicStart = async () => {
     setRecError('');
+    // Consent gates recording itself — voice is transcribed by OpenAI, so it
+    // must never start without the user's OK.
+    if (ensureConsent && !(await ensureConsent())) {
+      setRecError(t('flowA.errors.consentNeeded'));
+      return;
+    }
     try {
       await startRecording();
       setRecording(true);
@@ -52,7 +61,11 @@ export function FlowB({ kids, activeKid, setActiveKid, onSubmit }) {
     setTranscribing(true);
     try {
       const blob = await stopRecording();
-      if (!blob || blob.size === 0) throw new Error('Empty recording');
+      if (!blob || blob.size < 1000) {
+        const e = new Error(t('flowA.errors.tooShort'));
+        e.friendly = true;
+        throw e;
+      }
       if (!hasApiKey()) {
         setHasRecording(true);
         return;
@@ -62,7 +75,7 @@ export function FlowB({ kids, activeKid, setActiveKid, onSubmit }) {
       setHasRecording(true);
     } catch (err) {
       console.error('transcribe failed:', err);
-      setRecError(err.message || 'Transcription failed. Type instead.');
+      setRecError(err.friendly ? err.message : t('flowA.errors.transcriptionFailed'));
     } finally {
       setTranscribing(false);
     }
@@ -173,7 +186,7 @@ export function FlowB({ kids, activeKid, setActiveKid, onSubmit }) {
               <button key={o.id} onClick={() => setCtx({ ...ctx, urgency: o.id })} style={{
                 flex: 1, padding: '11px 8px', borderRadius: 12, cursor: 'pointer',
                 background: active ? tokens.ink : tokens.surfaceAlt,
-                color: active ? '#fff' : tokens.ink, border: 'none', textAlign: 'left',
+                color: active ? '#fff' : tokens.ink, border: 'none', textAlign: 'start',
                 fontFamily: tokens.sans, fontSize: 13, fontWeight: 600,
                 display: 'flex', flexDirection: 'column', gap: 2,
                 transition: 'all .15s',

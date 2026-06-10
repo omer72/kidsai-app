@@ -6,8 +6,9 @@ import { Avatar, Card, Chip, GhostButton, LiveWaveform, MicButton, PrimaryButton
 import { LOCATIONS, MOODS, INVOLVED, URGENCY } from '../constants';
 import { startRecording, stopRecording, cancelRecording } from '../recorder';
 import { transcribeAudio, hasApiKey } from '../openai';
+import { useHardwareBack } from '../backbutton';
 
-export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid }) {
+export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensureConsent }) {
   const { t } = useTranslation();
   const [stage, setStage] = useState('idle');
   const [elapsed, setElapsed] = useState(0);
@@ -29,10 +30,29 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid }) {
 
   useEffect(() => () => cancelRecording(), []);
 
+  // Hardware back steps backwards through the flow instead of leaving the app.
+  // The typed story is kept — only "start over" discards it.
+  useHardwareBack(() => {
+    if (stage === 'recording' || stage === 'transcribing') return true; // don't interrupt
+    if (stage === 'context') {
+      if (step > 0) setStep(step - 1);
+      else setStage('recorded');
+      return true;
+    }
+    if (stage === 'recorded') { setStage('idle'); return true; }
+    return false;
+  }, 60);
+
   const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
 
   const handleMicStart = async () => {
     setRecError('');
+    // Consent gates recording itself — voice is transcribed by OpenAI, so it
+    // must never start without the user's OK.
+    if (ensureConsent && !(await ensureConsent())) {
+      setRecError(t('flowA.errors.consentNeeded'));
+      return;
+    }
     try {
       await startRecording();
       setStage('recording');
@@ -53,7 +73,13 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid }) {
     setStage('transcribing');
     try {
       const blob = await stopRecording();
-      if (!blob || blob.size === 0) throw new Error(t('flowA.errors.emptyRecording'));
+      if (!blob || blob.size < 1000) {
+        // A container with no real audio (permission races, instant release)
+        // is a few hundred bytes — catch it before the server rejects it.
+        const e = new Error(t('flowA.errors.tooShort'));
+        e.friendly = true;
+        throw e;
+      }
       if (!hasApiKey()) {
         setStory('(demo) imagine a story you would have spoken.');
         setStage('recorded');
@@ -65,7 +91,8 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid }) {
       setStage('recorded');
     } catch (err) {
       console.error('transcribe failed:', err);
-      setRecError(err.message || t('flowA.errors.transcriptionFailed'));
+      // Raw server/network errors go to the console, not the user.
+      setRecError(err.friendly ? err.message : t('flowA.errors.transcriptionFailed'));
       setStage('recorded');
     }
   };
@@ -114,7 +141,7 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid }) {
                       transition: 'all .15s',
                     }}>
                       <Avatar kid={k} size={36}/>
-                      <div style={{ textAlign: 'left', flex: 1 }}>
+                      <div style={{ textAlign: 'start', flex: 1 }}>
                         <div style={{ fontFamily: tokens.sans, fontSize: 14, fontWeight: 600, color: tokens.ink, lineHeight: 1.2 }}>{k.name}</div>
                         {!!k.age && <div style={{ fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3, marginTop: 1 }}>{t('flowA.kidYears', { age: k.age })}</div>}
                       </div>
@@ -161,7 +188,7 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid }) {
                         </div>
                         {active && (
                           <div style={{
-                            position: 'absolute', bottom: -2, right: -2,
+                            position: 'absolute', bottom: -2, insetInlineEnd: -2,
                             width: 18, height: 18, borderRadius: 18, background: k.color,
                             border: `2px solid ${tokens.bg}`,
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -319,12 +346,12 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid }) {
     const steps = [
       { key: 'location', q: t('flowA.context.whereDidItHappen'), options: LOCATIONS, render: (o, active, set) => (
         <Chip key={o.id} active={active} onClick={set} style={{ padding: '14px 18px', fontSize: 15 }}>
-          {t(o.labelKey)} <span style={{ color: active ? 'rgba(255,255,255,0.7)' : tokens.ink3, fontSize: 12, marginLeft: 4 }}>{t(o.hintKey)}</span>
+          {t(o.labelKey)} <span style={{ color: active ? 'rgba(255,255,255,0.7)' : tokens.ink3, fontSize: 12, marginInlineStart: 4 }}>{t(o.hintKey)}</span>
         </Chip>
       )},
       { key: 'mood', q: t('flowA.context.howWereTheyFeeling'), options: MOODS, render: (o, active, set) => (
         <Chip key={o.id} active={active} onClick={set} style={{ padding: '14px 18px', fontSize: 15 }}>
-          <span style={{ fontSize: 16, marginRight: 2 }}>{o.glyph}</span>{t(o.labelKey)}
+          <span style={{ fontSize: 16, marginInlineEnd: 2 }}>{o.glyph}</span>{t(o.labelKey)}
         </Chip>
       )},
       { key: 'involved', q: t('flowA.context.whoElseWasThere'), options: INVOLVED, render: (o, active, set) => (
@@ -332,7 +359,7 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid }) {
       )},
       { key: 'urgency', q: t('flowA.context.howUrgent'), options: URGENCY, render: (o, active, set) => (
         <Chip key={o.id} active={active} onClick={set} dot={o.dot} style={{ padding: '14px 18px', fontSize: 15 }}>
-          {t(o.labelKey)} <span style={{ color: active ? 'rgba(255,255,255,0.7)' : tokens.ink3, fontSize: 12, marginLeft: 4 }}>{t(o.descKey)}</span>
+          {t(o.labelKey)} <span style={{ color: active ? 'rgba(255,255,255,0.7)' : tokens.ink3, fontSize: 12, marginInlineStart: 4 }}>{t(o.descKey)}</span>
         </Chip>
       )},
     ];

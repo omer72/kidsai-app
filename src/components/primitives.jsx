@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
+import { INSET_BOTTOM_MIN } from '../platform';
 
 export function Avatar({ kid, size = 32, ring = false }) {
   return (
@@ -232,7 +233,7 @@ export function TabBar({ current, onChange }) {
   return (
     <div style={{
       position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 40,
-      paddingBottom: 'max(56px, calc(env(safe-area-inset-bottom, 0px) + 22px))', paddingTop: 10,
+      paddingBottom: `max(${INSET_BOTTOM_MIN}px, calc(env(safe-area-inset-bottom, 0px) + 22px))`, paddingTop: 10,
       background: `linear-gradient(to top, ${tokens.bg} 60%, transparent 100%)`,
       display: 'flex', justifyContent: 'center', gap: 6,
     }}>

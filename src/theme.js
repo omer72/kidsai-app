@@ -15,21 +15,21 @@ export const tokens = {
   success: '#4AAE8C',
   warn: '#E5A64B',
   danger: '#D94A5C',
-  sans: "'Inter', -apple-system, system-ui, sans-serif",
-  serif: "'Fraunces', Georgia, serif",
+  sans: "'Inter', 'Heebo', -apple-system, system-ui, sans-serif",
+  serif: "'Fraunces', 'Frank Ruhl Libre', Georgia, serif",
   mono: "'JetBrains Mono', ui-monospace, monospace",
   // Semantic type scale. Spread into inline style objects:
   //   <div style={{ ...tokens.type.h2, color: tokens.ink }}>
   // Fonts (sans/serif) reference the keys above so theme swaps cascade.
   type: {
-    h1:      { fontFamily: "'Fraunces', Georgia, serif", fontSize: 30, lineHeight: 1.15, letterSpacing: -0.4, fontWeight: 500 },
-    h2:      { fontFamily: "'Fraunces', Georgia, serif", fontSize: 26, lineHeight: 1.2,  letterSpacing: -0.3, fontWeight: 500 },
-    h3:      { fontFamily: "'Fraunces', Georgia, serif", fontSize: 20, lineHeight: 1.25, letterSpacing: -0.2, fontWeight: 600 },
-    bodyLg:  { fontFamily: "'Inter', -apple-system, system-ui, sans-serif", fontSize: 16, lineHeight: 1.5, fontWeight: 500 },
-    body:    { fontFamily: "'Inter', -apple-system, system-ui, sans-serif", fontSize: 14, lineHeight: 1.55, fontWeight: 400 },
-    bodySm:  { fontFamily: "'Inter', -apple-system, system-ui, sans-serif", fontSize: 13, lineHeight: 1.5, fontWeight: 400 },
-    caption: { fontFamily: "'Inter', -apple-system, system-ui, sans-serif", fontSize: 12, lineHeight: 1.4, fontWeight: 500 },
-    label:   { fontFamily: "'Inter', -apple-system, system-ui, sans-serif", fontSize: 11, lineHeight: 1.2, fontWeight: 700, letterSpacing: 0.9, textTransform: 'uppercase' },
+    h1:      { fontFamily: "'Fraunces', 'Frank Ruhl Libre', Georgia, serif", fontSize: 30, lineHeight: 1.15, letterSpacing: -0.4, fontWeight: 500 },
+    h2:      { fontFamily: "'Fraunces', 'Frank Ruhl Libre', Georgia, serif", fontSize: 26, lineHeight: 1.2,  letterSpacing: -0.3, fontWeight: 500 },
+    h3:      { fontFamily: "'Fraunces', 'Frank Ruhl Libre', Georgia, serif", fontSize: 20, lineHeight: 1.25, letterSpacing: -0.2, fontWeight: 600 },
+    bodyLg:  { fontFamily: "'Inter', 'Heebo', -apple-system, system-ui, sans-serif", fontSize: 16, lineHeight: 1.5, fontWeight: 500 },
+    body:    { fontFamily: "'Inter', 'Heebo', -apple-system, system-ui, sans-serif", fontSize: 14, lineHeight: 1.55, fontWeight: 400 },
+    bodySm:  { fontFamily: "'Inter', 'Heebo', -apple-system, system-ui, sans-serif", fontSize: 13, lineHeight: 1.5, fontWeight: 400 },
+    caption: { fontFamily: "'Inter', 'Heebo', -apple-system, system-ui, sans-serif", fontSize: 12, lineHeight: 1.4, fontWeight: 500 },
+    label:   { fontFamily: "'Inter', 'Heebo', -apple-system, system-ui, sans-serif", fontSize: 11, lineHeight: 1.2, fontWeight: 700, letterSpacing: 0.9, textTransform: 'uppercase' },
   },
 };
 

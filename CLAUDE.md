@@ -33,7 +33,7 @@ No tests, no lint setup. Don't add them unless asked.
 
 ## Known gotchas
 
-- **The mic button is mocked.** Both flows simulate recording with a timer; there's no audio capture yet. Text input (textarea) is the actual data path. Real recording is the next milestone (`MediaRecorder` + `NSMicrophoneUsageDescription` in `Info.plist`, then a Whisper call before the GPT call).
+- **Mic recording is real.** `src/recorder.js` uses `MediaRecorder` + `navigator.mediaDevices.getUserMedia({ audio: true })`, called from `src/components/FlowB.jsx`. iOS needs `NSMicrophoneUsageDescription` in `Info.plist`; Android needs `RECORD_AUDIO` + `MODIFY_AUDIO_SETTINGS` in `AndroidManifest.xml` (already there). Capacitor 8's `BridgeWebChromeClient` handles the OS prompt automatically on first `getUserMedia` call.
 - **No IAP yet.** The Paywall screen's "Start trial" button just sets `settings.onboarded = true` and drops into the app. Trial / lapsed / subscription screens were not ported — they belong with the payment work.
 - **`dangerouslyAllowBrowser: true`** is acceptable here because the key is user-supplied and stays on-device. If you later add a backend proxy, switch to calling your proxy instead and remove the flag.
 - **Don't reintroduce window globals.** Everything is ES modules now. Imports must be from relative paths under `src/`.
