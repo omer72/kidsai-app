@@ -44,7 +44,14 @@ function KidFields({ form, setForm, autoFocus }) {
           type="date" value={form.birthdate}
           max={new Date().toISOString().slice(0, 10)}
           onChange={(e) => set({ birthdate: e.target.value })}
-          style={inputStyle}
+          style={{
+            ...inputStyle,
+            // iOS date inputs keep an intrinsic width and overflow the card
+            // unless the native appearance is stripped and height pinned
+            WebkitAppearance: 'none', appearance: 'none',
+            display: 'block', minWidth: 0, maxWidth: '100%',
+            height: 45, textAlign: 'start',
+          }}
         />
       </div>
       <div>
