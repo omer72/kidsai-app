@@ -5,11 +5,13 @@
   "ios": {
     "contentInset": "never",
     "scrollEnabled": false,
+    "zoomEnabled": false,
     "backgroundColor": "#E8ECF3"
   },
   "android": {
     "backgroundColor": "#E8ECF3",
-    "allowMixedContent": false
+    "allowMixedContent": false,
+    "zoomEnabled": false
   },
   "plugins": {
     "Keyboard": {
