@@ -2,10 +2,12 @@ import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
-import { Avatar, Card, Chip, GhostButton, LiveWaveform, MicButton, PrimaryButton } from './primitives';
+import { Avatar, Card, Chip, ConfirmDialog, GhostButton, LiveWaveform, MicButton, PrimaryButton } from './primitives';
+import { isStoryThin } from '../story';
 import { LOCATIONS, MOODS, INVOLVED, URGENCY } from '../constants';
 import { startRecording, stopRecording, cancelRecording } from '../recorder';
 import { transcribeAudio, hasApiKey } from '../openai';
+import { kidAgeYears } from '../storage';
 import { useHardwareBack } from '../backbutton';
 
 export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensureConsent }) {
@@ -16,6 +18,7 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
   const [ctx, setCtx] = useState({ location: null, mood: null, involved: null, urgency: null });
   const [step, setStep] = useState(0);
   const [recError, setRecError] = useState('');
+  const [thinNudgeOpen, setThinNudgeOpen] = useState(false);
   const timerRef = useRef(null);
 
   useEffect(() => {
@@ -143,7 +146,7 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
                       <Avatar kid={k} size={36}/>
                       <div style={{ textAlign: 'start', flex: 1 }}>
                         <div style={{ fontFamily: tokens.sans, fontSize: 14, fontWeight: 600, color: tokens.ink, lineHeight: 1.2 }}>{k.name}</div>
-                        {!!k.age && <div style={{ fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3, marginTop: 1 }}>{t('flowA.kidYears', { age: k.age })}</div>}
+                        {!!kidAgeYears(k) && <div style={{ fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3, marginTop: 1 }}>{t('flowA.kidYears', { age: kidAgeYears(k) })}</div>}
                       </div>
                       {active && (
                         <div style={{
@@ -203,8 +206,8 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
                         color: active ? tokens.ink : tokens.ink2,
                         lineHeight: 1.2, marginTop: 2,
                       }}>{k.name}</div>
-                      {!!k.age && (
-                        <div style={{ fontFamily: tokens.sans, fontSize: 10, color: tokens.ink3, lineHeight: 1, marginTop: -2 }}>{t('flowA.kidYearsShort', { age: k.age })}</div>
+                      {!!kidAgeYears(k) && (
+                        <div style={{ fontFamily: tokens.sans, fontSize: 10, color: tokens.ink3, lineHeight: 1, marginTop: -2 }}>{t('flowA.kidYearsShort', { age: kidAgeYears(k) })}</div>
                       )}
                     </button>
                   );
@@ -334,10 +337,23 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
           <GhostButton onClick={() => { setStage('idle'); setElapsed(0); setStory(''); setRecError(''); }} style={{ flex: 1, justifyContent: 'center' }}>
             {t('common.startOver')}
           </GhostButton>
-          <PrimaryButton onClick={() => setStage('context')} disabled={!story.trim()} style={{ flex: 2 }}>
+          <PrimaryButton
+            onClick={() => (isStoryThin(story) ? setThinNudgeOpen(true) : setStage('context'))}
+            disabled={!story.trim()} style={{ flex: 2 }}
+          >
             {t('common.continue')} <Icon.ArrowRight s={16} c={story.trim() ? '#fff' : tokens.ink3}/>
           </PrimaryButton>
         </div>
+
+        <ConfirmDialog
+          open={thinNudgeOpen}
+          title={t('thinStory.title')}
+          body={t('thinStory.body')}
+          confirmLabel={t('thinStory.continueAnyway')}
+          cancelLabel={t('thinStory.addMore')}
+          onConfirm={() => { setThinNudgeOpen(false); setStage('context'); }}
+          onCancel={() => setThinNudgeOpen(false)}
+        />
       </div>
     );
   }

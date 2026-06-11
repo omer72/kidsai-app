@@ -1,7 +1,13 @@
 {
   "brand": {
     "name": "Kidsit AI",
-    "wordmark": "kidsit ai"
+    "wordmark": "Kidsit AI"
+  },
+  "thinStory": {
+    "title": "Want to add anything?",
+    "body": "A detail or two — what happened, what they said or did — helps the guidance fit your moment.",
+    "addMore": "Add details",
+    "continueAnyway": "Continue anyway"
   },
   "common": {
     "skip": "Skip",
@@ -252,7 +258,13 @@
     "addAnotherUnlock": "Add another child — unlock",
     "editKid": "Edit kid",
     "namePlaceholder": "Child's name",
-    "agePlaceholder": "Age (years)",
+    "birthdateLabel": "Birthdate",
+    "genderLabel": "Boy or girl? (optional)",
+    "gender_boy": "Boy",
+    "gender_girl": "Girl",
+    "newSiblingLabel": "A new baby joined the family recently",
+    "notesLabel": "About this kid (optional)",
+    "notesPlaceholder": "Temperament, fears, what excites them — anything that helps us know them",
     "setAsActive": "Set as active kid",
     "deleteKid": "Delete kid",
     "deleteConfirm": "Delete this kid? Their logged moments stay in history.",

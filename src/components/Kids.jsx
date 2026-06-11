@@ -3,17 +3,104 @@ import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
 import { Avatar, Card, PrimaryButton } from './primitives';
+import { kidAgeYears } from '../storage';
 
 const COLORS = ['#2E5BFF', '#7C5BE8', '#4AAE8C', '#E5A64B', '#D94A5C', '#5B48D4'];
+
+const EMPTY_FORM = { name: '', birthdate: '', gender: '', newSibling: false, notes: '' };
+
+function formFromKid(k) {
+  return {
+    name: k.name,
+    birthdate: k.birthdate || '',
+    gender: k.gender || '',
+    newSibling: !!k.newSibling,
+    notes: k.notes || '',
+  };
+}
+
+function KidFields({ form, setForm, autoFocus }) {
+  const { t } = useTranslation();
+  const set = (patch) => setForm({ ...form, ...patch });
+  const inputStyle = {
+    padding: 12, borderRadius: 10, border: `1px solid ${tokens.line}`,
+    fontFamily: tokens.sans, fontSize: 15, outline: 'none',
+    background: tokens.surface, color: tokens.ink, width: '100%', boxSizing: 'border-box',
+  };
+  const labelStyle = {
+    fontFamily: tokens.sans, fontSize: 12, fontWeight: 600, color: tokens.ink3,
+    marginBottom: 4,
+  };
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <input
+        autoFocus={autoFocus} value={form.name} onChange={(e) => set({ name: e.target.value })}
+        placeholder={t('kids.namePlaceholder')}
+        style={inputStyle}
+      />
+      <div>
+        <div style={labelStyle}>{t('kids.birthdateLabel')}</div>
+        <input
+          type="date" value={form.birthdate}
+          max={new Date().toISOString().slice(0, 10)}
+          onChange={(e) => set({ birthdate: e.target.value })}
+          style={inputStyle}
+        />
+      </div>
+      <div>
+        <div style={labelStyle}>{t('kids.genderLabel')}</div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {['boy', 'girl'].map((g) => {
+            const on = form.gender === g;
+            return (
+              <button key={g} onClick={() => set({ gender: on ? '' : g })} style={{
+                flex: 1, padding: '10px 12px', borderRadius: 10, cursor: 'pointer',
+                background: on ? tokens.primarySoft : 'transparent',
+                border: `1px solid ${on ? tokens.primary : tokens.line}`,
+                fontFamily: tokens.sans, fontSize: 14, fontWeight: on ? 600 : 500,
+                color: on ? tokens.primary : tokens.ink2,
+              }}>
+                {t(`kids.gender_${g}`)}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      <button onClick={() => set({ newSibling: !form.newSibling })} style={{
+        display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px',
+        borderRadius: 10, cursor: 'pointer', textAlign: 'start',
+        background: 'transparent', border: `1px solid ${tokens.line}`,
+      }}>
+        <div style={{
+          width: 20, height: 20, borderRadius: 6, flexShrink: 0,
+          background: form.newSibling ? tokens.primary : 'transparent',
+          border: `1.5px solid ${form.newSibling ? tokens.primary : tokens.line}`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          {form.newSibling && <Icon.Check s={12} c="#fff"/>}
+        </div>
+        <span style={{ fontFamily: tokens.sans, fontSize: 13, color: tokens.ink2, lineHeight: 1.4 }}>
+          {t('kids.newSiblingLabel')}
+        </span>
+      </button>
+      <div>
+        <div style={labelStyle}>{t('kids.notesLabel')}</div>
+        <textarea
+          rows={3} value={form.notes} onChange={(e) => set({ notes: e.target.value })}
+          placeholder={t('kids.notesPlaceholder')}
+          style={{ ...inputStyle, resize: 'none', lineHeight: 1.45 }}
+        />
+      </div>
+    </div>
+  );
+}
 
 export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, entitled = true, lockedKidCount = 0, onRequestUpgrade }) {
   const { t } = useTranslation();
   const [adding, setAdding] = useState(false);
-  const [name, setName] = useState('');
-  const [age, setAge] = useState('');
+  const [form, setForm] = useState(EMPTY_FORM);
   const [editingId, setEditingId] = useState(null);
-  const [editName, setEditName] = useState('');
-  const [editAge, setEditAge] = useState('');
+  const [editForm, setEditForm] = useState(EMPTY_FORM);
 
   const canAddFree = entitled || kids.length === 0;
 
@@ -25,33 +112,48 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
     setAdding(true);
   };
 
+  const profileFields = (f) => ({
+    birthdate: f.birthdate || '',
+    gender: f.gender || '',
+    newSibling: !!f.newSibling,
+    notes: f.notes.trim(),
+  });
+
   const addKid = () => {
-    const trimmed = name.trim();
+    const trimmed = form.name.trim();
     if (!trimmed) return;
     const id = trimmed.toLowerCase().replace(/[^a-z0-9]/g, '') + '-' + Date.now().toString(36);
     const color = COLORS[kids.length % COLORS.length];
-    const next = [...kids, { id, name: trimmed, age: Number(age) || 0, color, initials: trimmed[0].toUpperCase() }];
-    setKids(next);
-    setName(''); setAge(''); setAdding(false);
+    const kid = {
+      id, name: trimmed, color, initials: trimmed[0].toUpperCase(),
+      age: kidAgeYears({ birthdate: form.birthdate }),
+      ...profileFields(form),
+    };
+    setKids([...kids, kid]);
+    setForm(EMPTY_FORM); setAdding(false);
   };
 
   const startEdit = (k) => {
     setAdding(false);
     setEditingId(k.id);
-    setEditName(k.name);
-    setEditAge(k.age ? String(k.age) : '');
+    setEditForm(formFromKid(k));
   };
 
   const cancelEdit = () => {
     setEditingId(null);
-    setEditName(''); setEditAge('');
+    setEditForm(EMPTY_FORM);
   };
 
   const saveEdit = () => {
-    const trimmed = editName.trim();
+    const trimmed = editForm.name.trim();
     if (!trimmed) return;
     setKids(kids.map((k) => k.id === editingId
-      ? { ...k, name: trimmed, age: Number(editAge) || 0, initials: trimmed[0].toUpperCase() }
+      ? {
+          ...k, name: trimmed, initials: trimmed[0].toUpperCase(),
+          // keep a legacy stored age when no birthdate was ever set
+          age: editForm.birthdate ? kidAgeYears({ birthdate: editForm.birthdate }) : k.age,
+          ...profileFields(editForm),
+        }
       : k));
     cancelEdit();
   };
@@ -86,22 +188,7 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
                   </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  <input
-                    autoFocus value={editName} onChange={(e) => setEditName(e.target.value)}
-                    placeholder={t('kids.namePlaceholder')}
-                    style={{
-                      padding: 12, borderRadius: 10, border: `1px solid ${tokens.line}`,
-                      fontFamily: tokens.sans, fontSize: 15, outline: 'none',
-                    }}
-                  />
-                  <input
-                    value={editAge} onChange={(e) => setEditAge(e.target.value.replace(/[^0-9]/g, ''))}
-                    placeholder={t('kids.agePlaceholder')} inputMode="numeric"
-                    style={{
-                      padding: 12, borderRadius: 10, border: `1px solid ${tokens.line}`,
-                      fontFamily: tokens.sans, fontSize: 15, outline: 'none',
-                    }}
-                  />
+                  <KidFields form={editForm} setForm={setEditForm} autoFocus/>
                   {!active && (
                     <button onClick={() => setActiveKid(k.id)} style={{
                       padding: '12px 14px', borderRadius: 12, cursor: 'pointer',
@@ -113,7 +200,7 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
                     </button>
                   )}
                   <div style={{ display: 'flex', gap: 8 }}>
-                    <PrimaryButton onClick={saveEdit} disabled={!editName.trim()} style={{ flex: 1 }}>{t('common.save')}</PrimaryButton>
+                    <PrimaryButton onClick={saveEdit} disabled={!editForm.name.trim()} style={{ flex: 1 }}>{t('common.save')}</PrimaryButton>
                     <button onClick={cancelEdit} style={{
                       padding: '14px 16px', borderRadius: 14, background: 'transparent',
                       border: `1px solid ${tokens.line}`, cursor: 'pointer',
@@ -131,6 +218,7 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
             );
           }
 
+          const ageYears = kidAgeYears(k);
           return (
             <button key={k.id} onClick={() => startEdit(k)} style={{
               padding: 18, borderRadius: 20, textAlign: 'start', cursor: 'pointer',
@@ -145,7 +233,7 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
                   {k.name}
                 </div>
                 <div style={{ fontFamily: tokens.sans, fontSize: 13, color: tokens.ink3, marginTop: 2 }}>
-                  {k.age ? t('kids.yearsAndMoments', { age: k.age, count: momentsCount }) : t('kids.momentsOnly', { count: momentsCount })}
+                  {ageYears ? t('kids.yearsAndMoments', { age: ageYears, count: momentsCount }) : t('kids.momentsOnly', { count: momentsCount })}
                 </div>
               </div>
               {active && (
@@ -162,25 +250,10 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
 
         {adding ? (
           <Card pad={16} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <input
-              autoFocus value={name} onChange={(e) => setName(e.target.value)}
-              placeholder={t('kids.namePlaceholder')}
-              style={{
-                padding: 12, borderRadius: 10, border: `1px solid ${tokens.line}`,
-                fontFamily: tokens.sans, fontSize: 15, outline: 'none',
-              }}
-            />
-            <input
-              value={age} onChange={(e) => setAge(e.target.value.replace(/[^0-9]/g, ''))}
-              placeholder={t('kids.agePlaceholder')} inputMode="numeric"
-              style={{
-                padding: 12, borderRadius: 10, border: `1px solid ${tokens.line}`,
-                fontFamily: tokens.sans, fontSize: 15, outline: 'none',
-              }}
-            />
+            <KidFields form={form} setForm={setForm} autoFocus/>
             <div style={{ display: 'flex', gap: 8 }}>
-              <PrimaryButton onClick={addKid} disabled={!name.trim()} style={{ flex: 1 }}>{t('common.save')}</PrimaryButton>
-              <button onClick={() => { setAdding(false); setName(''); setAge(''); }} style={{
+              <PrimaryButton onClick={addKid} disabled={!form.name.trim()} style={{ flex: 1 }}>{t('common.save')}</PrimaryButton>
+              <button onClick={() => { setAdding(false); setForm(EMPTY_FORM); }} style={{
                 padding: '14px 16px', borderRadius: 14, background: 'transparent',
                 border: `1px solid ${tokens.line}`, cursor: 'pointer',
                 fontFamily: tokens.sans, fontSize: 14, fontWeight: 500, color: tokens.ink2,

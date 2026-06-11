@@ -1,7 +1,13 @@
 {
   "brand": {
     "name": "Kidsit AI",
-    "wordmark": "kidsit ai"
+    "wordmark": "Kidsit AI"
+  },
+  "thinStory": {
+    "title": "רוצים להוסיף משהו?",
+    "body": "עוד פרט או שניים — מה קרה, מה נאמר או נעשה — יעזרו לנו לדייק את ההכוונה לרגע שלכם.",
+    "addMore": "להוסיף פרטים",
+    "continueAnyway": "להמשיך בכל זאת"
   },
   "common": {
     "skip": "דלג",
@@ -260,7 +266,13 @@
     "addAnotherUnlock": "הוסיפו ילד נוסף — לפתיחה",
     "editKid": "עריכת ילד",
     "namePlaceholder": "שם הילד",
-    "agePlaceholder": "גיל (שנים)",
+    "birthdateLabel": "תאריך לידה",
+    "genderLabel": "בן או בת? (לא חובה)",
+    "gender_boy": "בן",
+    "gender_girl": "בת",
+    "newSiblingLabel": "תינוק חדש הצטרף למשפחה לאחרונה",
+    "notesLabel": "קצת עליו/עליה (לא חובה)",
+    "notesPlaceholder": "מזג, פחדים, מה מלהיב אותו/אותה — כל מה שיעזור לנו להכיר",
     "setAsActive": "הגדירו כילד פעיל",
     "deleteKid": "מחק ילד",
     "deleteConfirm": "למחוק את הילד הזה? הרגעים המתועדים יישארו בהיסטוריה.",

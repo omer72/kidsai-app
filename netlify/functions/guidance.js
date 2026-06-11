@@ -65,6 +65,73 @@ function summarizePastMoments(history, kidId, currentStory, max = 5) {
   ].join('\n');
 }
 
+// Age in years (fractional), from birthdate when present so it never goes
+// stale, else the stored age number. Null when neither is usable.
+function kidAgeYears(kid) {
+  if (kid?.birthdate) {
+    const t = new Date(kid.birthdate).getTime();
+    if (!Number.isNaN(t) && t <= Date.now()) {
+      return (Date.now() - t) / (365.25 * 24 * 3600 * 1000);
+    }
+  }
+  const n = Number(kid?.age);
+  return n > 0 ? n : null;
+}
+
+// "11 months" / "2 years 4 months" for the youngest, plain years above 6 —
+// month precision matters most where developmental stages turn over fastest.
+function ageText(kid) {
+  const y = kidAgeYears(kid);
+  if (y == null) return 'unspecified';
+  if (!kid?.birthdate) return `${Math.floor(y)}`;
+  const months = Math.floor(y * 12);
+  if (months < 24) return `${months} months`;
+  const years = Math.floor(y);
+  const rem = months - years * 12;
+  return years < 6 && rem > 0 ? `${years} years ${rem} months` : `${years}`;
+}
+
+function describeChild(kid) {
+  const bits = [`age ${ageText(kid)}`];
+  if (kid?.gender === 'boy' || kid?.gender === 'girl') bits.push(kid.gender);
+  return `Child: ${kid?.name || 'unspecified'}, ${bits.join(', ')}.`;
+}
+
+function describeFamily(kid, siblings) {
+  if (!Array.isArray(siblings) || siblings.length === 0) return '';
+  const lines = siblings.map((s) => {
+    const a = kidAgeYears(s);
+    const age = a == null ? null : a < 1 ? `age ${Math.max(1, Math.floor(a * 12))} months` : `age ${Math.floor(a)}`;
+    const bits = [age, s.gender || null].filter(Boolean);
+    return `${s.name || 'a sibling'}${bits.length ? ` (${bits.join(', ')})` : ''}`;
+  });
+  let rank = '';
+  const myAge = kidAgeYears(kid);
+  const sibAges = siblings.map(kidAgeYears);
+  if (myAge != null && sibAges.every((a) => a != null)) {
+    const total = siblings.length + 1;
+    const older = sibAges.filter((a) => a > myAge).length;
+    const younger = sibAges.filter((a) => a < myAge).length;
+    rank = older === 0 && younger > 0 ? ` ${kid?.name || 'The child'} is the oldest of ${total} children.`
+      : younger === 0 && older > 0 ? ` ${kid?.name || 'The child'} is the youngest of ${total} children.`
+      : ` ${kid?.name || 'The child'} is a middle child of ${total}.`;
+  }
+  return `Siblings: ${lines.join(', ')}.${rank}`;
+}
+
+function describeProfile(kid, siblings) {
+  const lines = [
+    describeChild(kid),
+    describeFamily(kid, siblings),
+    kid?.newSibling ? 'A new baby joined the family in recent months.' : '',
+    kid?.notes?.trim() ? `How the parent describes this child: """${kid.notes.trim().slice(0, 500)}"""` : '',
+  ].filter(Boolean);
+  if (lines.length > 1) {
+    lines.push('Use this profile only where it genuinely fits the story: tailor suggestions to this child\'s temperament, fears, and passions; weigh sibling dynamics (dethronement jealousy after a new baby, regression, power flowing downhill) without assuming the younger child is the victim; and if the response language genders its words, use the correct forms for the child.');
+  }
+  return lines.join('\n');
+}
+
 const LANGUAGE_NAMES = {
   en: 'English',
   he: 'Hebrew',
@@ -122,13 +189,13 @@ function buildSystemPrompt(language) {
   ].join('\n');
 }
 
-function buildUserPrompt({ story, ctx, kid, history }) {
+function buildUserPrompt({ story, ctx, kid, siblings, history }) {
   const loc = labelFor(LOCATIONS, ctx?.location);
   const mood = labelFor(MOODS, ctx?.mood);
   const involved = labelFor(INVOLVED, ctx?.involved);
   const urgency = labelFor(URGENCY, ctx?.urgency);
   return [
-    `Child: ${kid?.name || 'unspecified'}, age ${kid?.age ?? 'unspecified'}.`,
+    describeProfile(kid, siblings),
     `Location: ${loc || 'unspecified'}. Parent's mood right now: ${mood || 'unspecified'}. Who else was there: ${involved || 'unspecified'}. Urgency: ${urgency || 'low'}.`,
     summarizePastMoments(history, kid?.id, story),
     '',
@@ -180,7 +247,7 @@ export default async function handler(req) {
   }
   try {
     const body = await req.json();
-    const { story, ctx, kid, history, language } = body || {};
+    const { story, ctx, kid, siblings, history, language } = body || {};
     const client = new OpenAI({ apiKey: key });
     const resp = await client.chat.completions.create({
       model: MODEL,
@@ -188,7 +255,7 @@ export default async function handler(req) {
       temperature: 0.7,
       messages: [
         { role: 'system', content: buildSystemPrompt(language) },
-        { role: 'user', content: buildUserPrompt({ story, ctx, kid, history }) },
+        { role: 'user', content: buildUserPrompt({ story, ctx, kid, siblings, history }) },
       ],
     });
     const text = resp.choices?.[0]?.message?.content ?? '{}';

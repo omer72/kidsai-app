@@ -42,6 +42,18 @@ export function loadKids() {
   return read(KEYS.kids, DEFAULT_KIDS);
 }
 
+// Age in whole years. Derived from `birthdate` when present so it never goes
+// stale; kids saved before birthdate existed fall back to their stored `age`.
+export function kidAgeYears(kid) {
+  if (kid?.birthdate) {
+    const t = new Date(kid.birthdate).getTime();
+    if (!Number.isNaN(t) && t <= Date.now()) {
+      return Math.floor((Date.now() - t) / (365.25 * 24 * 3600 * 1000));
+    }
+  }
+  return Number(kid?.age) || 0;
+}
+
 export function saveKids(kids) {
   write(KEYS.kids, kids);
 }

@@ -1,7 +1,13 @@
 {
   "brand": {
     "name": "Kidsit AI",
-    "wordmark": "kidsit ai"
+    "wordmark": "Kidsit AI"
+  },
+  "thinStory": {
+    "title": "¿Quieres añadir algo?",
+    "body": "Un detalle o dos — qué pasó, qué dijo o hizo — ayudan a que la guía encaje con tu momento.",
+    "addMore": "Añadir detalles",
+    "continueAnyway": "Continuar igual"
   },
   "common": {
     "skip": "Omitir",
@@ -256,7 +262,13 @@
     "addAnotherUnlock": "Añadir otro hijo — desbloquear",
     "editKid": "Editar hijo",
     "namePlaceholder": "Nombre del hijo",
-    "agePlaceholder": "Edad (años)",
+    "birthdateLabel": "Fecha de nacimiento",
+    "genderLabel": "¿Niño o niña? (opcional)",
+    "gender_boy": "Niño",
+    "gender_girl": "Niña",
+    "newSiblingLabel": "Un bebé llegó a la familia hace poco",
+    "notesLabel": "Sobre este hijo (opcional)",
+    "notesPlaceholder": "Temperamento, miedos, qué le entusiasma — lo que nos ayude a conocerle",
     "setAsActive": "Establecer como hijo activo",
     "deleteKid": "Eliminar hijo",
     "deleteConfirm": "¿Eliminar este hijo? Sus momentos registrados quedan en el historial.",

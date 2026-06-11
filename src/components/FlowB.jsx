@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme';
 import { Icon } from './Icons';
-import { Avatar, Card, Chip, Label, LiveWaveform, MicButton, PrimaryButton } from './primitives';
+import { Avatar, Card, Chip, ConfirmDialog, Label, LiveWaveform, MicButton, PrimaryButton } from './primitives';
+import { isStoryThin } from '../story';
 import { LOCATIONS, MOODS, INVOLVED, URGENCY } from '../constants';
 import { startRecording, stopRecording, cancelRecording } from '../recorder';
 import { transcribeAudio, hasApiKey } from '../openai';
@@ -17,6 +18,7 @@ export function FlowB({ kids, activeKid, setActiveKid, onSubmit, ensureConsent }
   const [story, setStory] = useState('');
   const [ctx, setCtx] = useState({ location: null, mood: null, involved: null, urgency: null });
   const [recError, setRecError] = useState('');
+  const [thinNudgeOpen, setThinNudgeOpen] = useState(false);
   const timerRef = useRef(null);
 
   useEffect(() => {
@@ -204,10 +206,28 @@ export function FlowB({ kids, activeKid, setActiveKid, onSubmit, ensureConsent }
         </div>
       </Card>
 
-      <PrimaryButton full disabled={!canSubmit} onClick={() => onSubmit({ story, ctx })}>
+      <PrimaryButton
+        full disabled={!canSubmit}
+        onClick={() => {
+          // demo mode can hold a recording with no transcript — nothing to judge
+          const transcriptless = hasRecording && !story.trim();
+          if (!transcriptless && isStoryThin(story)) { setThinNudgeOpen(true); return; }
+          onSubmit({ story, ctx });
+        }}
+      >
         <Icon.Sparkle s={14} c={canSubmit ? '#fff' : tokens.ink3}/>
         Get guidance
       </PrimaryButton>
+
+      <ConfirmDialog
+        open={thinNudgeOpen}
+        title={t('thinStory.title')}
+        body={t('thinStory.body')}
+        confirmLabel={t('thinStory.continueAnyway')}
+        cancelLabel={t('thinStory.addMore')}
+        onConfirm={() => { setThinNudgeOpen(false); onSubmit({ story, ctx }); }}
+        onCancel={() => setThinNudgeOpen(false)}
+      />
     </div>
   );
 }

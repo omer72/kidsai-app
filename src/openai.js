@@ -6,13 +6,13 @@ export function hasApiKey() {
   return !!API_BASE;
 }
 
-export async function getGuidance({ story, ctx, kid, history }) {
+export async function getGuidance({ story, ctx, kid, siblings, history }) {
   if (!API_BASE) throw new Error('VITE_API_BASE not configured');
   const language = (i18n.language || 'en').split('-')[0];
   const r = await fetch(`${API_BASE}/api/guidance`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ story, ctx, kid, history, language }),
+    body: JSON.stringify({ story, ctx, kid, siblings, history, language }),
   });
   if (!r.ok) {
     const t = await r.text().catch(() => '');

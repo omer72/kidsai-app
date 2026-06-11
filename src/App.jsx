@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { applyTheme, tokens } from './theme';
-import { loadSettings, saveSettings, loadKids, saveKids, loadHistory, appendHistory, updateHistoryEntry, clearAll } from './storage';
+import { loadSettings, saveSettings, loadKids, saveKids, loadHistory, appendHistory, updateHistoryEntry, clearAll, kidAgeYears } from './storage';
 import { getGuidance, hasApiKey } from './openai';
 import { initBilling, offUpdate, refreshEntitlement, billingAvailable } from './billing';
 import { DEMO_RESPONSE } from './constants';
@@ -89,7 +89,12 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
     try {
       let response;
       if (hasApiKey()) {
-        response = await getGuidance({ story, ctx, kid: activeKid, history });
+        // siblings come from the full kids list (incl. paywall-locked ones —
+        // they're still real family members) so the model can read birth order
+        const siblings = kids
+          .filter((k) => k.id !== activeKid?.id)
+          .map((k) => ({ name: k.name, age: kidAgeYears(k), birthdate: k.birthdate, gender: k.gender }));
+        response = await getGuidance({ story, ctx, kid: activeKid, siblings, history });
       } else {
         await new Promise((r) => setTimeout(r, 1800));
         response = DEMO_RESPONSE;
