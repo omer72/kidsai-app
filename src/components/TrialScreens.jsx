@@ -227,8 +227,15 @@ export function SubscriptionScreen({ billing, onBack, onChanged, fullscreen }) {
     } finally { setBusy(false); }
   };
 
-  const manageInApple = () => {
-    if (window?.Capacitor?.isNativePlatform?.()) {
+  const platform = window?.Capacitor?.getPlatform?.();
+  const isAndroid = platform === 'android';
+  const manageSubscription = () => {
+    if (isAndroid) {
+      const url = productId
+        ? `https://play.google.com/store/account/subscriptions?sku=${encodeURIComponent(productId)}&package=ai.kidsit.app`
+        : 'https://play.google.com/store/account/subscriptions';
+      window.open(url, '_blank');
+    } else if (window?.Capacitor?.isNativePlatform?.()) {
       window.location.href = 'itms-apps://apps.apple.com/account/subscriptions';
     } else {
       window.open('https://apps.apple.com/account/subscriptions', '_blank');
@@ -291,8 +298,8 @@ export function SubscriptionScreen({ billing, onBack, onChanged, fullscreen }) {
           border: `1px solid ${tokens.line}`, marginBottom: 16,
         }}>
           {[
-            { label: isYearly ? t('subscription.switchToMonthly') : t('subscription.switchToYearly'), detail: isYearly ? t('subscription.switchToMonthlyDetail') : t('subscription.switchToYearlyDetail'), onClick: manageInApple },
-            { label: t('subscription.manageInAppleId'), detail: t('subscription.manageDetail'), onClick: manageInApple },
+            { label: isYearly ? t('subscription.switchToMonthly') : t('subscription.switchToYearly'), detail: isYearly ? t('subscription.switchToMonthlyDetail') : t('subscription.switchToYearlyDetail'), onClick: manageSubscription },
+            { label: isAndroid ? t('subscription.manageInGooglePlay') : t('subscription.manageInAppleId'), detail: t('subscription.manageDetail'), onClick: manageSubscription },
             { label: t('common.restorePurchase'), detail: t('subscription.restoreDetail'), onClick: handleRestore },
           ].map((row, i, arr) => (
             <button key={i} onClick={row.onClick} disabled={busy} style={{
@@ -322,7 +329,7 @@ export function SubscriptionScreen({ billing, onBack, onChanged, fullscreen }) {
           }}>{error}</div>
         )}
 
-        <button onClick={manageInApple} style={{
+        <button onClick={manageSubscription} style={{
           width: '100%', padding: '14px 16px', borderRadius: 14,
           background: 'transparent', cursor: 'pointer',
           border: `1px solid ${tokens.line}`,

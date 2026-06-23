@@ -116,6 +116,8 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
 
   const yearlyHasTrial = !!introOfferPeriod(yearlyPkg);
   const monthlyHasTrial = !!introOfferPeriod(monthlyPkg);
+  // ponytail: Play redeems subscription codes inside the Billing sheet at checkout, not via a separate URL.
+  const showRedeemCode = window?.Capacitor?.getPlatform?.() !== 'android';
   const ctaLabel = busy
     ? t('common.working')
     : (isTrialStart
@@ -271,17 +273,19 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
           </button>
         </div>
 
-        <button onClick={handleRedeemCode} disabled={busy || redeemLocked} style={{
-          width: '100%', marginBottom: 16, padding: '12px 14px', borderRadius: 12,
-          background: tokens.primarySoft, border: `1px solid ${tokens.primary}33`,
-          cursor: (busy || redeemLocked) ? 'not-allowed' : 'pointer',
-          opacity: redeemLocked ? 0.6 : 1,
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-          color: tokens.primary, fontFamily: tokens.sans, fontSize: 14, fontWeight: 600,
-        }}>
-          <Icon.Sparkle s={14} c={tokens.primary}/>
-          {redeemLocked ? t('paywall.redeemWaiting') : t('paywall.redeemCode')}
-        </button>
+        {showRedeemCode && (
+          <button onClick={handleRedeemCode} disabled={busy || redeemLocked} style={{
+            width: '100%', marginBottom: 16, padding: '12px 14px', borderRadius: 12,
+            background: tokens.primarySoft, border: `1px solid ${tokens.primary}33`,
+            cursor: (busy || redeemLocked) ? 'not-allowed' : 'pointer',
+            opacity: redeemLocked ? 0.6 : 1,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            color: tokens.primary, fontFamily: tokens.sans, fontSize: 14, fontWeight: 600,
+          }}>
+            <Icon.Sparkle s={14} c={tokens.primary}/>
+            {redeemLocked ? t('paywall.redeemWaiting') : t('paywall.redeemCode')}
+          </button>
+        )}
         </>)}
 
         {error && (
