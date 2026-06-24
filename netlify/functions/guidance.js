@@ -253,6 +253,7 @@ export default async function handler(req) {
       model: MODEL,
       response_format: { type: 'json_object' },
       temperature: 0.7,
+      max_completion_tokens: 700,
       messages: [
         { role: 'system', content: buildSystemPrompt(language) },
         { role: 'user', content: buildUserPrompt({ story, ctx, kid, siblings, history }) },
