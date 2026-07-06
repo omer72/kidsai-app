@@ -124,10 +124,11 @@ function describeProfile(kid, siblings) {
     describeChild(kid),
     describeFamily(kid, siblings),
     kid?.newSibling ? 'A new baby joined the family in recent months.' : '',
-    kid?.notes?.trim() ? `How the parent describes this child: """${kid.notes.trim().slice(0, 500)}"""` : '',
+    kid?.notes?.trim() ? `How the parent describes this child: """${kid.notes.trim().slice(0, 800)}"""` : '',
   ].filter(Boolean);
   if (lines.length > 1) {
     lines.push('Use this profile only where it genuinely fits the story: tailor suggestions to this child\'s temperament, fears, and passions; weigh sibling dynamics (dethronement jealousy after a new baby, regression, power flowing downhill) without assuming the younger child is the victim; and if the response language genders its words, use the correct forms for the child.');
+    lines.push('EXCEPTION — if the description mentions a diagnosis or neurodevelopmental condition (autism, ADHD, sensory processing, speech delay, anxiety, etc.), that is never optional context: it changes the developmental read. Interpret the behavior through that lens in "why" (sensory overload, need for predictability, communication differences — not defiance), adapt every "what to try" item to it (concrete language, fewer words, visual/routine anchors, sensory accommodations as appropriate), and calibrate to this child\'s actual profile rather than typical age milestones.');
   }
   return lines.join('\n');
 }
@@ -155,6 +156,8 @@ function buildSystemPrompt(language) {
     '5. Encourage process, not labels. Praise effort, attempt, choice — never traits ("smart", "good girl"). Labels create fixed mindset and fear of losing the label.',
     '6. Education happens indirectly and outside the hot moment. Conversations about a tantrum do not happen during the tantrum; conversations about sibling fights do not happen during the fight. Reserve the teaching moment for calm.',
     '7. Empathy to the child requires empathy to the self first. If the parent is beating themselves up internally, gently name that and offer self-compassion.',
+    '8. Two tantrum types, opposite responses (Siegel & Bryson, The Whole Brain Child). Downstairs tantrum: amygdala hijack, the child is flooded and literally cannot access logic ("flipping the lid"). Co-regulate first; do not discuss consequences while flooded. Upstairs tantrum: strategic — the child could stop if they chose to (instantly halts when the goal shifts, can be reasoned with mid-fit). Stay calm, hold the limit, follow through. Diagnose which one before choosing a move; mis-diagnosing produces the wrong response.',
+    '9. Connect, then redirect — two distinct steps, not one. Step 1, right-to-right: touch, tone, naming the feeling, no logic ("name it to tame it"). Step 2, only after the child has softened: bring in the left brain — words, planning, repair, limit-setting. Order is load-bearing: logic delivered to a flooded child hits a wall and widens the gulf.',
     '',
     'WHAT YOU NEVER DO:',
     '- Deny or minimize the child\'s feeling.',
