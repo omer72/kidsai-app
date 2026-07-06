@@ -252,6 +252,10 @@ export default async function handler(req) {
     const body = await req.json();
     const { story, ctx, kid, siblings, history, language } = body || {};
     const client = new OpenAI({ apiKey: key });
+    const userPrompt = buildUserPrompt({ story, ctx, kid, siblings, history });
+    // ponytail: logs include kid stories/health notes — unset DEBUG_PROMPTS when done debugging
+    const debug = !!process.env.DEBUG_PROMPTS;
+    if (debug) console.log('--- PROMPT ---\n' + userPrompt);
     const resp = await client.chat.completions.create({
       model: MODEL,
       response_format: { type: 'json_object' },
@@ -259,10 +263,11 @@ export default async function handler(req) {
       max_completion_tokens: 700,
       messages: [
         { role: 'system', content: buildSystemPrompt(language) },
-        { role: 'user', content: buildUserPrompt({ story, ctx, kid, siblings, history }) },
+        { role: 'user', content: userPrompt },
       ],
     });
     const text = resp.choices?.[0]?.message?.content ?? '{}';
+    if (debug) console.log('--- RESPONSE ---\n' + text);
     return new Response(text, {
       status: 200,
       headers: { ...CORS, 'Content-Type': 'application/json' },
