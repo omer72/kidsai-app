@@ -30,9 +30,14 @@ export default async function handler(req) {
       });
     }
     const client = new OpenAI({ apiKey: key });
+    // Language hint stops Whisper mis-detecting accented speech (English with
+    // an Israeli accent came back as Hebrew/Arabic). Only trust known values.
+    const lang = formData.get('language');
+    const language = ['en', 'he', 'es'].includes(lang) ? lang : undefined;
     const resp = await client.audio.transcriptions.create({
       file,
       model: 'whisper-1',
+      ...(language ? { language } : {}),
     });
     return new Response(JSON.stringify({ text: resp.text || '' }), {
       status: 200,

@@ -27,6 +27,7 @@ export async function transcribeAudio(blob) {
   const file = new File([blob], `recording.${ext}`, { type: blob.type });
   const form = new FormData();
   form.append('file', file);
+  form.append('language', (i18n.language || 'en').split('-')[0]);
   const r = await fetch(`${API_BASE}/api/transcribe`, { method: 'POST', body: form });
   if (!r.ok) {
     const t = await r.text().catch(() => '');
