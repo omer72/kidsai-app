@@ -4,6 +4,7 @@ book.pdf
 # secrets — never commit
 .env
 .env.local
+scripts/.tiktok-token.json
 android/keystore.properties
 android/app/release/
 android/app/build/
@@ -31,3 +32,6 @@ ios/capacitor-cordova-ios-plugins/
 .DS_Store
 .gstack/
 kidsit-play-*.json
+
+# Local Netlify folder
+.netlify
