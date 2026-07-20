@@ -57,6 +57,17 @@ export async function initBilling(onUpdate) {
   return entitlementFromCustomerInfo(customerInfo);
 }
 
+// RevenueCat app user ID — sent to the backend as X-RC-User so it can verify
+// the entitlement. Null on web preview or before Purchases is configured.
+export async function getAppUserId() {
+  if (!billingAvailable()) return null;
+  try {
+    return (await Purchases.getAppUserID()).appUserID || null;
+  } catch {
+    return null;
+  }
+}
+
 export function offUpdate(cb) {
   listeners.delete(cb);
 }

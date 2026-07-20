@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import { LOCATIONS, MOODS, INVOLVED, URGENCY } from '../../src/constants.js';
+import { requireEntitlement } from '../lib/entitlement.js';
 
 const MODEL = 'gpt-4o-mini';
 
@@ -240,7 +241,7 @@ function buildUserPrompt({ story, ctx, kid, siblings, history }) {
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Headers': 'Content-Type, X-RC-User',
 };
 
 export default async function handler(req) {
@@ -252,6 +253,8 @@ export default async function handler(req) {
       status: 405, headers: { ...CORS, 'Content-Type': 'application/json' },
     });
   }
+  const denied = await requireEntitlement(req, CORS);
+  if (denied) return denied;
   const key = process.env.OPENAI_API_KEY;
   if (!key) {
     return new Response(JSON.stringify({ error: 'OPENAI_API_KEY not configured' }), {

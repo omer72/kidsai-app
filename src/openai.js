@@ -1,6 +1,12 @@
 import i18n from './i18n';
+import { getAppUserId } from './billing';
 
 const API_BASE = (import.meta.env.VITE_API_BASE || '').trim().replace(/\/$/, '');
+
+async function authHeaders() {
+  const uid = await getAppUserId();
+  return uid ? { 'X-RC-User': uid } : {};
+}
 
 export function hasApiKey() {
   return !!API_BASE;
@@ -11,7 +17,7 @@ export async function getGuidance({ story, ctx, kid, siblings, history }) {
   const language = (i18n.language || 'en').split('-')[0];
   const r = await fetch(`${API_BASE}/api/guidance`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
     body: JSON.stringify({ story, ctx, kid, siblings, history, language }),
   });
   if (!r.ok) {
@@ -28,7 +34,9 @@ export async function transcribeAudio(blob) {
   const form = new FormData();
   form.append('file', file);
   form.append('language', (i18n.language || 'en').split('-')[0]);
-  const r = await fetch(`${API_BASE}/api/transcribe`, { method: 'POST', body: form });
+  const r = await fetch(`${API_BASE}/api/transcribe`, {
+    method: 'POST', headers: await authHeaders(), body: form,
+  });
   if (!r.ok) {
     const t = await r.text().catch(() => '');
     throw new Error(`Transcription failed (${r.status}): ${t.slice(0, 200)}`);
