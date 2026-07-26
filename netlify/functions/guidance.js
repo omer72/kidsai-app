@@ -51,17 +51,21 @@ function summarizePastMoments(history, kidId, currentStory, max = 5) {
     const where = labelFor(LOCATIONS, h.where) || 'unspecified location';
     const mood = labelFor(MOODS, h.mood) || 'unspecified mood';
     const story = (h.story || '').trim().slice(0, 280);
-    const title = h.response?.title || 'previous moment';
+    const gist = (h.response?.summary || h.response?.title || 'previous moment').trim().slice(0, 200);
+    const tried = (h.response?.sections?.find((s) => s.kind === 'try')?.items || [])
+      .map((it) => it?.h).filter(Boolean).join('; ');
     const fb = h.feedback === 'worse' ? ' [parent said this advice DID NOT help — got worse]'
       : h.feedback === 'same' ? ' [parent said this advice did not change things]'
       : h.feedback === 'better' ? ' [parent said this helped]'
       : h.feedback === 'great' ? ' [parent said this really helped]'
       : '';
-    return `  ${i + 1}. [${when}] (${where}, parent felt ${mood}) "${title}"${fb}\n     story: "${story}"`;
+    return `  ${i + 1}. [${when}] (${where}, parent felt ${mood}) "${gist}"${fb}`
+      + (tried ? `\n     advice given: ${tried}` : '')
+      + `\n     story: "${story}"`;
   });
   return [
     '',
-    'Past moments with this same child (chronological, top-5 by relevance). When a previous attempt is marked as "did not help" or "got worse", do NOT repeat it — try a different developmental angle. When marked as helped, build on what worked. Look for recurring triggers (time of day, location, who else is present, unmet need):',
+    'Past moments with this same child (chronological, top-5 by relevance). "advice given" lists what you already suggested that time. When a previous attempt is marked as "did not help" or "got worse", do NOT repeat it — try a different developmental angle. When marked as helped, build on what worked. Do not re-serve the same "advice given" items for a new, different situation — vary the toolkit. Look for recurring triggers (time of day, location, who else is present, unmet need):',
     ...lines,
   ].join('\n');
 }
