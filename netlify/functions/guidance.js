@@ -239,6 +239,7 @@ function buildUserPrompt({ story, ctx, kid, siblings, history }) {
 }`,
     '',
     'Constraints on the items array: exactly 3 items. Each item must be actionable in the next 60 seconds of a real moment. At least one item must be a literal sentence the parent can say. No item may recommend threats, punishments, bribery, or trait-praise.',
+    'VARIETY CONSTRAINT: when past moments list "advice given", at least 2 of the 3 items must use a DIFFERENT toolkit move than anything previously given — pick from: describe what you see, give information, say it in ONE word, say your own feeling, grant the wish in fantasy, a playful written note, make amends, joint problem-solving, a hint instead of a takeover, let the child overhear something positive. "Acknowledge the feeling / offer a choice / give a hug" is your default trio — if any of those appear in "advice given", do not lead with them again.',
   ].join('\n');
 }
 
