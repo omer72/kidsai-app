@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { LOCATIONS, MOODS, INVOLVED, URGENCY } from '../../src/constants.js';
+import { LOCATIONS, MOODS, INVOLVED, URGENCY, INTAKE_QUESTIONS } from '../../src/constants.js';
 import { requireEntitlement } from '../lib/entitlement.js';
 
 const MODEL = 'gpt-4o-mini';
@@ -124,9 +124,44 @@ function describeFamily(kid, siblings) {
   return `Siblings: ${lines.join(', ')}.${rank}`;
 }
 
+// The "Get to Know Your Child" intake the parent filled in on the kid profile.
+function describeIntake(kid) {
+  const it = kid?.intake;
+  if (!it) return '';
+  const clip = (v) => String(v || '').trim().slice(0, 300);
+  const lines = [];
+  for (const q of INTAKE_QUESTIONS) {
+    if (q.text) {
+      const v = clip(it.text?.[q.id]);
+      if (v) lines.push(`  - ${INTAKE_LABELS[q.id]}: "${v}"`);
+      continue;
+    }
+    const picked = it.answers?.[q.id] || [];
+    const parts = picked.map((id) => {
+      const o = q.options.find((x) => x.id === id);
+      if (!o) return null;
+      const extra = o.other ? clip(it.other?.[q.id]) : '';
+      return extra ? `${o.label} (${extra})` : o.label;
+    }).filter(Boolean);
+    if (parts.length) lines.push(`  - ${INTAKE_LABELS[q.id]}: ${parts.join(', ')}`);
+  }
+  return lines.length ? ['What the parent told us about this child:', ...lines].join('\n') : '';
+}
+
+const INTAKE_LABELS = {
+  age: 'age the parent gave',
+  focus: 'what the parent most wants to improve right now',
+  emotions: 'how the child usually manages emotions',
+  challenges: 'when challenges come up most often',
+  calms: 'what helps this child calm down or cooperate',
+  strengths: 'the child\'s strengths',
+  notes: 'anything else the parent wanted us to know',
+};
+
 function describeProfile(kid, siblings) {
   const lines = [
     describeChild(kid),
+    describeIntake(kid),
     describeFamily(kid, siblings),
     kid?.newSibling ? 'A new baby joined the family in recent months.' : '',
     kid?.notes?.trim() ? `How the parent describes this child: """${kid.notes.trim().slice(0, 800)}"""` : '',

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { tokens } from '../theme';
+import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 import { IOSStatusBar } from './IOSFrame';
 import { billingAvailable, restorePurchases } from '../billing';
@@ -62,7 +62,7 @@ export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
           }}>
             <Icon.Sparkle s={16} c="#fff"/>
           </div>
-          <div style={{ fontFamily: tokens.serif, fontSize: 22, fontWeight: 600, color: tokens.ink, letterSpacing: -0.3 }}>
+          <div style={{ fontFamily: tokens.serif, fontSize: fs(22), fontWeight: 600, color: tokens.ink, letterSpacing: -0.3 }}>
             {t('brand.wordmark')}
           </div>
         </div>
@@ -72,13 +72,13 @@ export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
             display: 'inline-flex', alignItems: 'center', gap: 6,
             background: '#FFF', padding: '6px 12px', borderRadius: 999,
             border: `1px solid ${tokens.line}`, marginBottom: 18,
-            fontFamily: tokens.sans, fontSize: 11, fontWeight: 600, color: tokens.ink2, letterSpacing: 0.4,
+            fontFamily: tokens.sans, fontSize: fs(11), fontWeight: 600, color: tokens.ink2, letterSpacing: 0.4,
           }}>
             <span style={{ width: 6, height: 6, borderRadius: 6, background: '#4AAE8C' }}/>
             {t('welcome.badge')}
           </div>
           <div style={{
-            fontFamily: tokens.serif, fontSize: 40, lineHeight: 1.05, color: tokens.ink,
+            fontFamily: tokens.serif, fontSize: fs(40), lineHeight: 1.05, color: tokens.ink,
             letterSpacing: -1.2, fontWeight: 500, marginBottom: 16,
           }}>
             {t('welcome.headline1')}<br/>{t('welcome.headline2')}<br/>
@@ -86,7 +86,7 @@ export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
             <span style={{ fontStyle: 'italic', color: tokens.primary }}>{t('welcome.headline3b')}</span>
           </div>
           <div style={{
-            fontFamily: tokens.sans, fontSize: 16, lineHeight: 1.5, color: tokens.ink2,
+            fontFamily: tokens.sans, fontSize: fs(16), lineHeight: 1.5, color: tokens.ink2,
             maxWidth: 320,
           }}>
             {t('welcome.subhead')}
@@ -96,7 +96,7 @@ export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
         <button onClick={onStart} style={{
           width: '100%', padding: '17px 20px', borderRadius: 16, border: 'none',
           background: tokens.ink, color: '#fff', cursor: 'pointer',
-          fontFamily: tokens.sans, fontSize: 16, fontWeight: 600,
+          fontFamily: tokens.sans, fontSize: fs(16), fontWeight: 600,
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
           boxShadow: `0 14px 28px ${tokens.ink}30`,
         }}>
@@ -105,13 +105,13 @@ export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
         </button>
         <div style={{
           textAlign: 'center', marginTop: 14,
-          fontFamily: tokens.sans, fontSize: 12, color: tokens.ink3,
+          fontFamily: tokens.sans, fontSize: fs(12), color: tokens.ink3,
         }}>
           {t('welcome.alreadySubscriber')}{' '}
           <button onClick={handleRestore} disabled={restoring} style={{
             background: 'transparent', border: 'none', padding: 0,
             cursor: restoring ? 'not-allowed' : 'pointer',
-            color: tokens.ink, fontWeight: 600, fontSize: 12,
+            color: tokens.ink, fontWeight: 600, fontSize: fs(12),
             fontFamily: tokens.sans, textDecoration: 'underline',
           }}>
             {restoring ? t('common.restoring') : t('common.restore')}
@@ -120,12 +120,12 @@ export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
         {restoreMsg && (
           <div style={{
             textAlign: 'center', marginTop: 8,
-            fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3,
+            fontFamily: tokens.sans, fontSize: fs(11), color: tokens.ink3,
           }}>{restoreMsg}</div>
         )}
         <div style={{
           textAlign: 'center', marginTop: 18, padding: '0 12px',
-          fontFamily: tokens.sans, fontSize: 11, lineHeight: 1.5, color: tokens.ink3,
+          fontFamily: tokens.sans, fontSize: fs(11), lineHeight: 1.5, color: tokens.ink3,
         }}>
           {t('welcome.disclaimer')}
         </div>

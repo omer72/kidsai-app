@@ -2,6 +2,7 @@
 // preview we short-circuit to a "not entitled" state and skip native calls.
 
 import { Purchases, LOG_LEVEL } from '@revenuecat/purchases-capacitor';
+import { attachAffiliateToRevenueCat } from './affiliate';
 
 const IOS_API_KEY = (import.meta.env.VITE_RC_IOS_KEY || '').trim();
 const ANDROID_API_KEY = (import.meta.env.VITE_RC_ANDROID_KEY || '').trim();
@@ -51,6 +52,7 @@ export async function initBilling(onUpdate) {
       listeners.forEach((cb) => cb(next));
     });
     configured = true;
+    attachAffiliateToRevenueCat();
   }
   if (onUpdate) listeners.add(onUpdate);
   const { customerInfo } = await Purchases.getCustomerInfo();

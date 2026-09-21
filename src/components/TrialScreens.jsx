@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { tokens } from '../theme';
+import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 import { billingAvailable, getOfferings, priceString, purchasePackage, restorePurchases } from '../billing';
 
@@ -36,17 +36,17 @@ export function TrialReminderBanner({ daysLeft, kids, history, onUpgrade, onDism
           <Icon.Clock s={18} c={tokens.primary}/>
         </div>
         <div style={{ flex: 1, paddingRight: 18 }}>
-          <div style={{ fontFamily: tokens.sans, fontSize: 14, fontWeight: 600, color: tokens.ink, marginBottom: 4 }}>
+          <div style={{ fontFamily: tokens.sans, fontSize: fs(14), fontWeight: 600, color: tokens.ink, marginBottom: 4 }}>
             {daysLeft <= 0 ? t('trialBanner.endsToday') : daysLeft === 1 ? t('trialBanner.endsTomorrow') : t('trialBanner.daysLeft', { daysLeft })}
           </div>
           {stats && (
-            <div style={{ fontFamily: tokens.sans, fontSize: 13, lineHeight: 1.45, color: tokens.ink2, marginBottom: 10 }}>
+            <div style={{ fontFamily: tokens.sans, fontSize: fs(13), lineHeight: 1.45, color: tokens.ink2, marginBottom: 10 }}>
               {stats}
             </div>
           )}
           <button onClick={onUpgrade} style={{
             background: 'transparent', border: 'none', padding: 0, cursor: 'pointer',
-            fontFamily: tokens.sans, fontSize: 13, fontWeight: 600, color: tokens.primary,
+            fontFamily: tokens.sans, fontSize: fs(13), fontWeight: 600, color: tokens.primary,
             display: 'inline-flex', alignItems: 'center', gap: 4,
           }}>{t('trialBanner.continueCTA')} <Icon.ArrowRight s={13} c={tokens.primary}/></button>
         </div>
@@ -128,14 +128,14 @@ export function LapsedScreen({ history, kids, fullscreen, onPurchased }) {
         </div>
 
         <div style={{
-          fontFamily: tokens.serif, fontSize: 26, lineHeight: 1.2, color: tokens.ink,
+          fontFamily: tokens.serif, fontSize: fs(26), lineHeight: 1.2, color: tokens.ink,
           letterSpacing: -0.4, fontWeight: 500, textAlign: 'center', marginBottom: 12,
           maxWidth: 300,
         }}>
           {t('lapsed.title')}
         </div>
         <div style={{
-          fontFamily: tokens.sans, fontSize: 15, lineHeight: 1.5, color: tokens.ink2,
+          fontFamily: tokens.sans, fontSize: fs(15), lineHeight: 1.5, color: tokens.ink2,
           textAlign: 'center', maxWidth: 320, marginBottom: 26,
         }}>
           {t('lapsed.subhead')}
@@ -155,12 +155,12 @@ export function LapsedScreen({ history, kids, fullscreen, onPurchased }) {
               <Icon.Sparkle s={18} c={tokens.primary}/>
             </div>
             <div style={{ flex: 1, textAlign: 'start' }}>
-              <div style={{ fontFamily: tokens.sans, fontSize: 13, fontWeight: 600, color: tokens.ink, marginBottom: 2 }}>
+              <div style={{ fontFamily: tokens.sans, fontSize: fs(13), fontWeight: 600, color: tokens.ink, marginBottom: 2 }}>
                 {kidsCount > 0
                   ? t(momentsCount === 1 && kidsCount === 1 ? 'lapsed.momentsAndKids' : 'lapsed.momentsAndKidsPlural', { moments: momentsCount, kids: kidsCount })
                   : t(momentsCount === 1 ? 'lapsed.momentsOnly' : 'lapsed.momentsOnlyPlural', { moments: momentsCount })}
               </div>
-              <div style={{ fontFamily: tokens.sans, fontSize: 12, color: tokens.ink3 }}>
+              <div style={{ fontFamily: tokens.sans, fontSize: fs(12), color: tokens.ink3 }}>
                 {t('lapsed.historyPaused')}
               </div>
             </div>
@@ -171,7 +171,7 @@ export function LapsedScreen({ history, kids, fullscreen, onPurchased }) {
           <div style={{
             marginBottom: 12, padding: '10px 12px', borderRadius: 12,
             background: `${tokens.danger}14`, border: `1px solid ${tokens.danger}40`,
-            fontFamily: tokens.sans, fontSize: 13, color: tokens.danger, lineHeight: 1.4,
+            fontFamily: tokens.sans, fontSize: fs(13), color: tokens.danger, lineHeight: 1.4,
             maxWidth: 340, width: '100%',
           }}>{error}</div>
         )}
@@ -180,7 +180,7 @@ export function LapsedScreen({ history, kids, fullscreen, onPurchased }) {
           width: '100%', maxWidth: 340, padding: '17px 20px', borderRadius: 16,
           border: 'none', background: busy ? tokens.surfaceAlt : tokens.ink,
           color: busy ? tokens.ink3 : '#fff', cursor: busy ? 'not-allowed' : 'pointer',
-          fontFamily: tokens.sans, fontSize: 16, fontWeight: 600,
+          fontFamily: tokens.sans, fontSize: fs(16), fontWeight: 600,
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
           boxShadow: busy ? 'none' : `0 14px 28px ${tokens.ink}30`,
           marginBottom: 10,
@@ -189,14 +189,14 @@ export function LapsedScreen({ history, kids, fullscreen, onPurchased }) {
         </button>
         <button onClick={() => handlePurchase('monthly')} disabled={busy} style={{
           background: 'transparent', border: 'none', padding: '8px 0',
-          fontFamily: tokens.sans, fontSize: 13, color: tokens.ink3, fontWeight: 500,
+          fontFamily: tokens.sans, fontSize: fs(13), color: tokens.ink3, fontWeight: 500,
           cursor: busy ? 'not-allowed' : 'pointer',
         }}>
           {t('lapsed.payMonthlyInstead', { price: monthlyPrice })}
         </button>
         <button onClick={handleRestore} disabled={busy} style={{
           background: 'transparent', border: 'none', padding: '4px 0',
-          fontFamily: tokens.sans, fontSize: 12, color: tokens.ink3,
+          fontFamily: tokens.sans, fontSize: fs(12), color: tokens.ink3,
           cursor: busy ? 'not-allowed' : 'pointer', textDecoration: 'underline',
         }}>
           {t('common.restorePurchase')}
@@ -256,7 +256,7 @@ export function SubscriptionScreen({ billing, onBack, onChanged, fullscreen }) {
         }}>
           <Icon.Back s={16} c={tokens.ink}/>
         </button>
-        <div style={{ fontFamily: tokens.serif, fontSize: 22, fontWeight: 500, color: tokens.ink, letterSpacing: -0.3 }}>
+        <div style={{ fontFamily: tokens.serif, fontSize: fs(22), fontWeight: 500, color: tokens.ink, letterSpacing: -0.3 }}>
           {t('subscription.title')}
         </div>
       </div>
@@ -274,20 +274,20 @@ export function SubscriptionScreen({ billing, onBack, onChanged, fullscreen }) {
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: 6,
             background: 'rgba(255,255,255,0.18)', padding: '4px 10px', borderRadius: 999,
-            fontFamily: tokens.sans, fontSize: 10, fontWeight: 700, letterSpacing: 0.6,
+            fontFamily: tokens.sans, fontSize: fs(10), fontWeight: 700, letterSpacing: 0.6,
             marginBottom: 14,
           }}>
             <span style={{ width: 6, height: 6, borderRadius: 6, background: '#A7F3C9' }}/>
             {t('subscription.active')}
           </div>
-          <div style={{ fontFamily: tokens.serif, fontSize: 26, fontWeight: 500, letterSpacing: -0.4, marginBottom: 4 }}>
+          <div style={{ fontFamily: tokens.serif, fontSize: fs(26), fontWeight: 500, letterSpacing: -0.4, marginBottom: 4 }}>
             {isYearly ? t('subscription.planYearly') : t('subscription.planMonthly')}
           </div>
-          <div style={{ fontFamily: tokens.sans, fontSize: 14, opacity: 0.85, marginBottom: 18 }}>
+          <div style={{ fontFamily: tokens.sans, fontSize: fs(14), opacity: 0.85, marginBottom: 18 }}>
             {(isYearly ? t('subscription.yearlyPriceLine') : t('subscription.monthlyPriceLine'))} · {willRenew ? t('subscription.renewsOn', { date: renews }) : t('subscription.endsOn', { date: renews })}
           </div>
           {billing?.inTrial && (
-            <div style={{ fontFamily: tokens.sans, fontSize: 12, opacity: 0.75, lineHeight: 1.5 }}>
+            <div style={{ fontFamily: tokens.sans, fontSize: fs(12), opacity: 0.75, lineHeight: 1.5 }}>
               {t('subscription.inTrial')}
             </div>
           )}
@@ -309,11 +309,11 @@ export function SubscriptionScreen({ billing, onBack, onChanged, fullscreen }) {
               display: 'flex', alignItems: 'center',
             }}>
               <div style={{ flex: 1 }}>
-                <div style={{ fontFamily: tokens.sans, fontSize: 14.5, fontWeight: 500, color: tokens.ink, marginBottom: row.detail ? 2 : 0 }}>
+                <div style={{ fontFamily: tokens.sans, fontSize: fs(14.5), fontWeight: 500, color: tokens.ink, marginBottom: row.detail ? 2 : 0 }}>
                   {row.label}
                 </div>
                 {row.detail && (
-                  <div style={{ fontFamily: tokens.sans, fontSize: 12, color: tokens.ink3 }}>{row.detail}</div>
+                  <div style={{ fontFamily: tokens.sans, fontSize: fs(12), color: tokens.ink3 }}>{row.detail}</div>
                 )}
               </div>
               <Icon.Chevron s={13} c={tokens.ink3}/>
@@ -325,7 +325,7 @@ export function SubscriptionScreen({ billing, onBack, onChanged, fullscreen }) {
           <div style={{
             marginBottom: 14, padding: '10px 12px', borderRadius: 12,
             background: `${tokens.danger}14`, border: `1px solid ${tokens.danger}40`,
-            fontFamily: tokens.sans, fontSize: 13, color: tokens.danger, lineHeight: 1.4,
+            fontFamily: tokens.sans, fontSize: fs(13), color: tokens.danger, lineHeight: 1.4,
           }}>{error}</div>
         )}
 
@@ -333,12 +333,12 @@ export function SubscriptionScreen({ billing, onBack, onChanged, fullscreen }) {
           width: '100%', padding: '14px 16px', borderRadius: 14,
           background: 'transparent', cursor: 'pointer',
           border: `1px solid ${tokens.line}`,
-          fontFamily: tokens.sans, fontSize: 14, fontWeight: 500, color: tokens.danger,
+          fontFamily: tokens.sans, fontSize: fs(14), fontWeight: 500, color: tokens.danger,
         }}>
           {t('subscription.cancel')}
         </button>
         <div style={{
-          marginTop: 14, fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3,
+          marginTop: 14, fontFamily: tokens.sans, fontSize: fs(11), color: tokens.ink3,
           textAlign: 'center', lineHeight: 1.5, padding: '0 14px',
         }}>
           {t('subscription.cancelFooter')}

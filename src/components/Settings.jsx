@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { tokens } from '../theme';
+import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 import { Card, Label, Segmented } from './primitives';
 import { setLanguage, getLanguage } from '../i18n';
@@ -18,7 +18,7 @@ export function SettingsScreen({ settings, setSettings, onClearData, billing, in
   return (
     <div style={{ padding: '14px 20px 140px' }}>
       <div style={{
-        fontFamily: tokens.serif, fontSize: 28, color: tokens.ink,
+        fontFamily: tokens.serif, fontSize: fs(28), color: tokens.ink,
         letterSpacing: -0.3, fontWeight: 500, marginBottom: 14,
       }}>{t('settings.title')}</div>
 
@@ -38,10 +38,10 @@ export function SettingsScreen({ settings, setSettings, onClearData, billing, in
               <Icon.Sparkle s={16} c={tokens.primary}/>
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: tokens.sans, fontSize: 14, fontWeight: 600, color: tokens.ink, marginBottom: 2 }}>
+              <div style={{ fontFamily: tokens.sans, fontSize: fs(14), fontWeight: 600, color: tokens.ink, marginBottom: 2 }}>
                 {inTrial ? t('settings.freeTrialActive') : t('settings.activeSubscription')}
               </div>
-              <div style={{ fontFamily: tokens.sans, fontSize: 12, color: tokens.ink3 }}>
+              <div style={{ fontFamily: tokens.sans, fontSize: fs(12), color: tokens.ink3 }}>
                 {t('settings.manageHint')}
               </div>
             </div>
@@ -61,12 +61,25 @@ export function SettingsScreen({ settings, setSettings, onClearData, billing, in
               <Icon.Sparkle s={16} c="#fff"/>
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: tokens.sans, fontSize: 14, fontWeight: 600, marginBottom: 2 }}>{t('settings.subscribe')}</div>
-              <div style={{ fontFamily: tokens.sans, fontSize: 12, opacity: 0.7 }}>{t('settings.subscribeHint')}</div>
+              <div style={{ fontFamily: tokens.sans, fontSize: fs(14), fontWeight: 600, marginBottom: 2 }}>{t('settings.subscribe')}</div>
+              <div style={{ fontFamily: tokens.sans, fontSize: fs(12), opacity: 0.7 }}>{t('settings.subscribeHint')}</div>
             </div>
             <Icon.ArrowRight s={14} c="#fff"/>
           </button>
         )}
+      </div>
+
+      <Label>{t('settings.fontSizeLabel')}</Label>
+      <div style={{ marginBottom: 18 }}>
+        <Segmented
+          value={settings.fontSize || 'small'}
+          onChange={(v) => setSettings({ ...settings, fontSize: v })}
+          options={[
+            { value: 'small', label: t('settings.fontSizeSmall') },
+            { value: 'medium', label: t('settings.fontSizeMedium') },
+            { value: 'large', label: t('settings.fontSizeLarge') },
+          ]}
+        />
       </div>
 
       <Label>{t('settings.themeLabel')}</Label>
@@ -142,7 +155,7 @@ export function SettingsScreen({ settings, setSettings, onClearData, billing, in
         <button onClick={onClearData} style={{
           padding: '12px 16px', borderRadius: 12, border: 'none',
           background: tokens.danger, color: '#fff',
-          fontFamily: tokens.sans, fontSize: 14, fontWeight: 600,
+          fontFamily: tokens.sans, fontSize: fs(14), fontWeight: 600,
           cursor: 'pointer', width: '100%',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
         }}>
@@ -152,13 +165,13 @@ export function SettingsScreen({ settings, setSettings, onClearData, billing, in
 
       <div style={{ marginTop: 18 }}><Label>{t('settings.aboutLabel')}</Label></div>
       <Card pad={16}>
-        <div style={{ fontFamily: tokens.sans, fontSize: 13, lineHeight: 1.55, color: tokens.ink2 }}>
+        <div style={{ fontFamily: tokens.sans, fontSize: fs(13), lineHeight: 1.55, color: tokens.ink2 }}>
           <p style={{ margin: '0 0 10px' }}>
             <strong style={{ color: tokens.ink }}>{t('settings.aboutNotMedical')}</strong>{t('settings.aboutBody1')}
           </p>
           <p style={{ margin: '0 0 10px' }}>{t('settings.aboutBody2')}</p>
           <p style={{ margin: '0 0 10px' }}>{t('settings.aboutBody3')}</p>
-          <p style={{ margin: 0, fontSize: 12, color: tokens.ink3 }}>
+          <p style={{ margin: 0, fontSize: fs(12), color: tokens.ink3 }}>
             <a href="https://kidsit.ai/terms" target="_blank" rel="noopener noreferrer" style={{ color: tokens.ink3, textDecoration: 'underline' }}>{t('common.terms')}</a>
             {' · '}
             <a href="https://kidsit.ai/privacy" target="_blank" rel="noopener noreferrer" style={{ color: tokens.ink3, textDecoration: 'underline' }}>{t('common.privacy')}</a>
@@ -169,7 +182,7 @@ export function SettingsScreen({ settings, setSettings, onClearData, billing, in
       {appVersion && (
         <div style={{
           marginTop: 16, textAlign: 'center',
-          fontFamily: tokens.sans, fontSize: 12, color: tokens.ink3,
+          fontFamily: tokens.sans, fontSize: fs(12), color: tokens.ink3,
         }}>
           {t('settings.version', { version: appVersion })}
         </div>

@@ -225,7 +225,7 @@
     "couldntReach": "לא הצלחנו להגיע ל-Kidsit AI",
     "forKidJustNow": "עבור {{kidName}}, ממש עכשיו",
     "forYourChildJustNow": "עבור הילד שלכם, ממש עכשיו",
-    "tryNextTime": "נסו את זה בפעם הבאה",
+    "tryNextTime": "אתם יכולים לנסות את זה עכשיו",
     "tonightBeforeBed": "הלילה, לפני השינה",
     "tonightExpand": "להבין למה זה קרה",
     "whatExpand": "מה שמעתי מהתיאור שלכם",
@@ -292,6 +292,10 @@
     "manageHint": "ניהול תוכנית, שחזור או ביטול",
     "subscribe": "הצטרפו",
     "subscribeHint": "פתחו את כל מה ש-Kidsit AI יכולה לעשות",
+    "fontSizeLabel": "גודל גופן",
+    "fontSizeSmall": "קטן",
+    "fontSizeMedium": "בינוני",
+    "fontSizeLarge": "גדול",
     "themeLabel": "ערכת נושא",
     "themeWarm": "חם",
     "themeClinical": "קליני",
@@ -375,5 +379,85 @@
     "settingsLabel": "הסכמה לעיבוד בבינה מלאכותית",
     "settingsHintEnabled": "טקסט הסיפור נשלח ל-OpenAI לתמלול והכוונה.",
     "settingsHintDisabled": "הכוונה ב-AI כבויה. הקישו להפעלה."
+  },
+  "intake": {
+    "title": "להכיר את הילד/ה",
+    "step": "שאלה {{current}} מתוך {{total}}",
+    "selectUpTo": "אפשר לבחור עד {{count}}",
+    "optional": "רשות — אפשר לדלג",
+    "finish": "סיום",
+    "thanks": "תודה — זה עוזר לנו להתאים את ההכוונה למשפחה שלכם.",
+    "start": "להכיר את {{name}}",
+    "retake": "לעדכן את מה שאנחנו יודעים",
+    "q": {
+      "age": {
+        "title": "בן/בת כמה {{name}}?",
+        "under1": "פחות משנה",
+        "1": "1",
+        "2": "2",
+        "3": "3",
+        "4": "4",
+        "5": "5",
+        "6": "6",
+        "7": "7",
+        "8": "8",
+        "9": "9",
+        "10": "10",
+        "11": "11",
+        "12": "12",
+        "older": "13 ומעלה",
+        "otherPlaceholder": "גיל"
+      },
+      "focus": {
+        "title": "מה הכי היית רוצה לשפר עכשיו?",
+        "boundaries": "גבולות ושיתוף פעולה",
+        "tantrums": "התקפי זעם וכעס",
+        "attention": "קשב ולמידה",
+        "anxiety": "חרדה או ביטחון עצמי",
+        "friendships": "חברויות",
+        "sleep": "שינה",
+        "siblings": "יחסים בין אחים",
+        "other": "אחר",
+        "otherPlaceholder": "ספרו לנו במילים ספורות"
+      },
+      "emotions": {
+        "title": "איך הילד/ה בדרך כלל מתמודד/ת עם רגשות?",
+        "calm": "בדרך כלל רגוע/ה",
+        "sensitive": "רגיש/ה",
+        "hardtocalm": "מתקשה להירגע",
+        "depends": "תלוי במצב"
+      },
+      "challenges": {
+        "title": "מתי הרגעים הקשים מופיעים הכי הרבה?",
+        "transitions": "מעברים ויציאה מהבית",
+        "limits": "בקשות והצבת גבולות",
+        "screens": "זמן מסך",
+        "homework": "שיעורי בית ומטלות",
+        "social": "מצבים חברתיים",
+        "bedtime": "ערבים ושעת השינה",
+        "other": "אחר",
+        "otherPlaceholder": "ספרו לנו במילים ספורות"
+      },
+      "calms": {
+        "title": "מה עוזר לילד/ה להירגע או לשתף פעולה?",
+        "placeholder": "חיבוק, כמה דקות בשקט, קצת הומור…"
+      },
+      "strengths": {
+        "title": "מהן החוזקות המרכזיות?",
+        "creative": "יצירתי/ת",
+        "considerate": "רגיש/ה ומתחשב/ת",
+        "curious": "סקרן/ית",
+        "social": "חברותי/ת",
+        "independent": "עצמאי/ת",
+        "persistent": "מתמיד/ה",
+        "funny": "חוש הומור",
+        "other": "אחר",
+        "otherPlaceholder": "ספרו לנו במילים ספורות"
+      },
+      "notes": {
+        "title": "יש עוד משהו שכדאי שנדע?",
+        "placeholder": "כל דבר שיעזור לנו להבין את המשפחה שלכם"
+      }
+    }
   }
 }

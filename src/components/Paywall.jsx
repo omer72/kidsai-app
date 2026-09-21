@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { tokens } from '../theme';
+import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 import { IOSStatusBar } from './IOSFrame';
 import { billingAvailable, getOfferings, introOfferPeriod, onBillingUpdate, presentCodeRedemptionSheet, priceString, purchasePackage, restorePurchases } from '../billing';
@@ -166,7 +166,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
         </div>
 
         <div style={{
-          fontFamily: tokens.serif, fontSize: 30, lineHeight: 1.1, color: tokens.ink,
+          fontFamily: tokens.serif, fontSize: fs(30), lineHeight: 1.1, color: tokens.ink,
           letterSpacing: -0.7, fontWeight: 500, textAlign: 'center', marginBottom: 10,
           padding: '0 8px',
         }}>
@@ -174,7 +174,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
           <span style={{ fontStyle: 'italic', color: tokens.primary }}>{t('paywall.headline2')}</span>
         </div>
         <div style={{
-          fontFamily: tokens.sans, fontSize: 14, color: tokens.ink2, textAlign: 'center',
+          fontFamily: tokens.sans, fontSize: fs(14), color: tokens.ink2, textAlign: 'center',
           maxWidth: 300, margin: '0 auto 24px', lineHeight: 1.5,
         }}>
           {t('paywall.subhead', { trial })}
@@ -204,8 +204,8 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
                 <Icon.Check s={13} c={tokens.primary}/>
               </div>
               <div>
-                <div style={{ fontFamily: tokens.sans, fontSize: 14.5, fontWeight: 600, color: tokens.ink, marginBottom: 2 }}>{f.t}</div>
-                <div style={{ fontFamily: tokens.sans, fontSize: 13, color: tokens.ink2, lineHeight: 1.45 }}>{f.s}</div>
+                <div style={{ fontFamily: tokens.sans, fontSize: fs(14.5), fontWeight: 600, color: tokens.ink, marginBottom: 2 }}>{f.t}</div>
+                <div style={{ fontFamily: tokens.sans, fontSize: fs(13), color: tokens.ink2, lineHeight: 1.45 }}>{f.s}</div>
               </div>
             </div>
           ))}
@@ -228,15 +228,15 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
             <div style={{
               position: 'absolute', top: -10, insetInlineEnd: 16,
               background: tokens.primary, color: '#fff',
-              fontFamily: tokens.sans, fontSize: 10, fontWeight: 700,
+              fontFamily: tokens.sans, fontSize: fs(10), fontWeight: 700,
               padding: '4px 10px', borderRadius: 999, letterSpacing: 0.6,
             }}>{t('paywall.bestValue')}</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ flex: 1 }}>
-                <div style={{ fontFamily: tokens.sans, fontSize: 16, fontWeight: 700, marginBottom: 4 }}>
+                <div style={{ fontFamily: tokens.sans, fontSize: fs(16), fontWeight: 700, marginBottom: 4 }}>
                   {t('paywall.yearly')}
                 </div>
-                <div style={{ fontFamily: tokens.sans, fontSize: 13, opacity: 0.85, lineHeight: 1.35 }}>
+                <div style={{ fontFamily: tokens.sans, fontSize: fs(13), opacity: 0.85, lineHeight: 1.35 }}>
                   {(billingAvailable() && !packagesLoaded)
                     ? t('common.working')
                     : t('paywall.trialThenYearly', { price: yearlyPrice })}
@@ -259,10 +259,10 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
             }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ flex: 1 }}>
-                <div style={{ fontFamily: tokens.sans, fontSize: 16, fontWeight: 700, color: tokens.ink, marginBottom: 4 }}>
+                <div style={{ fontFamily: tokens.sans, fontSize: fs(16), fontWeight: 700, color: tokens.ink, marginBottom: 4 }}>
                   {t('paywall.monthly')}
                 </div>
-                <div style={{ fontFamily: tokens.sans, fontSize: 13, color: tokens.ink2, lineHeight: 1.35 }}>
+                <div style={{ fontFamily: tokens.sans, fontSize: fs(13), color: tokens.ink2, lineHeight: 1.35 }}>
                   {!packagesLoaded
                     ? t('common.working')
                     : t('paywall.trialThenMonthly', { price: monthlyPrice })}
@@ -280,7 +280,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
             cursor: (busy || redeemLocked) ? 'not-allowed' : 'pointer',
             opacity: redeemLocked ? 0.6 : 1,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            color: tokens.primary, fontFamily: tokens.sans, fontSize: 14, fontWeight: 600,
+            color: tokens.primary, fontFamily: tokens.sans, fontSize: fs(14), fontWeight: 600,
           }}>
             <Icon.Sparkle s={14} c={tokens.primary}/>
             {redeemLocked ? t('paywall.redeemWaiting') : t('paywall.redeemCode')}
@@ -292,7 +292,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
           <div style={{
             marginBottom: 12, padding: '10px 12px', borderRadius: 12,
             background: `${tokens.danger}14`, border: `1px solid ${tokens.danger}40`,
-            fontFamily: tokens.sans, fontSize: 13, color: tokens.danger, lineHeight: 1.4,
+            fontFamily: tokens.sans, fontSize: fs(13), color: tokens.danger, lineHeight: 1.4,
           }}>{error}</div>
         )}
 
@@ -302,7 +302,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
             background: busy ? tokens.surfaceAlt : tokens.ink,
             color: busy ? tokens.ink3 : '#fff',
             cursor: busy ? 'not-allowed' : 'pointer',
-            fontFamily: tokens.sans, fontSize: 16, fontWeight: 600,
+            fontFamily: tokens.sans, fontSize: fs(16), fontWeight: 600,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             boxShadow: busy ? 'none' : `0 14px 28px ${tokens.ink}30`,
           }}>
@@ -314,14 +314,14 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
             <button onClick={onStart} disabled={busy} style={{
               background: 'transparent', border: 'none',
               padding: '10px 16px', cursor: busy ? 'not-allowed' : 'pointer',
-              color: tokens.ink2, fontFamily: tokens.sans, fontSize: 14, fontWeight: 500,
+              color: tokens.ink2, fontFamily: tokens.sans, fontSize: fs(14), fontWeight: 500,
               textDecoration: 'underline', textUnderlineOffset: 4,
             }}>{t('paywall.maybeLater')}</button>
           </div>
         )}
         <div style={{
           textAlign: 'center', marginTop: 12,
-          fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3, lineHeight: 1.6,
+          fontFamily: tokens.sans, fontSize: fs(11), color: tokens.ink3, lineHeight: 1.6,
         }}>
           {isTrialStart
             ? t('paywall.trialStartFooter')
@@ -333,7 +333,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
             <>
               <button onClick={handleRestore} disabled={busy} style={{
                 background: 'transparent', border: 'none', padding: 0, cursor: busy ? 'not-allowed' : 'pointer',
-                color: tokens.ink2, fontFamily: tokens.sans, fontSize: 11, textDecoration: 'underline',
+                color: tokens.ink2, fontFamily: tokens.sans, fontSize: fs(11), textDecoration: 'underline',
               }}>{t('common.restorePurchase')}</button>
               {' · '}
             </>

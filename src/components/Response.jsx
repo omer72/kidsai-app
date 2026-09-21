@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { tokens } from '../theme';
+import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 import { PrimaryButton } from './primitives';
 
@@ -13,10 +13,10 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
   if (error) {
     return (
       <div style={{ padding: '40px 24px', textAlign: 'center' }}>
-        <div style={{ fontFamily: tokens.serif, fontSize: 22, color: tokens.ink, marginBottom: 10 }}>
+        <div style={{ fontFamily: tokens.serif, fontSize: fs(22), color: tokens.ink, marginBottom: 10 }}>
           {t('response.couldntReach')}
         </div>
-        <div style={{ fontFamily: tokens.sans, fontSize: 14, lineHeight: 1.5, color: tokens.ink2, marginBottom: 18 }}>
+        <div style={{ fontFamily: tokens.sans, fontSize: fs(14), lineHeight: 1.5, color: tokens.ink2, marginBottom: 18 }}>
           {String(error)}
         </div>
         <PrimaryButton onClick={onDone} full>{t('common.close')}</PrimaryButton>
@@ -122,7 +122,7 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
           marginBottom: 10, border: '1px solid #F4E5BD',
           display: 'flex', gap: 12,
         }}>
-          <div style={{ fontSize: 20, lineHeight: 1 }}>🌙</div>
+          <div style={{ fontSize: fs(20), lineHeight: 1 }}>🌙</div>
           <div>
             <div style={{ ...tokens.type.label, color: '#8A6012', marginBottom: 4 }}>
               {t('response.tonightBeforeBed')}
@@ -182,7 +182,7 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
 
       <div style={{
         textAlign: 'center', padding: '0 12px 18px',
-        fontFamily: tokens.serif, fontSize: 14, lineHeight: 1.5,
+        fontFamily: tokens.serif, fontSize: fs(14), lineHeight: 1.5,
         color: tokens.ink3, fontStyle: 'italic',
       }}>
         {t('response.closingLine')}
@@ -205,7 +205,7 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
       <button onClick={onDone} style={{
         marginTop: 10, width: '100%', padding: 10, background: 'transparent',
         border: 'none', cursor: 'pointer',
-        fontFamily: tokens.sans, fontSize: 13, color: tokens.ink3, fontWeight: 500,
+        fontFamily: tokens.sans, fontSize: fs(13), color: tokens.ink3, fontWeight: 500,
       }}>{t('response.closeForNow')}</button>
     </div>
   );

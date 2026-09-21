@@ -4,6 +4,10 @@ import './i18n';
 import { App } from './App';
 import { initKeyboardGuard } from './keyboard';
 import { initBackButton } from './backbutton';
+import { initAffiliate } from './affiliate';
+
+// Early so an ?insertAffiliate= landing param is captured before any purchase.
+initAffiliate();
 
 if (typeof window !== 'undefined' && window.Capacitor?.isNativePlatform?.()) {
   initKeyboardGuard();

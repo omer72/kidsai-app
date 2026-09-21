@@ -1,13 +1,24 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { tokens } from '../theme';
+import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 import { Avatar, Card, PrimaryButton } from './primitives';
 import { kidAgeYears } from '../storage';
+import { KidIntake } from './KidIntake';
 
 const COLORS = ['#2E5BFF', '#7C5BE8', '#4AAE8C', '#E5A64B', '#D94A5C', '#5B48D4'];
 
 const EMPTY_FORM = { name: '', birthdate: '', gender: '', newSibling: false, notes: '' };
+
+// The intake asks for age too — keep `kid.age` in sync so kids added without a
+// birthdate still get an age into the guidance prompt. Null when unusable.
+function intakeAge(intake) {
+  const id = intake?.answers?.age?.[0];
+  if (!id) return null;
+  if (id === 'under1') return 0;
+  const n = Number(id === 'older' ? intake.other?.age : id);
+  return Number.isFinite(n) && n > 0 && n < 100 ? Math.floor(n) : null;
+}
 
 function formFromKid(k) {
   return {
@@ -24,11 +35,11 @@ function KidFields({ form, setForm, autoFocus }) {
   const set = (patch) => setForm({ ...form, ...patch });
   const inputStyle = {
     padding: 12, borderRadius: 10, border: `1px solid ${tokens.line}`,
-    fontFamily: tokens.sans, fontSize: 15, outline: 'none',
+    fontFamily: tokens.sans, fontSize: fs(15), outline: 'none',
     background: tokens.surface, color: tokens.ink, width: '100%', boxSizing: 'border-box',
   };
   const labelStyle = {
-    fontFamily: tokens.sans, fontSize: 12, fontWeight: 600, color: tokens.ink3,
+    fontFamily: tokens.sans, fontSize: fs(12), fontWeight: 600, color: tokens.ink3,
     marginBottom: 4,
   };
   return (
@@ -64,7 +75,7 @@ function KidFields({ form, setForm, autoFocus }) {
                 flex: 1, padding: '10px 12px', borderRadius: 10, cursor: 'pointer',
                 background: on ? tokens.primarySoft : 'transparent',
                 border: `1px solid ${on ? tokens.primary : tokens.line}`,
-                fontFamily: tokens.sans, fontSize: 14, fontWeight: on ? 600 : 500,
+                fontFamily: tokens.sans, fontSize: fs(14), fontWeight: on ? 600 : 500,
                 color: on ? tokens.primary : tokens.ink2,
               }}>
                 {t(`kids.gender_${g}`)}
@@ -86,7 +97,7 @@ function KidFields({ form, setForm, autoFocus }) {
         }}>
           {form.newSibling && <Icon.Check s={12} c="#fff"/>}
         </div>
-        <span style={{ fontFamily: tokens.sans, fontSize: 13, color: tokens.ink2, lineHeight: 1.4 }}>
+        <span style={{ fontFamily: tokens.sans, fontSize: fs(13), color: tokens.ink2, lineHeight: 1.4 }}>
           {t('kids.newSiblingLabel')}
         </span>
       </button>
@@ -102,12 +113,13 @@ function KidFields({ form, setForm, autoFocus }) {
   );
 }
 
-export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, entitled = true, lockedKidCount = 0, onRequestUpgrade }) {
+export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, entitled = true, lockedKidCount = 0, onRequestUpgrade, onIntakeClose }) {
   const { t } = useTranslation();
   const [adding, setAdding] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState(EMPTY_FORM);
+  const [intakeId, setIntakeId] = useState(null);
 
   const canAddFree = entitled || kids.length === 0;
 
@@ -138,6 +150,7 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
     };
     setKids([...kids, kid]);
     setForm(EMPTY_FORM); setAdding(false);
+    setIntakeId(id);
   };
 
   const startEdit = (k) => {
@@ -173,10 +186,22 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
     cancelEdit();
   };
 
+  const intakeKid = kids.find((k) => k.id === intakeId);
+  if (intakeKid) {
+    return (
+      <KidIntake
+        kidName={intakeKid.name}
+        initial={intakeKid.intake}
+        onSave={(intake) => setKids(kids.map((k) => (k.id === intakeId ? { ...k, intake, age: intakeAge(intake) ?? k.age } : k)))}
+        onCancel={() => { setIntakeId(null); onIntakeClose?.(); }}
+      />
+    );
+  }
+
   return (
     <div style={{ padding: '14px 20px 140px' }}>
       <div style={{
-        fontFamily: tokens.serif, fontSize: 28, color: tokens.ink,
+        fontFamily: tokens.serif, fontSize: fs(28), color: tokens.ink,
         letterSpacing: -0.3, fontWeight: 500, marginBottom: 14,
       }}>{t('kids.title')}</div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -189,18 +214,27 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
               <Card key={k.id} pad={16} style={{ borderColor: k.color, borderWidth: 1.5 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
                   <Avatar kid={k} size={52}/>
-                  <div style={{ flex: 1, fontFamily: tokens.sans, fontSize: 12, fontWeight: 700,
+                  <div style={{ flex: 1, fontFamily: tokens.sans, fontSize: fs(12), fontWeight: 700,
                     color: tokens.ink3, letterSpacing: 0.8, textTransform: 'uppercase' }}>
                     {t('kids.editKid')}
                   </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   <KidFields form={editForm} setForm={setEditForm} autoFocus/>
+                  <button onClick={() => { cancelEdit(); setIntakeId(k.id); }} style={{
+                    padding: '12px 14px', borderRadius: 12, cursor: 'pointer',
+                    background: tokens.primarySoft, border: `1px solid ${tokens.primary}40`,
+                    fontFamily: tokens.sans, fontSize: fs(13), fontWeight: 600, color: tokens.primary,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                  }}>
+                    <Icon.Sparkle s={13} c={tokens.primary}/>
+                    {k.intake ? t('intake.retake') : t('intake.start', { name: k.name })}
+                  </button>
                   {!active && (
                     <button onClick={() => setActiveKid(k.id)} style={{
                       padding: '12px 14px', borderRadius: 12, cursor: 'pointer',
                       background: 'transparent', border: `1px solid ${tokens.line}`,
-                      fontFamily: tokens.sans, fontSize: 13, fontWeight: 500, color: tokens.ink,
+                      fontFamily: tokens.sans, fontSize: fs(13), fontWeight: 500, color: tokens.ink,
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
                     }}>
                       <Icon.Check s={13} c={tokens.ink2}/> {t('kids.setAsActive')}
@@ -211,13 +245,13 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
                     <button onClick={cancelEdit} style={{
                       padding: '14px 16px', borderRadius: 14, background: 'transparent',
                       border: `1px solid ${tokens.line}`, cursor: 'pointer',
-                      fontFamily: tokens.sans, fontSize: 14, fontWeight: 500, color: tokens.ink2,
+                      fontFamily: tokens.sans, fontSize: fs(14), fontWeight: 500, color: tokens.ink2,
                     }}>{t('common.cancel')}</button>
                   </div>
                   <button onClick={deleteKid} style={{
                     padding: '10px 12px', borderRadius: 12, background: 'transparent',
                     border: 'none', cursor: 'pointer',
-                    fontFamily: tokens.sans, fontSize: 13, fontWeight: 500, color: '#D94A5C',
+                    fontFamily: tokens.sans, fontSize: fs(13), fontWeight: 500, color: '#D94A5C',
                     alignSelf: 'center',
                   }}>{t('kids.deleteKid')}</button>
                 </div>
@@ -236,10 +270,10 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
             }}>
               <Avatar kid={k} size={52}/>
               <div style={{ flex: 1 }}>
-                <div style={{ fontFamily: tokens.serif, fontSize: 20, fontWeight: 500, color: tokens.ink, letterSpacing: -0.2 }}>
+                <div style={{ fontFamily: tokens.serif, fontSize: fs(20), fontWeight: 500, color: tokens.ink, letterSpacing: -0.2 }}>
                   {k.name}
                 </div>
-                <div style={{ fontFamily: tokens.sans, fontSize: 13, color: tokens.ink3, marginTop: 2 }}>
+                <div style={{ fontFamily: tokens.sans, fontSize: fs(13), color: tokens.ink3, marginTop: 2 }}>
                   {ageYears ? t('kids.yearsAndMoments', { age: ageYears, count: momentsCount }) : t('kids.momentsOnly', { count: momentsCount })}
                 </div>
               </div>
@@ -263,7 +297,7 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
               <button onClick={() => { setAdding(false); setForm(EMPTY_FORM); }} style={{
                 padding: '14px 16px', borderRadius: 14, background: 'transparent',
                 border: `1px solid ${tokens.line}`, cursor: 'pointer',
-                fontFamily: tokens.sans, fontSize: 14, fontWeight: 500, color: tokens.ink2,
+                fontFamily: tokens.sans, fontSize: fs(14), fontWeight: 500, color: tokens.ink2,
               }}>{t('common.cancel')}</button>
             </div>
           </Card>
@@ -272,7 +306,7 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
             padding: 18, borderRadius: 20, cursor: 'pointer',
             background: 'transparent', border: `1.5px dashed ${tokens.line}`,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            color: tokens.ink3, fontFamily: tokens.sans, fontSize: 14, fontWeight: 500,
+            color: tokens.ink3, fontFamily: tokens.sans, fontSize: fs(14), fontWeight: 500,
           }}>
             <Icon.Plus s={16}/> {canAddFree ? t('kids.addChild') : t('kids.addAnotherUnlock')}
           </button>
@@ -292,10 +326,10 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
               <Icon.Sparkle s={16} c="#fff"/>
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: tokens.sans, fontSize: 14, fontWeight: 600, color: tokens.ink, marginBottom: 2 }}>
+              <div style={{ fontFamily: tokens.sans, fontSize: fs(14), fontWeight: 600, color: tokens.ink, marginBottom: 2 }}>
                 {lockedKidCount === 1 ? t('kids.lockedWaiting', { count: 1 }) : t('kids.lockedWaitingPlural', { count: lockedKidCount })}
               </div>
-              <div style={{ fontFamily: tokens.sans, fontSize: 12, color: tokens.ink2, lineHeight: 1.4 }}>
+              <div style={{ fontFamily: tokens.sans, fontSize: fs(12), color: tokens.ink2, lineHeight: 1.4 }}>
                 {t('kids.lockedDescription')}
               </div>
             </div>
@@ -305,11 +339,11 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
       </div>
 
       <div style={{
-        marginTop: 26, fontFamily: tokens.sans, fontSize: 11, fontWeight: 700,
+        marginTop: 26, fontFamily: tokens.sans, fontSize: fs(11), fontWeight: 700,
         color: tokens.ink3, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 10,
       }}>{t('kids.aboutTitle')}</div>
       <Card pad={16}>
-        <div style={{ fontFamily: tokens.sans, fontSize: 13, lineHeight: 1.55, color: tokens.ink2 }}>
+        <div style={{ fontFamily: tokens.sans, fontSize: fs(13), lineHeight: 1.55, color: tokens.ink2 }}>
           {t('kids.aboutBody')}
         </div>
       </Card>

@@ -71,3 +71,52 @@ export const DEMO_RESPONSE = {
 // Sample patterns shown in History when there's nothing real to display yet.
 export const SAMPLE_PATTERNS = [
 ];
+
+// "Get to Know Your Child" intake. `label` is the English source-of-truth sent
+// to the guidance prompt; UI strings come from i18n at `intake.q.<qid>.title`
+// and `intake.q.<qid>.<optionId>`. `max` caps selections, `other: true` reveals
+// a short text field. Answers live on the kid as `intake`.
+export const INTAKE_QUESTIONS = [
+  { id: 'age', required: true, max: 1, options: [
+    { id: 'under1', label: 'under 1 year old' },
+    ...Array.from({ length: 12 }, (_, n) => ({ id: String(n + 1), label: `${n + 1} years old` })),
+    { id: 'older', label: 'older', other: true, numeric: true },
+  ]},
+  { id: 'focus', required: true, max: 2, options: [
+    { id: 'boundaries', label: 'boundaries and cooperation' },
+    { id: 'tantrums', label: 'tantrums and anger' },
+    { id: 'attention', label: 'attention and learning' },
+    { id: 'anxiety', label: 'anxiety or self-confidence' },
+    { id: 'friendships', label: 'friendships' },
+    { id: 'sleep', label: 'sleep' },
+    { id: 'siblings', label: 'sibling relationships' },
+    { id: 'other', label: 'something else', other: true },
+  ]},
+  { id: 'emotions', required: true, max: 1, options: [
+    { id: 'calm', label: 'usually calm' },
+    { id: 'sensitive', label: 'sensitive' },
+    { id: 'hardtocalm', label: 'finds it hard to calm down' },
+    { id: 'depends', label: 'depends on the situation' },
+  ]},
+  { id: 'challenges', required: true, max: 2, options: [
+    { id: 'transitions', label: 'transitions and leaving home' },
+    { id: 'limits', label: 'requests and setting limits' },
+    { id: 'screens', label: 'screen time' },
+    { id: 'homework', label: 'homework or responsibilities' },
+    { id: 'social', label: 'social situations' },
+    { id: 'bedtime', label: 'evenings and bedtime' },
+    { id: 'other', label: 'another time', other: true },
+  ]},
+  { id: 'calms', text: true },
+  { id: 'strengths', max: 3, options: [
+    { id: 'creative', label: 'creative' },
+    { id: 'considerate', label: 'sensitive and considerate' },
+    { id: 'curious', label: 'curious' },
+    { id: 'social', label: 'social' },
+    { id: 'independent', label: 'independent' },
+    { id: 'persistent', label: 'persistent' },
+    { id: 'funny', label: 'a good sense of humor' },
+    { id: 'other', label: 'another strength', other: true },
+  ]},
+  { id: 'notes', text: true },
+];

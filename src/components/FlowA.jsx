@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { tokens } from '../theme';
+import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 import { Avatar, Card, Chip, ConfirmDialog, GhostButton, LiveWaveform, MicButton, PrimaryButton } from './primitives';
 import { isStoryThin } from '../story';
@@ -107,8 +107,8 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
     return (
       <div style={{ padding: '14px 22px 140px', minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
         <div style={{ marginBottom: 16 }}>
-          <div style={{ fontFamily: tokens.sans, fontSize: 13, color: tokens.ink3, fontWeight: 500 }}>{greeting}</div>
-          <div style={{ fontFamily: tokens.serif, fontSize: 22, fontWeight: 500, color: tokens.ink, marginTop: 2, letterSpacing: -0.2 }}>
+          <div style={{ fontFamily: tokens.sans, fontSize: fs(13), color: tokens.ink3, fontWeight: 500 }}>{greeting}</div>
+          <div style={{ fontFamily: tokens.serif, fontSize: fs(22), fontWeight: 500, color: tokens.ink, marginTop: 2, letterSpacing: -0.2 }}>
             {activeKidObj
               ? <>{t('flowA.headlineWithKidPrefix')}<span style={{ fontStyle: 'italic', color: activeKidObj.color }}>{activeKidObj.name}</span>{t('flowA.headlineWithKidSuffix')}</>
               : t('flowA.headlineGeneric')}
@@ -118,7 +118,7 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
         {kids.length > 0 && (
           <div style={{ marginBottom: 18 }}>
             <div style={{
-              fontFamily: tokens.sans, fontSize: 11, fontWeight: 700,
+              fontFamily: tokens.sans, fontSize: fs(11), fontWeight: 700,
               color: tokens.ink3, letterSpacing: 0.8, textTransform: 'uppercase',
               marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6,
             }}>
@@ -126,7 +126,7 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
                 display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                 width: 16, height: 16, borderRadius: 16,
                 background: tokens.ink, color: '#fff',
-                fontFamily: tokens.sans, fontSize: 10, fontWeight: 700,
+                fontFamily: tokens.sans, fontSize: fs(10), fontWeight: 700,
               }}>1</span>
               {t('flowA.step1Label')}
             </div>
@@ -145,8 +145,8 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
                     }}>
                       <Avatar kid={k} size={36}/>
                       <div style={{ textAlign: 'start', flex: 1 }}>
-                        <div style={{ fontFamily: tokens.sans, fontSize: 14, fontWeight: 600, color: tokens.ink, lineHeight: 1.2 }}>{k.name}</div>
-                        {!!kidAgeYears(k) && <div style={{ fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3, marginTop: 1 }}>{t('flowA.kidYears', { age: kidAgeYears(k) })}</div>}
+                        <div style={{ fontFamily: tokens.sans, fontSize: fs(14), fontWeight: 600, color: tokens.ink, lineHeight: 1.2 }}>{k.name}</div>
+                        {!!kidAgeYears(k) && <div style={{ fontFamily: tokens.sans, fontSize: fs(11), color: tokens.ink3, marginTop: 1 }}>{t('flowA.kidYears', { age: kidAgeYears(k) })}</div>}
                       </div>
                       {active && (
                         <div style={{
@@ -201,13 +201,13 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
                         )}
                       </div>
                       <div style={{
-                        fontFamily: tokens.sans, fontSize: 12,
+                        fontFamily: tokens.sans, fontSize: fs(12),
                         fontWeight: active ? 700 : 500,
                         color: active ? tokens.ink : tokens.ink2,
                         lineHeight: 1.2, marginTop: 2,
                       }}>{k.name}</div>
                       {!!kidAgeYears(k) && (
-                        <div style={{ fontFamily: tokens.sans, fontSize: 10, color: tokens.ink3, lineHeight: 1, marginTop: -2 }}>{t('flowA.kidYearsShort', { age: kidAgeYears(k) })}</div>
+                        <div style={{ fontFamily: tokens.sans, fontSize: fs(10), color: tokens.ink3, lineHeight: 1, marginTop: -2 }}>{t('flowA.kidYearsShort', { age: kidAgeYears(k) })}</div>
                       )}
                     </button>
                   );
@@ -227,7 +227,7 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
                       <Icon.Plus s={18} c={tokens.ink3}/>
                     </div>
                     <div style={{
-                      fontFamily: tokens.sans, fontSize: 12, fontWeight: 500,
+                      fontFamily: tokens.sans, fontSize: fs(12), fontWeight: 500,
                       color: tokens.ink3, lineHeight: 1.2, marginTop: 2,
                     }}>{t('flowA.addLabel')}</div>
                   </button>
@@ -244,7 +244,7 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
           transition: 'all .3s',
         }}>
           <div style={{
-            fontFamily: tokens.sans, fontSize: 11, fontWeight: 700,
+            fontFamily: tokens.sans, fontSize: fs(11), fontWeight: 700,
             color: stage === 'recording' ? tokens.primaryInk : tokens.ink3,
             letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 8,
             display: 'flex', alignItems: 'center', gap: 6,
@@ -254,11 +254,11 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
               width: 16, height: 16, borderRadius: 16,
               background: stage === 'recording' ? tokens.primary : tokens.ink,
               color: '#fff',
-              fontFamily: tokens.sans, fontSize: 10, fontWeight: 700,
+              fontFamily: tokens.sans, fontSize: fs(10), fontWeight: 700,
             }}>2</span>
             {stage === 'recording' ? t('flowA.step2Listening') : stage === 'transcribing' ? t('flowA.step2Transcribing') : t('flowA.step2HoldToSpeak')}
           </div>
-          <div style={{ fontFamily: tokens.serif, fontSize: 19, lineHeight: 1.4, color: tokens.ink, letterSpacing: -0.1 }}>
+          <div style={{ fontFamily: tokens.serif, fontSize: fs(19), lineHeight: 1.4, color: tokens.ink, letterSpacing: -0.1 }}>
             {stage === 'recording'
               ? t('flowA.promptRecording')
               : stage === 'transcribing'
@@ -271,11 +271,11 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
           {stage === 'recording' && (
             <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
               <div style={{ width: 8, height: 8, borderRadius: 8, background: tokens.danger, animation: 'pg-pulse 1s infinite' }}/>
-              <div style={{ fontFamily: tokens.mono, fontSize: 13, color: tokens.ink2, fontWeight: 500 }}>{fmt(elapsed)}</div>
+              <div style={{ fontFamily: tokens.mono, fontSize: fs(13), color: tokens.ink2, fontWeight: 500 }}>{fmt(elapsed)}</div>
             </div>
           )}
           {recError && (
-            <div style={{ marginTop: 10, fontFamily: tokens.sans, fontSize: 12, color: tokens.danger }}>{recError}</div>
+            <div style={{ marginTop: 10, fontFamily: tokens.sans, fontSize: fs(12), color: tokens.danger }}>{recError}</div>
           )}
         </Card>
 
@@ -287,12 +287,12 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
             size={156}
             disabled={kids.length === 0 || stage === 'transcribing'}
           />
-          <div style={{ marginTop: 16, fontFamily: tokens.sans, fontSize: 13, color: tokens.ink3, fontWeight: 500 }}>
+          <div style={{ marginTop: 16, fontFamily: tokens.sans, fontSize: fs(13), color: tokens.ink3, fontWeight: 500 }}>
             {stage === 'recording' ? t('flowA.releaseWhenDone') : stage === 'transcribing' ? t('common.working') : t('flowA.pressAndHold')}
           </div>
           <button onClick={() => setStage('recorded')} disabled={stage === 'transcribing'} style={{
             marginTop: 14, background: 'transparent', border: 'none', cursor: stage === 'transcribing' ? 'not-allowed' : 'pointer',
-            fontFamily: tokens.sans, fontSize: 13, color: tokens.primary, fontWeight: 600,
+            fontFamily: tokens.sans, fontSize: fs(13), color: tokens.primary, fontWeight: 600,
             opacity: stage === 'transcribing' ? 0.5 : 1,
           }}>
             {t('flowA.orTypeItOut')}
@@ -306,11 +306,11 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
     return (
       <div style={{ padding: '14px 22px 140px' }}>
         <div style={{
-          fontFamily: tokens.sans, fontSize: 12, fontWeight: 600,
+          fontFamily: tokens.sans, fontSize: fs(12), fontWeight: 600,
           color: tokens.ink3, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 10,
         }}>{t('flowA.yourStory')}</div>
         <div style={{
-          fontFamily: tokens.serif, fontSize: 26, lineHeight: 1.2, color: tokens.ink,
+          fontFamily: tokens.serif, fontSize: fs(26), lineHeight: 1.2, color: tokens.ink,
           letterSpacing: -0.3, marginBottom: 18,
         }}>{t('flowA.tellWhatHappened')}</div>
 
@@ -318,7 +318,7 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
           <div style={{
             marginBottom: 12, padding: '10px 12px', borderRadius: 12,
             background: `${tokens.danger}14`, border: `1px solid ${tokens.danger}40`,
-            fontFamily: tokens.sans, fontSize: 13, color: tokens.danger, lineHeight: 1.4,
+            fontFamily: tokens.sans, fontSize: fs(13), color: tokens.danger, lineHeight: 1.4,
           }}>{recError}</div>
         )}
 
@@ -328,7 +328,7 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
           style={{
             width: '100%', minHeight: 180, padding: 16, borderRadius: 16,
             background: tokens.surface, border: `1px solid ${tokens.line}`,
-            fontFamily: tokens.sans, fontSize: 15, color: tokens.ink, lineHeight: 1.5,
+            fontFamily: tokens.sans, fontSize: fs(15), color: tokens.ink, lineHeight: 1.5,
             resize: 'none', outline: 'none', boxSizing: 'border-box', marginBottom: 16,
           }}
         />
@@ -361,21 +361,21 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
   if (stage === 'context') {
     const steps = [
       { key: 'location', q: t('flowA.context.whereDidItHappen'), options: LOCATIONS, render: (o, active, set) => (
-        <Chip key={o.id} active={active} onClick={set} style={{ padding: '14px 18px', fontSize: 15 }}>
-          {t(o.labelKey)} <span style={{ color: active ? 'rgba(255,255,255,0.7)' : tokens.ink3, fontSize: 12, marginInlineStart: 4 }}>{t(o.hintKey)}</span>
+        <Chip key={o.id} active={active} onClick={set} style={{ padding: '14px 18px', fontSize: fs(15) }}>
+          {t(o.labelKey)} <span style={{ color: active ? 'rgba(255,255,255,0.7)' : tokens.ink3, fontSize: fs(12), marginInlineStart: 4 }}>{t(o.hintKey)}</span>
         </Chip>
       )},
       { key: 'mood', q: t('flowA.context.howWereTheyFeeling'), options: MOODS, render: (o, active, set) => (
-        <Chip key={o.id} active={active} onClick={set} style={{ padding: '14px 18px', fontSize: 15 }}>
-          <span style={{ fontSize: 16, marginInlineEnd: 2 }}>{o.glyph}</span>{t(o.labelKey)}
+        <Chip key={o.id} active={active} onClick={set} style={{ padding: '14px 18px', fontSize: fs(15) }}>
+          <span style={{ fontSize: fs(16), marginInlineEnd: 2 }}>{o.glyph}</span>{t(o.labelKey)}
         </Chip>
       )},
       { key: 'involved', q: t('flowA.context.whoElseWasThere'), options: INVOLVED, render: (o, active, set) => (
-        <Chip key={o.id} active={active} onClick={set} style={{ padding: '14px 18px', fontSize: 15 }}>{t(o.labelKey)}</Chip>
+        <Chip key={o.id} active={active} onClick={set} style={{ padding: '14px 18px', fontSize: fs(15) }}>{t(o.labelKey)}</Chip>
       )},
       { key: 'urgency', q: t('flowA.context.howUrgent'), options: URGENCY, render: (o, active, set) => (
-        <Chip key={o.id} active={active} onClick={set} dot={o.dot} style={{ padding: '14px 18px', fontSize: 15 }}>
-          {t(o.labelKey)} <span style={{ color: active ? 'rgba(255,255,255,0.7)' : tokens.ink3, fontSize: 12, marginInlineStart: 4 }}>{t(o.descKey)}</span>
+        <Chip key={o.id} active={active} onClick={set} dot={o.dot} style={{ padding: '14px 18px', fontSize: fs(15) }}>
+          {t(o.labelKey)} <span style={{ color: active ? 'rgba(255,255,255,0.7)' : tokens.ink3, fontSize: fs(12), marginInlineStart: 4 }}>{t(o.descKey)}</span>
         </Chip>
       )},
     ];
@@ -394,11 +394,11 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
           ))}
         </div>
         <div style={{
-          fontFamily: tokens.sans, fontSize: 12, fontWeight: 600,
+          fontFamily: tokens.sans, fontSize: fs(12), fontWeight: 600,
           color: tokens.ink3, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 6,
         }}>{t('flowA.context.stepOf', { step: step + 1, total: steps.length })}</div>
         <div style={{
-          fontFamily: tokens.serif, fontSize: 26, lineHeight: 1.2, color: tokens.ink,
+          fontFamily: tokens.serif, fontSize: fs(26), lineHeight: 1.2, color: tokens.ink,
           letterSpacing: -0.3, marginBottom: 22,
         }}>{s.q}</div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 24 }}>

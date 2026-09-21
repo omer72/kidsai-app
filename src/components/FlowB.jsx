@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { tokens } from '../theme';
+import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 import { Avatar, Card, Chip, ConfirmDialog, Label, LiveWaveform, MicButton, PrimaryButton } from './primitives';
 import { isStoryThin } from '../story';
@@ -86,7 +86,7 @@ export function FlowB({ kids, activeKid, setActiveKid, onSubmit, ensureConsent }
   return (
     <div style={{ padding: '12px 16px 140px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, padding: '0 6px' }}>
-        <div style={{ fontFamily: tokens.serif, fontSize: 22, fontWeight: 500, color: tokens.ink, letterSpacing: -0.2 }}>
+        <div style={{ fontFamily: tokens.serif, fontSize: fs(22), fontWeight: 500, color: tokens.ink, letterSpacing: -0.2 }}>
           New moment
         </div>
         <div style={{ display: 'flex', gap: 6 }}>
@@ -113,19 +113,19 @@ export function FlowB({ kids, activeKid, setActiveKid, onSubmit, ensureConsent }
           />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{
-              fontFamily: tokens.sans, fontSize: 12, fontWeight: 600,
+              fontFamily: tokens.sans, fontSize: fs(12), fontWeight: 600,
               color: tokens.primaryInk, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 4,
             }}>
               {recording ? 'Listening' : transcribing ? 'Transcribing…' : hasRecording ? 'Recorded' : 'Hold to speak'}
             </div>
-            <div style={{ fontFamily: tokens.sans, fontSize: 14, color: tokens.ink2, lineHeight: 1.4 }}>
+            <div style={{ fontFamily: tokens.sans, fontSize: fs(14), color: tokens.ink2, lineHeight: 1.4 }}>
               {recording ? 'Tell the whole story.' : transcribing ? 'Turning your voice into words…' : hasRecording ? `${fmt(elapsed)} · review below` : 'Press and hold the mic'}
             </div>
             <div style={{ marginTop: 8, height: 26 }}>
               <LiveWaveform active={recording} bars={28} height={26}/>
             </div>
             {recError && (
-              <div style={{ marginTop: 6, fontFamily: tokens.sans, fontSize: 12, color: tokens.danger }}>{recError}</div>
+              <div style={{ marginTop: 6, fontFamily: tokens.sans, fontSize: fs(12), color: tokens.danger }}>{recError}</div>
             )}
           </div>
         </div>
@@ -135,7 +135,7 @@ export function FlowB({ kids, activeKid, setActiveKid, onSubmit, ensureConsent }
           style={{
             width: '100%', minHeight: 70, padding: 12, borderRadius: 12,
             background: tokens.surface, border: `1px solid ${tokens.line}`,
-            fontFamily: tokens.sans, fontSize: 14, color: tokens.ink, lineHeight: 1.5,
+            fontFamily: tokens.sans, fontSize: fs(14), color: tokens.ink, lineHeight: 1.5,
             resize: 'none', outline: 'none', boxSizing: 'border-box', marginTop: 12,
           }}
         />
@@ -160,11 +160,11 @@ export function FlowB({ kids, activeKid, setActiveKid, onSubmit, ensureConsent }
                 padding: '11px 8px', borderRadius: 12, cursor: 'pointer',
                 background: active ? tokens.primary : tokens.surfaceAlt,
                 color: active ? '#fff' : tokens.ink, border: 'none',
-                fontFamily: tokens.sans, fontSize: 13, fontWeight: 600,
+                fontFamily: tokens.sans, fontSize: fs(13), fontWeight: 600,
                 display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
                 transition: 'all .15s',
               }}>
-                <span style={{ fontSize: 16 }}>{o.glyph}</span>
+                <span style={{ fontSize: fs(16) }}>{o.glyph}</span>
                 {t(o.labelKey)}
               </button>
             );
@@ -189,7 +189,7 @@ export function FlowB({ kids, activeKid, setActiveKid, onSubmit, ensureConsent }
                 flex: 1, padding: '11px 8px', borderRadius: 12, cursor: 'pointer',
                 background: active ? tokens.ink : tokens.surfaceAlt,
                 color: active ? '#fff' : tokens.ink, border: 'none', textAlign: 'start',
-                fontFamily: tokens.sans, fontSize: 13, fontWeight: 600,
+                fontFamily: tokens.sans, fontSize: fs(13), fontWeight: 600,
                 display: 'flex', flexDirection: 'column', gap: 2,
                 transition: 'all .15s',
               }}>
@@ -197,7 +197,7 @@ export function FlowB({ kids, activeKid, setActiveKid, onSubmit, ensureConsent }
                   <span style={{ width: 6, height: 6, borderRadius: 6, background: o.dot }}/>
                   {t(o.labelKey)}
                 </span>
-                <span style={{ fontSize: 11, fontWeight: 500, color: active ? 'rgba(255,255,255,0.7)' : tokens.ink3 }}>
+                <span style={{ fontSize: fs(11), fontWeight: 500, color: active ? 'rgba(255,255,255,0.7)' : tokens.ink3 }}>
                   {t(o.descKey)}
                 </span>
               </button>

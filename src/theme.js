@@ -45,3 +45,27 @@ export function applyTheme(themeName) {
   Object.assign(tokens, t);
   return tokens;
 }
+
+// Snapshot base font sizes once so re-applying doesn't compound.
+const BASE_TYPE_SIZES = Object.fromEntries(
+  Object.entries(tokens.type).map(([k, v]) => [k, v.fontSize])
+);
+
+export const FONT_SCALES = { small: 1, medium: 1.15, large: 1.3 };
+
+let scale = 1;
+
+export function applyFontSize(name) {
+  scale = FONT_SCALES[name] ?? 1;
+  for (const k of Object.keys(tokens.type)) {
+    tokens.type[k].fontSize = Math.round(BASE_TYPE_SIZES[k] * scale);
+  }
+  return tokens;
+}
+
+// Scale a hardcoded px font size by the user's font-size setting. Components
+// that set `fontSize` inline must wrap it: `fontSize: fs(13)` — otherwise that
+// text ignores the setting. Read at render time, like `tokens`.
+export function fs(px) {
+  return Math.round(px * scale * 10) / 10;
+}

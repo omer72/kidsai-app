@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { tokens } from '../theme';
+import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 import { Label, PrimaryButton } from './primitives';
 
@@ -17,15 +17,15 @@ export function FollowupScreen({ kid, onDone }) {
   return (
     <div style={{ padding: '14px 22px 140px' }}>
       <div style={{
-        fontFamily: tokens.sans, fontSize: 11, fontWeight: 600,
+        fontFamily: tokens.sans, fontSize: fs(11), fontWeight: 600,
         color: tokens.ink3, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 6,
       }}>{t('followup.eyebrow')}</div>
       <div style={{
-        fontFamily: tokens.serif, fontSize: 26, lineHeight: 1.2,
+        fontFamily: tokens.serif, fontSize: fs(26), lineHeight: 1.2,
         color: tokens.ink, letterSpacing: -0.3, marginBottom: 8,
       }}>{t('followup.title')}</div>
       <div style={{
-        fontFamily: tokens.sans, fontSize: 14, lineHeight: 1.5,
+        fontFamily: tokens.sans, fontSize: fs(14), lineHeight: 1.5,
         color: tokens.ink2, marginBottom: 20,
       }}>
         {kid?.name ? t('followup.subhead', { kidName: kid.name }) : t('followup.subheadGeneric')}
@@ -39,7 +39,7 @@ export function FollowupScreen({ kid, onDone }) {
               padding: '14px 16px', borderRadius: 14, cursor: 'pointer',
               background: tokens.surface,
               border: `1.5px solid ${active ? r.color : tokens.line}`,
-              fontFamily: tokens.sans, fontSize: 15, fontWeight: 600,
+              fontFamily: tokens.sans, fontSize: fs(15), fontWeight: 600,
               color: tokens.ink, textAlign: 'start',
               display: 'flex', alignItems: 'center', gap: 12,
               transition: 'all .15s',
@@ -59,7 +59,7 @@ export function FollowupScreen({ kid, onDone }) {
         style={{
           width: '100%', minHeight: 90, padding: 14, borderRadius: 14,
           background: tokens.surface, border: `1px solid ${tokens.line}`,
-          fontFamily: tokens.sans, fontSize: 14, color: tokens.ink,
+          fontFamily: tokens.sans, fontSize: fs(14), color: tokens.ink,
           resize: 'none', outline: 'none', boxSizing: 'border-box',
         }}
       />

@@ -221,7 +221,7 @@
     "couldntReach": "No pudimos contactar a Kidsit AI",
     "forKidJustNow": "Para {{kidName}}, ahora mismo",
     "forYourChildJustNow": "Para tu hijo, ahora mismo",
-    "tryNextTime": "Prueba esto la próxima vez",
+    "tryNextTime": "Puedes probar esto ahora",
     "tonightBeforeBed": "Esta noche, antes de dormir",
     "tonightExpand": "Entiende por qué pasó",
     "whatExpand": "Lo que escuché que describiste",
@@ -288,6 +288,10 @@
     "manageHint": "Gestiona tu plan, restaura o cancela",
     "subscribe": "Suscríbete",
     "subscribeHint": "Desbloquea todo lo que Kidsit AI puede hacer",
+    "fontSizeLabel": "Tamaño de letra",
+    "fontSizeSmall": "Pequeño",
+    "fontSizeMedium": "Mediano",
+    "fontSizeLarge": "Grande",
     "themeLabel": "Tema",
     "themeWarm": "Cálido",
     "themeClinical": "Clínico",
@@ -371,5 +375,85 @@
     "settingsLabel": "Consentimiento de procesamiento por IA",
     "settingsHintEnabled": "El texto se envía a OpenAI para transcripción y orientación.",
     "settingsHintDisabled": "Orientación con IA desactivada. Tocar para activar."
+  },
+  "intake": {
+    "title": "Conoce a tu hijo",
+    "step": "Pregunta {{current}} de {{total}}",
+    "selectUpTo": "Elige hasta {{count}}",
+    "optional": "Opcional — puedes saltarla",
+    "finish": "Finalizar",
+    "thanks": "Gracias — esto nos ayuda a adaptar la orientación a tu familia.",
+    "start": "Conocer a {{name}}",
+    "retake": "Actualizar lo que sabemos",
+    "q": {
+      "age": {
+        "title": "¿Cuántos años tiene {{name}}?",
+        "under1": "Menos de 1",
+        "1": "1",
+        "2": "2",
+        "3": "3",
+        "4": "4",
+        "5": "5",
+        "6": "6",
+        "7": "7",
+        "8": "8",
+        "9": "9",
+        "10": "10",
+        "11": "11",
+        "12": "12",
+        "older": "13 o más",
+        "otherPlaceholder": "Edad"
+      },
+      "focus": {
+        "title": "¿Qué te gustaría mejorar ahora mismo?",
+        "boundaries": "Límites y cooperación",
+        "tantrums": "Rabietas y enfado",
+        "attention": "Atención y aprendizaje",
+        "anxiety": "Ansiedad o confianza en sí mismo",
+        "friendships": "Amistades",
+        "sleep": "Sueño",
+        "siblings": "Relación entre hermanos",
+        "other": "Otro",
+        "otherPlaceholder": "Cuéntanoslo en pocas palabras"
+      },
+      "emotions": {
+        "title": "¿Cómo maneja las emociones normalmente?",
+        "calm": "Suele estar tranquilo",
+        "sensitive": "Sensible",
+        "hardtocalm": "Le cuesta calmarse",
+        "depends": "Depende de la situación"
+      },
+      "challenges": {
+        "title": "¿Cuándo surgen más los momentos difíciles?",
+        "transitions": "Transiciones y salir de casa",
+        "limits": "Peticiones o poner límites",
+        "screens": "Tiempo de pantalla",
+        "homework": "Deberes o responsabilidades",
+        "social": "Situaciones sociales",
+        "bedtime": "Tardes y hora de dormir",
+        "other": "Otro",
+        "otherPlaceholder": "Cuéntanoslo en pocas palabras"
+      },
+      "calms": {
+        "title": "¿Qué le ayuda a calmarse o a cooperar?",
+        "placeholder": "Un abrazo, unos minutos de calma, algo de humor…"
+      },
+      "strengths": {
+        "title": "¿Cuáles son sus principales fortalezas?",
+        "creative": "Creativo",
+        "considerate": "Sensible y considerado",
+        "curious": "Curioso",
+        "social": "Sociable",
+        "independent": "Independiente",
+        "persistent": "Persistente",
+        "funny": "Buen sentido del humor",
+        "other": "Otra",
+        "otherPlaceholder": "Cuéntanoslo en pocas palabras"
+      },
+      "notes": {
+        "title": "¿Algo más que quieras contarnos?",
+        "placeholder": "Lo que nos ayude a entender a tu familia"
+      }
+    }
   }
 }

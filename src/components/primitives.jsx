@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { tokens } from '../theme';
+import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 import { INSET_BOTTOM_MIN } from '../platform';
 
@@ -25,7 +25,7 @@ export function Chip({ active, onClick, children, dot, dense, style = {} }) {
       background: active ? tokens.primary : tokens.surface,
       color: active ? '#fff' : tokens.ink,
       border: `1px solid ${active ? tokens.primary : tokens.line}`,
-      fontFamily: tokens.sans, fontSize: 14, fontWeight: active ? 600 : 500,
+      fontFamily: tokens.sans, fontSize: fs(14), fontWeight: active ? 600 : 500,
       cursor: 'pointer', transition: 'all .15s',
       boxShadow: active ? `0 0 0 3px ${tokens.primarySoft}` : 'none',
       ...style,
@@ -65,13 +65,13 @@ export function ConfirmDialog({ open, title, body, confirmLabel, cancelLabel, da
           <button onClick={onCancel} style={{
             flex: 1, padding: '12px 16px', borderRadius: 12,
             border: `1px solid ${tokens.line}`, background: tokens.surface,
-            color: tokens.ink, fontFamily: tokens.sans, fontSize: 14, fontWeight: 600,
+            color: tokens.ink, fontFamily: tokens.sans, fontSize: fs(14), fontWeight: 600,
             cursor: 'pointer',
           }}>{cancelLabel}</button>
           <button onClick={onConfirm} style={{
             flex: 1, padding: '12px 16px', borderRadius: 12, border: 'none',
             background: danger ? tokens.danger : tokens.primary,
-            color: '#fff', fontFamily: tokens.sans, fontSize: 14, fontWeight: 600,
+            color: '#fff', fontFamily: tokens.sans, fontSize: fs(14), fontWeight: 600,
             cursor: 'pointer',
           }}>{confirmLabel}</button>
         </div>
@@ -94,10 +94,10 @@ export function Label({ children, hint }) {
   return (
     <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 10 }}>
       <div style={{
-        fontFamily: tokens.sans, fontSize: 12, fontWeight: 600,
+        fontFamily: tokens.sans, fontSize: fs(12), fontWeight: 600,
         color: tokens.ink2, letterSpacing: 0.8, textTransform: 'uppercase',
       }}>{children}</div>
-      {hint && <div style={{ fontFamily: tokens.sans, fontSize: 11, color: tokens.ink3 }}>{hint}</div>}
+      {hint && <div style={{ fontFamily: tokens.sans, fontSize: fs(11), color: tokens.ink3 }}>{hint}</div>}
     </div>
   );
 }
@@ -187,7 +187,7 @@ export function Segmented({ options, value, onChange, style = {} }) {
           padding: '8px 14px', borderRadius: 10, border: 'none',
           background: value === o.value ? tokens.surface : 'transparent',
           color: value === o.value ? tokens.ink : tokens.ink2,
-          fontFamily: tokens.sans, fontSize: 13, fontWeight: 600, cursor: 'pointer',
+          fontFamily: tokens.sans, fontSize: fs(13), fontWeight: 600, cursor: 'pointer',
           boxShadow: value === o.value ? '0 1px 3px rgba(11,29,58,0.08)' : 'none',
           transition: 'all .15s',
         }}>{o.label}</button>
@@ -202,7 +202,7 @@ export function PrimaryButton({ children, onClick, disabled, full, style = {} })
       padding: '14px 20px', borderRadius: 14, border: 'none',
       background: disabled ? tokens.surfaceAlt : tokens.ink,
       color: disabled ? tokens.ink3 : '#fff',
-      fontFamily: tokens.sans, fontSize: 15, fontWeight: 600,
+      fontFamily: tokens.sans, fontSize: fs(15), fontWeight: 600,
       cursor: disabled ? 'not-allowed' : 'pointer',
       width: full ? '100%' : 'auto',
       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
@@ -216,7 +216,7 @@ export function GhostButton({ children, onClick, style = {} }) {
     <button onClick={onClick} style={{
       padding: '12px 16px', borderRadius: 12, border: `1px solid ${tokens.line}`,
       background: tokens.surface, color: tokens.ink,
-      fontFamily: tokens.sans, fontSize: 14, fontWeight: 500, cursor: 'pointer',
+      fontFamily: tokens.sans, fontSize: fs(14), fontWeight: 500, cursor: 'pointer',
       display: 'inline-flex', alignItems: 'center', gap: 8, ...style,
     }}>{children}</button>
   );
@@ -251,7 +251,7 @@ export function TabBar({ current, onChange }) {
               color: active ? '#fff' : tokens.ink2,
               padding: '9px 16px', borderRadius: 999, cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: 7,
-              fontFamily: tokens.sans, fontSize: 13, fontWeight: 600,
+              fontFamily: tokens.sans, fontSize: fs(13), fontWeight: 600,
               transition: 'all .15s',
             }}>
               <t.icon s={16} c={active ? '#fff' : tokens.ink2}/>

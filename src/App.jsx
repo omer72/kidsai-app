@@ -1,9 +1,10 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { applyTheme, tokens } from './theme';
+import { applyTheme, applyFontSize, tokens, fs } from './theme';
 import { loadSettings, saveSettings, loadKids, saveKids, loadHistory, appendHistory, updateHistoryEntry, clearAll, kidAgeYears } from './storage';
 import { getGuidance, hasApiKey } from './openai';
 import { initBilling, offUpdate, refreshEntitlement, billingAvailable } from './billing';
+import { InAppReview } from '@capacitor-community/in-app-review';
 import { DEMO_RESPONSE } from './constants';
 import { Icon } from './components/Icons';
 import { IOSDevice } from './components/IOSFrame';
@@ -57,6 +58,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
   const [flowState, setFlowState] = useState({ stage: 'compose', story: '', ctx: null, response: null, error: null });
   const [paywallOpen, setPaywallOpen] = useState(false);
   const [subscriptionOpen, setSubscriptionOpen] = useState(false);
+  const [firstKidPending, setFirstKidPending] = useState(false); // intake open for a just-added first kid
   const [consentRequest, setConsentRequest] = useState(null); // resolver for an in-flight consent ask
 
   const entitled = !!billing?.entitled;
@@ -135,6 +137,11 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
         note: feedback?.note || null,
       };
       setHistory(appendHistory(entry));
+      const positive = feedback?.rating === 'better' || feedback?.rating === 'great';
+      if (positive && !settings.askedForReview) {
+        InAppReview.requestReview().catch(() => {});
+        setSettings({ ...settings, askedForReview: true });
+      }
     }
     setFlowState({ stage: 'compose', story: '', ctx: null, response: null, error: null });
   };
@@ -175,13 +182,14 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
     content = <HistoryScreen kids={visibleKids} history={history} activeKid={activeKidId} onFeedback={setEntryFeedback}/>;
   } else if (tab === 'kids') {
     // Adding the very first kid lands the user on the compose screen so the
-    // path to a first conversation is obvious (they start on this tab).
+    // path to a first conversation is obvious (they start on this tab) — but
+    // only once the intake questionnaire that opens right after is closed.
     const setKidsAndMaybeStart = (next) => {
       const firstKidAdded = kids.length === 0 && next.length > 0;
       setKids(next);
       if (firstKidAdded) {
         setActiveKidId(next[0].id);
-        setTab('home');
+        setFirstKidPending(true);
       }
     };
     content = (
@@ -191,6 +199,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
         history={history}
         entitled={entitled}
         lockedKidCount={lockedKidCount}
+        onIntakeClose={() => { if (firstKidPending) { setFirstKidPending(false); setTab('home'); } }}
         onRequestUpgrade={() => setPaywallOpen(true)}
       />
     );
@@ -232,7 +241,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           boxShadow: `0 4px 10px ${tokens.primary}40`,
         }}><Icon.Sparkle s={14} c="#fff"/></div>
-        <div style={{ fontFamily: tokens.serif, fontSize: 19, fontWeight: 600, color: tokens.ink, letterSpacing: -0.3 }}>{t('brand.wordmark')}</div>
+        <div style={{ fontFamily: tokens.serif, fontSize: fs(19), fontWeight: 600, color: tokens.ink, letterSpacing: -0.3 }}>{t('brand.wordmark')}</div>
       </div>
     </div>
   );
@@ -283,6 +292,7 @@ export function App() {
   const [billing, setBilling] = useState(() => settings.billing || { entitled: false });
 
   applyTheme(settings.theme);
+  applyFontSize(settings.fontSize);
 
   const { fullscreen, scale } = useViewport();
 

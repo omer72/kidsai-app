@@ -217,7 +217,7 @@
     "couldntReach": "Couldn't reach Kidsit AI",
     "forKidJustNow": "For {{kidName}}, just now",
     "forYourChildJustNow": "For your child, just now",
-    "tryNextTime": "Try this next time",
+    "tryNextTime": "You can try this now",
     "tonightBeforeBed": "Tonight, before bed",
     "tonightExpand": "Understand why this happened",
     "whatExpand": "What I heard you describe",
@@ -284,6 +284,10 @@
     "manageHint": "Manage plan, restore, or cancel",
     "subscribe": "Subscribe",
     "subscribeHint": "Unlock everything Kidsit AI can do",
+    "fontSizeLabel": "Font size",
+    "fontSizeSmall": "Small",
+    "fontSizeMedium": "Medium",
+    "fontSizeLarge": "Large",
     "themeLabel": "Theme",
     "themeWarm": "Warm",
     "themeClinical": "Clinical",
@@ -367,5 +371,85 @@
     "settingsLabel": "AI processing consent",
     "settingsHintEnabled": "Story text sent to OpenAI for transcription + guidance.",
     "settingsHintDisabled": "AI guidance disabled. Tap to enable."
+  },
+  "intake": {
+    "title": "Get to know your child",
+    "step": "Question {{current}} of {{total}}",
+    "selectUpTo": "Select up to {{count}}",
+    "optional": "Optional — skip if you like",
+    "finish": "Finish",
+    "thanks": "Thank you — this helps us tailor the guidance to your family.",
+    "start": "Get to know {{name}}",
+    "retake": "Update what we know",
+    "q": {
+      "age": {
+        "title": "How old is {{name}}?",
+        "under1": "Under 1",
+        "1": "1",
+        "2": "2",
+        "3": "3",
+        "4": "4",
+        "5": "5",
+        "6": "6",
+        "7": "7",
+        "8": "8",
+        "9": "9",
+        "10": "10",
+        "11": "11",
+        "12": "12",
+        "older": "13 or older",
+        "otherPlaceholder": "Age"
+      },
+      "focus": {
+        "title": "What would you most like to improve right now?",
+        "boundaries": "Boundaries and cooperation",
+        "tantrums": "Tantrums and anger",
+        "attention": "Attention and learning",
+        "anxiety": "Anxiety or self-confidence",
+        "friendships": "Friendships",
+        "sleep": "Sleep",
+        "siblings": "Sibling relationships",
+        "other": "Other",
+        "otherPlaceholder": "Tell us in a few words"
+      },
+      "emotions": {
+        "title": "How does your child usually manage emotions?",
+        "calm": "Usually calm",
+        "sensitive": "Sensitive",
+        "hardtocalm": "Finds it hard to calm down",
+        "depends": "Depends on the situation"
+      },
+      "challenges": {
+        "title": "When do challenges come up most often?",
+        "transitions": "Transitions and leaving home",
+        "limits": "Requests or setting limits",
+        "screens": "Screen time",
+        "homework": "Homework or responsibilities",
+        "social": "Social situations",
+        "bedtime": "Evenings and bedtime",
+        "other": "Other",
+        "otherPlaceholder": "Tell us in a few words"
+      },
+      "calms": {
+        "title": "What helps your child calm down or cooperate?",
+        "placeholder": "A hug, a few quiet minutes, a bit of humor…"
+      },
+      "strengths": {
+        "title": "What are your child's main strengths?",
+        "creative": "Creative",
+        "considerate": "Sensitive and considerate",
+        "curious": "Curious",
+        "social": "Social",
+        "independent": "Independent",
+        "persistent": "Persistent",
+        "funny": "Good sense of humor",
+        "other": "Other",
+        "otherPlaceholder": "Tell us in a few words"
+      },
+      "notes": {
+        "title": "Anything else you'd like us to know?",
+        "placeholder": "Anything that helps us understand your family"
+      }
+    }
   }
 }

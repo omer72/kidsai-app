@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { tokens } from '../theme';
+import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 
 export function AIConsentModal({ onAgree, onDecline, fullscreen }) {
@@ -28,7 +28,7 @@ export function AIConsentModal({ onAgree, onDecline, fullscreen }) {
             <Icon.Sparkle s={18} c={tokens.primary}/>
           </div>
           <div style={{
-            fontFamily: tokens.serif, fontSize: 22, fontWeight: 500,
+            fontFamily: tokens.serif, fontSize: fs(22), fontWeight: 500,
             color: tokens.ink, letterSpacing: -0.3, lineHeight: 1.15,
           }}>
             {t('aiConsent.title')}
@@ -36,7 +36,7 @@ export function AIConsentModal({ onAgree, onDecline, fullscreen }) {
         </div>
 
         <div style={{
-          fontFamily: tokens.sans, fontSize: 14, lineHeight: 1.55, color: tokens.ink2,
+          fontFamily: tokens.sans, fontSize: fs(14), lineHeight: 1.55, color: tokens.ink2,
           marginBottom: 10,
         }}>
           {t('aiConsent.body1')}
@@ -44,19 +44,19 @@ export function AIConsentModal({ onAgree, onDecline, fullscreen }) {
         <ul style={{
           margin: '0 0 14px',
           paddingInlineStart: '20px',
-          fontFamily: tokens.sans, fontSize: 13.5, lineHeight: 1.55, color: tokens.ink,
+          fontFamily: tokens.sans, fontSize: fs(13.5), lineHeight: 1.55, color: tokens.ink,
         }}>
           <li style={{ marginBottom: 8 }}>{t('aiConsent.bullet1')}</li>
           <li>{t('aiConsent.bullet2')}</li>
         </ul>
         <div style={{
-          fontFamily: tokens.sans, fontSize: 13, lineHeight: 1.55, color: tokens.ink2,
+          fontFamily: tokens.sans, fontSize: fs(13), lineHeight: 1.55, color: tokens.ink2,
           marginBottom: 10,
         }}>
           {t('aiConsent.body2')}
         </div>
         <div style={{
-          fontFamily: tokens.sans, fontSize: 12, lineHeight: 1.55, color: tokens.ink3,
+          fontFamily: tokens.sans, fontSize: fs(12), lineHeight: 1.55, color: tokens.ink3,
           marginBottom: 18,
         }}>
           {t('aiConsent.body3')}
@@ -65,7 +65,7 @@ export function AIConsentModal({ onAgree, onDecline, fullscreen }) {
         <button onClick={onAgree} style={{
           width: '100%', padding: '15px 20px', borderRadius: 16, border: 'none',
           background: tokens.ink, color: '#fff', cursor: 'pointer',
-          fontFamily: tokens.sans, fontSize: 15, fontWeight: 600,
+          fontFamily: tokens.sans, fontSize: fs(15), fontWeight: 600,
           marginBottom: 8,
         }}>
           {t('aiConsent.agree')}
@@ -73,7 +73,7 @@ export function AIConsentModal({ onAgree, onDecline, fullscreen }) {
         <button onClick={onDecline} style={{
           width: '100%', padding: '12px 20px', borderRadius: 14,
           background: 'transparent', border: 'none', cursor: 'pointer',
-          fontFamily: tokens.sans, fontSize: 13, color: tokens.ink3, fontWeight: 500,
+          fontFamily: tokens.sans, fontSize: fs(13), color: tokens.ink3, fontWeight: 500,
         }}>
           {t('aiConsent.decline')}
         </button>

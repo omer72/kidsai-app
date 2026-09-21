@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { tokens } from '../theme';
+import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 import { IOSStatusBar } from './IOSFrame';
 
@@ -88,7 +88,7 @@ function PatternArt() {
       <div style={{
         position: 'absolute', top: 10, right: 0, padding: '6px 10px',
         background: '#FFF', borderRadius: 10, border: `1px solid ${tokens.line}`,
-        fontFamily: tokens.sans, fontSize: 10, fontWeight: 700, color: tokens.primary,
+        fontFamily: tokens.sans, fontSize: fs(10), fontWeight: 700, color: tokens.primary,
         letterSpacing: 0.5, boxShadow: '0 4px 12px rgba(11,29,58,0.06)',
       }}>{useTranslation().t('onboarding.repeatingBadge')}</div>
     </div>
@@ -121,7 +121,7 @@ export function OnboardingScreen({ onDone, fullscreen }) {
         position: 'absolute', top: fullscreen ? 'max(20px, env(safe-area-inset-top))' : 58,
         right: 22, zIndex: 20,
         background: 'transparent', border: 'none', cursor: 'pointer',
-        fontFamily: tokens.sans, fontSize: 13, color: tokens.ink3, fontWeight: 500,
+        fontFamily: tokens.sans, fontSize: fs(13), color: tokens.ink3, fontWeight: 500,
       }}>{t('common.skip')}</button>
 
       <div style={{
@@ -138,14 +138,14 @@ export function OnboardingScreen({ onDone, fullscreen }) {
 
         <div>
           <div style={{
-            fontFamily: tokens.sans, fontSize: 11, fontWeight: 700, color: tokens.primary,
+            fontFamily: tokens.sans, fontSize: fs(11), fontWeight: 700, color: tokens.primary,
             letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: 12,
           }}>{s.eyebrow}</div>
           <div style={{
-            fontFamily: tokens.serif, fontSize: 28, lineHeight: 1.15, color: tokens.ink,
+            fontFamily: tokens.serif, fontSize: fs(28), lineHeight: 1.15, color: tokens.ink,
             letterSpacing: -0.6, fontWeight: 500, marginBottom: 14,
           }}>{s.title}</div>
-          <div style={{ fontFamily: tokens.sans, fontSize: 15, lineHeight: 1.55, color: tokens.ink2 }}>
+          <div style={{ fontFamily: tokens.sans, fontSize: fs(15), lineHeight: 1.55, color: tokens.ink2 }}>
             {s.body}
           </div>
         </div>

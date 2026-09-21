@@ -31,6 +31,8 @@ export function loadSettings() {
   const s = read(KEYS.settings, { theme: 'warm', flow: 'A' });
   if (!s.billing) s.billing = DEFAULT_BILLING;
   if (typeof s.aiConsent !== 'boolean') s.aiConsent = false;
+  if (!s.fontSize) s.fontSize = 'small';
+  if (typeof s.askedForReview !== 'boolean') s.askedForReview = false;
   return s;
 }
 

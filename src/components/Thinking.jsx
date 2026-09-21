@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { tokens } from '../theme';
+import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 
 export function ThinkingScreen() {
@@ -40,7 +40,7 @@ export function ThinkingScreen() {
           </div>
         </div>
       </div>
-      <div style={{ ...tokens.type.h2, fontSize: 22, color: tokens.ink, marginBottom: 22, textAlign: 'center' }}>
+      <div style={{ ...tokens.type.h2, fontSize: fs(22), color: tokens.ink, marginBottom: 22, textAlign: 'center' }}>
         {t('thinking.title')}{'.'.repeat(dots)}
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%', maxWidth: 300 }}>
