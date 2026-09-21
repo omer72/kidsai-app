@@ -16,8 +16,8 @@ android {
         applicationId "ai.kidsit.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 15
-        versionName "1.0.10"
+        versionCode 16
+        versionName "1.0.11"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -37,7 +37,12 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            // R8 shrink + obfuscate: Play flags DEX obfuscation under 25%.
+            // Capacitor, RevenueCat and the review plugin ship consumer rules
+            // that keep their reflected entry points; app-specific keeps live
+            // in proguard-rules.pro.
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             if (keystorePropertiesFile.exists()) {
                 signingConfig signingConfigs.release
