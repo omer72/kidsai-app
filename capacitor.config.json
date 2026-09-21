@@ -19,8 +19,8 @@
       "resizeOnFullScreen": false
     },
     "SplashScreen": {
-      "launchShowDuration": 2000,
-      "launchAutoHide": false,
+      "launchShowDuration": 600,
+      "launchAutoHide": true,
       "backgroundColor": "#040217",
       "iosSpinnerStyle": "small",
       "showSpinner": false,

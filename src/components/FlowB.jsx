@@ -34,7 +34,7 @@ export function FlowB({ kids, activeKid, setActiveKid, onSubmit, ensureConsent }
   useEffect(() => () => cancelRecording(), []);
 
   const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-  const canSubmit = !transcribing && (story.trim() || hasRecording) && ctx.location && ctx.mood && ctx.urgency;
+  const canSubmit = kids.length > 0 && !transcribing && (story.trim() || hasRecording) && ctx.location && ctx.mood && ctx.urgency;
 
   useHardwareBack(() => (recording || transcribing), 60); // don't interrupt capture
 

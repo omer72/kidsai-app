@@ -104,6 +104,7 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
     const h = new Date().getHours();
     const greeting = h < 12 ? t('flowA.greeting.morning') : h < 18 ? t('flowA.greeting.afternoon') : t('flowA.greeting.evening');
     const activeKidObj = kids.find((k) => k.id === activeKid) || kids[0];
+    const noKid = kids.length === 0;
     return (
       <div style={{ padding: '14px 22px 140px', minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
         <div style={{ marginBottom: 16 }}>
@@ -285,15 +286,16 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
             onStart={handleMicStart}
             onStop={handleMicStop}
             size={156}
-            disabled={kids.length === 0 || stage === 'transcribing'}
+            disabled={noKid || stage === 'transcribing'}
           />
           <div style={{ marginTop: 16, fontFamily: tokens.sans, fontSize: fs(13), color: tokens.ink3, fontWeight: 500 }}>
             {stage === 'recording' ? t('flowA.releaseWhenDone') : stage === 'transcribing' ? t('common.working') : t('flowA.pressAndHold')}
           </div>
-          <button onClick={() => setStage('recorded')} disabled={stage === 'transcribing'} style={{
-            marginTop: 14, background: 'transparent', border: 'none', cursor: stage === 'transcribing' ? 'not-allowed' : 'pointer',
+          <button onClick={() => setStage('recorded')} disabled={noKid || stage === 'transcribing'} style={{
+            marginTop: 14, background: 'transparent', border: 'none',
+            cursor: noKid || stage === 'transcribing' ? 'not-allowed' : 'pointer',
             fontFamily: tokens.sans, fontSize: fs(13), color: tokens.primary, fontWeight: 600,
-            opacity: stage === 'transcribing' ? 0.5 : 1,
+            opacity: noKid || stage === 'transcribing' ? 0.5 : 1,
           }}>
             {t('flowA.orTypeItOut')}
           </button>

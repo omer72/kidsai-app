@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Shows behind the transparent system bars under edge-to-edge. Matches
+         the default (warm) theme background in src/theme.js. -->
+    <color name="appBackground">#FAF6EF</color>
+</resources>
