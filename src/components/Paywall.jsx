@@ -188,13 +188,12 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
             { t: t('paywall.features.trackEveryChild.title'), s: t('paywall.features.trackEveryChild.body') },
             { t: t('paywall.features.unlimitedMoments.title'), s: t('paywall.features.unlimitedMoments.body') },
             { t: t('paywall.features.patternDetection.title'), s: t('paywall.features.patternDetection.body') },
-            { t: t('paywall.features.coParentSharing.title'), s: t('paywall.features.coParentSharing.body') },
             { t: t('paywall.features.private.title'), s: t('paywall.features.private.body') },
-          ].map((f, i) => (
+          ].map((f, i, features) => (
             <div key={i} style={{
               display: 'flex', gap: 12, alignItems: 'flex-start',
               padding: '10px 0',
-              borderBottom: i < 4 ? `1px solid ${tokens.line}` : 'none',
+              borderBottom: i < features.length - 1 ? `1px solid ${tokens.line}` : 'none',
             }}>
               <div style={{
                 width: 24, height: 24, borderRadius: 24, flexShrink: 0,

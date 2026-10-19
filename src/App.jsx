@@ -137,11 +137,19 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
         note: feedback?.note || null,
       };
       setHistory(appendHistory(entry));
-      const positive = feedback?.rating === 'better' || feedback?.rating === 'great';
-      if (positive && !settings.askedForReview) {
-        InAppReview.requestReview().catch(() => {});
-        setSettings({ ...settings, askedForReview: true });
+      // "Didn't help" is the worse/same follow-up. Those closes never count
+      // and never prompt. A positive close (helped / really helped) on the
+      // 3rd counted use asks once. The OS rate-limits the sheet; we do not retry.
+      const rating = feedback?.rating || null;
+      const didntHelp = rating === 'worse' || rating === 'same';
+      const positive = rating === 'better' || rating === 'great';
+      const reviewUses = (settings.reviewUses || 0) + (didntHelp ? 0 : 1);
+      const native = !!(window.Capacitor?.isNativePlatform?.());
+      const shouldAsk = positive && reviewUses >= 3 && !settings.askedForReview && native;
+      if (reviewUses !== (settings.reviewUses || 0) || shouldAsk) {
+        setSettings({ ...settings, reviewUses, askedForReview: settings.askedForReview || shouldAsk });
       }
+      if (shouldAsk) InAppReview.requestReview().catch(() => {});
     }
     setFlowState({ stage: 'compose', story: '', ctx: null, response: null, error: null });
   };

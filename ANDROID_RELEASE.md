@@ -107,7 +107,7 @@ SUBSCRIPTION
 Kidsit AI is free to try. Unlimited guidance requires a subscription, billed monthly or annually through Google Play. Cancel anytime in your Google Play account.
 
 QUESTIONS OR FEEDBACK
-Email us at omere@appcard.com. We read every message.
+Email us at omer+support@kidsit.ai. We read every message.
 ```
 
 ### Graphics (all generated, sitting in `marketing/play/`)
@@ -131,7 +131,7 @@ cd marketing && node render-feature-graphic.mjs
 
 ### Contact
 
-- **Email (public on store page):** `omere@appcard.com`
+- **Email (public on store page):** `omer+support@kidsit.ai`
 - **Website:** (leave blank unless you want one public)
 - **Privacy policy URL:** `https://kidsit.ai/privacy`
 
@@ -323,7 +323,7 @@ When ready for production:
 |------|-------|
 | Package name | `ai.kidsit.app` |
 | Privacy policy URL | `https://kidsit.ai/privacy` |
-| Contact email | `omere@appcard.com` |
+| Contact email | `omer+support@kidsit.ai` |
 | Keystore path | `~/keystores/kidsai-upload.jks` |
 | Keystore config | `android/keystore.properties` |
 | Version (current) | `versionCode 1`, `versionName "1.0"` in `android/app/build.gradle:13-14` |

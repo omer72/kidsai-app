@@ -39,23 +39,23 @@ export const URGENCY = [
 // Fallback response used when no API key is set, or as a placeholder.
 export const DEMO_RESPONSE = {
   title: 'A need for control, not defiance',
-  summary: 'Four-year-olds often melt down at transitions because they feel powerless — not because they want to disobey. Maya is likely tired, overstimulated, and trying to hold on to a good moment.',
+  summary: 'Two-year-olds often melt down when a good moment has to end. Maya is likely tired and trying to hold on, not trying to disobey.',
   sections: [
     {
       kind: 'what',
       label: 'What happened',
-      body: 'Leaving the park triggered a big protest. She hit the ground and refused to walk. You felt the eyes of other parents and asked her twice, then lifted her.',
+      body: 'Leaving the park triggered a big protest. Your toddler hit the ground and refused to walk. You felt the eyes of other parents and asked her twice, then lifted her.',
     },
     {
       kind: 'why',
       label: 'Why it happened',
-      body: 'At 4, the prefrontal cortex is still forming. Fun + ending + hunger + public setting is a four-stack of stressors. Her body went into fight mode before her words could catch up.',
+      body: 'At 2, fun ending, hunger, and a public setting stack up fast. Her body went into protest before she had words for it.',
     },
     {
       kind: 'try',
       label: 'What to try next time',
       items: [
-        { icon: '🎯', h: 'Signal transitions early', b: 'Give two warnings before leaving — a 10-minute and a 2-minute. Let her pick the last thing she does.' },
+        { icon: '🎯', h: 'Signal transitions early', b: 'Give two short warnings before leaving, then let her pick the last thing she does.' },
         { icon: '❤️', h: 'Name the feeling first', b: '"You were having so much fun. It’s really hard to stop." Don’t fix, just name it.' },
         { icon: '🤝', h: 'Offer a small choice', b: '"Do you want to walk to the car holding my hand, or hopping?" Control returns, meltdown softens.' },
       ],

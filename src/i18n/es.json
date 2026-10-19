@@ -32,12 +32,12 @@
     "or": "o"
   },
   "welcome": {
-    "badge": "La confianza de 24.000 familias",
+    "badge": "Creada por un padre, para padres",
     "headline1": "Criar es",
     "headline2": "difícil.",
     "headline3a": "No tienes que",
     "headline3b": "hacerlo solo.",
-    "subhead": "Cuenta lo que acaba de pasar. Recibe orientación cálida y basada en ciencia en 12 segundos.",
+    "subhead": "Cuenta lo que acaba de pasar. Recibe orientación cálida y basada en ciencia en ~10 segundos.",
     "cta": "Prueba tu primer momento — gratis",
     "alreadySubscriber": "¿Ya tienes suscripción?",
     "disclaimer": "Kidsit AI ofrece orientación reflexiva, no consejo médico ni psicológico. No diagnostica ni trata ninguna condición. Si tienes inquietudes clínicas sobre tu hijo o hija, consulta a un profesional cualificado.",
@@ -92,16 +92,12 @@
         "body": "Graba, registra, aprende — todas las veces que la crianza lo pida."
       },
       "patternDetection": {
-        "title": "Detección de patrones",
-        "body": "Aviso semanal de detonantes y de lo que realmente está funcionando."
-      },
-      "coParentSharing": {
-        "title": "Compartir con tu pareja",
-        "body": "Envía cualquier momento a tu pareja para que estén alineados."
+        "title": "Memoria de momentos anteriores",
+        "body": "Los momentos anteriores de cada hijo entran en la siguiente respuesta, incluido lo que no ayudó."
       },
       "private": {
         "title": "Privado. Siempre.",
-        "body": "Cifrado de extremo a extremo. Nunca se usa para entrenar modelos."
+        "body": "Los momentos se quedan en este dispositivo. Nada de lo que escribes se usa para entrenar modelos."
       }
     },
     "yearly": "Anual",
@@ -154,7 +150,7 @@
     "orTypeItOut": "O escríbelo",
     "yourStory": "Tu historia",
     "tellWhatHappened": "Cuéntale a Kidsit AI lo que pasó.",
-    "storyPlaceholder": "Se tiró al suelo en el estacionamiento del parque y empezó a gritar. Todos miraban. Le pregunté dos veces…",
+    "storyPlaceholder": "Mi hija de 2 años se tiró al suelo en el estacionamiento del parque y empezó a gritar. Todos miraban. Le pregunté dos veces…",
     "addLabel": "Añadir",
     "kidYears": "{{age}} años",
     "kidYearsShort": "{{age}}a",

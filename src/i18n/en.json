@@ -32,12 +32,12 @@
     "or": "or"
   },
   "welcome": {
-    "badge": "Trusted by 24,000 parents",
+    "badge": "Built by a parent, for parents",
     "headline1": "Parenting is",
     "headline2": "hard.",
     "headline3a": "You don't have",
     "headline3b": "to do it alone.",
-    "subhead": "Whisper what just happened. Get warm, science-backed guidance in 12 seconds.",
+    "subhead": "Whisper what just happened. Get warm, science-backed guidance in ~10 seconds.",
     "cta": "Try your first moment — free",
     "alreadySubscriber": "Already a subscriber?",
     "disclaimer": "Kidsit AI offers reflective guidance, not medical or psychological advice. It does not diagnose or treat any condition. For clinical concerns about your child, please consult a qualified professional.",
@@ -88,16 +88,12 @@
         "body": "Record, log, learn — as often as parenting demands."
       },
       "patternDetection": {
-        "title": "Pattern detection",
-        "body": "Weekly notice of triggers and what's actually working."
-      },
-      "coParentSharing": {
-        "title": "Co-parent sharing",
-        "body": "Send any moment to your partner so you're aligned."
+        "title": "Memory of past moments",
+        "body": "Earlier moments with each child are used in the next answer, including what didn't help."
       },
       "private": {
         "title": "Private. Always.",
-        "body": "End-to-end encrypted. Never used to train models."
+        "body": "Moments stay on this device. Nothing you write is used to train models."
       }
     },
     "yearly": "Yearly",
@@ -150,7 +146,7 @@
     "orTypeItOut": "Or type it out",
     "yourStory": "Your story",
     "tellWhatHappened": "Tell Kidsit AI what happened.",
-    "storyPlaceholder": "She dropped to the ground in the park parking lot and started screaming. Everyone was looking. I tried asking her twice…",
+    "storyPlaceholder": "My 2-year-old dropped onto the floor in the park parking lot and started screaming. Everyone was looking. I tried asking her twice…",
     "addLabel": "Add",
     "kidYears": "{{age}} years",
     "kidYearsShort": "{{age}}y",
