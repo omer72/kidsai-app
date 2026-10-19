@@ -59,14 +59,14 @@ Your moments and child profiles live on your device. We don't sell data, we don'
 
 FEATURES
 • Press-and-hold voice or type — your choice
-• Per-child profiles with patterns over time
+• One profile per child, with past moments informing the next answer
 • "How did it go?" feedback after each response so the coach learns
 • Beautifully readable history of every moment you logged
 • Two flow styles: guided (one question at a time) or dense (all on one page)
 • Three themes: warm cream, clinical blue, dusk navy
 
 START FREE — TRY WITH ONE CHILD
-You can use Kidsit AI free with one child, no time limit. Add multiple children, unlock the full experience, and start your free trial inside the app.
+You can use Kidsit AI free with one child, no time limit. Premium adds unlimited children. Start your free trial inside the app.
 
 SUBSCRIPTION
 • Kidsit AI Premium Yearly — $59.99/year (7-day free trial for new subscribers)
@@ -236,14 +236,14 @@ Both products need a **Display Name** and **Description** for the App Store list
 | | |
 |---|---|
 | **Display Name** | Kidsit AI Premium Monthly |
-| **Description** | Unlimited children, unlimited moments, smarter guidance over time. Cancel anytime. |
+| **Description** | Unlimited children. Past moments inform the next answer. Cancel anytime. |
 
 ### Kidsit AI Premium Yearly
 
 | | |
 |---|---|
 | **Display Name** | Kidsit AI Premium Yearly |
-| **Description** | Best value — same unlimited everything, billed once a year. Includes 7-day free trial. |
+| **Description** | Best value. Unlimited children, billed once a year. Includes a 7-day free trial. |
 
 ### Introductory Offer (on Yearly only)
 

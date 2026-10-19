@@ -91,20 +91,20 @@ HOW IT WORKS
 Describe what just happened, or what's coming up. Kidsit AI replies with calm, practical guidance you can actually use — grounded in child development research, not generic advice.
 
 WHAT YOU CAN DO
-• Log parenting moments across each of your kids
-• Get instant, personalized guidance for tantrums, transitions, sleep, screens, sibling conflict, and more
-• Build a history of what works for your family
-• Quick text or voice input — describe the moment in your own words
-• Multiple kids, ages, and personalities supported
+• Describe a moment in your own words, by text or voice
+• Get calm, practical guidance for tantrums, transitions, sleep, screens, sibling conflict, and more
+• One child is free, with no time limit. Premium adds unlimited children
+• Past moments with that child inform the next answer
+• Moments stay on this device
 
 WHO IT'S FOR
 Parents of toddlers, preschoolers, and school-age kids who want a calm second opinion in the heat of the moment — without scrolling through forums or waiting for a therapy appointment.
 
 PRIVACY
-Your moments stay private. We don't sell your data. Kidsit AI is designed for parents — not children — and never asks for your child's personal information.
+Moments stay on this device. We don't sell your data. Kidsit AI is designed for parents — not children — and never asks for your child's personal information.
 
 SUBSCRIPTION
-Kidsit AI is free to try. Unlimited guidance requires a subscription, billed monthly or annually through Google Play. Cancel anytime in your Google Play account.
+One child is free, with no time limit. Premium is for unlimited children, billed monthly or yearly through Google Play. Cancel anytime in your Google Play account.
 
 QUESTIONS OR FEEDBACK
 Email us at omer+support@kidsit.ai. We read every message.
@@ -141,8 +141,9 @@ cd marketing && node render-feature-graphic.mjs
 Kidsit AI helps parents handle tough parenting moments with calm,
 expert-backed guidance. Describe what happened — a tantrum, a tough
 question, a sibling fight — and get a thoughtful response you can
-actually use. Track moments across each child, learn what works,
-and grow your toolkit over time.
+actually use. One child is free, with no time limit. Premium adds
+unlimited children. Past moments inform the next answer, and moments
+stay on the device.
 
 This is our first Android release. Welcome aboard.
 ```
