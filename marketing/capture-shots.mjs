@@ -131,17 +131,63 @@ async function shoot(page, lang, size, name) {
   console.log(' ', file.replace(root + '/', ''));
 }
 
-async function reveal(page, selector, scrollerSelector) {
-  await page.evaluate(({ selector, scrollerSelector }) => {
-    const el = document.querySelector(selector);
-    const scroller = document.querySelector(scrollerSelector);
-    if (!el || !scroller) return;
-    const tab = document.querySelector('[data-tabbar]');
-    const limit = (tab ? tab.getBoundingClientRect().top : scroller.getBoundingClientRect().bottom) - 12;
-    const bottom = el.getBoundingClientRect().bottom;
-    if (bottom > limit) scroller.scrollTop += bottom - limit;
-  }, { selector, scrollerSelector });
+async function framePaywall(page) {
+  await page.evaluate(() => {
+    const fine = document.querySelector('[data-paywall-fine]');
+    const scroller = document.querySelector('[data-paywall-scroll]');
+    const sparkle = document.querySelector('[data-paywall-sparkle]');
+    const bar = document.querySelector('[data-paywall-bar]');
+    if (!fine || !scroller) return;
+    scroller.scrollTop = 0;
+    const limit = scroller.getBoundingClientRect().bottom - 8;
+    const overflow = fine.getBoundingClientRect().bottom - limit;
+    if (overflow > 0) scroller.scrollTop += overflow;
+    if (!sparkle || !bar) return;
+    const minTop = bar.getBoundingClientRect().bottom + 2;
+    const clipped = minTop - sparkle.getBoundingClientRect().top;
+    if (clipped > 0) scroller.scrollTop = Math.max(0, scroller.scrollTop - clipped);
+  });
   await page.waitForTimeout(180);
+}
+
+// Shot 03 stays at the top of the answer. A row that would be sliced by the
+// tab bar is pushed fully below it, so the frame ends on a whole card.
+async function frameAnswer(page) {
+  await page.waitForSelector('[data-response-title]', { timeout: 8000 });
+  const placed = await page.evaluate(() => {
+    const scroller = document.querySelector('[data-kb-scroll]');
+    const tab = document.querySelector('[data-tabbar]');
+    if (scroller) scroller.scrollTop = 0;
+    if (!scroller || !tab) return { missing: true };
+    // The tab bar's top padding fades out, so a row can clear the
+    // element's box and still be sliced by the opaque pill.
+    const pill = tab.querySelector('div');
+    const limit = (pill || tab).getBoundingClientRect().top;
+    const row = [...document.querySelectorAll('[data-shot-row]')].find((el) => {
+      const box = el.getBoundingClientRect();
+      return box.top < limit - 1 && box.bottom > limit + 1 && box.top > 0;
+    });
+    if (!row) return { limit, pushed: false };
+    const before = row.getBoundingClientRect().top;
+    const extra = limit - before + 4;
+    const spacer = document.createElement('div');
+    spacer.setAttribute('data-shot-spacer', '');
+    spacer.style.height = `${extra}px`;
+    spacer.style.flexShrink = '0';
+    row.parentNode.insertBefore(spacer, row);
+    return {
+      limit,
+      pushed: true,
+      extra,
+      before,
+      after: row.getBoundingClientRect().top,
+      text: (row.innerText || '').slice(0, 32),
+    };
+  });
+  if (placed?.pushed && placed.after < placed.limit) {
+    throw new Error(`could not clear the tab bar ${JSON.stringify(placed)}`);
+  }
+  await page.waitForTimeout(120);
 }
 
 async function assertBox(page, selector, label, { aboveTab = false } = {}) {
@@ -201,13 +247,26 @@ async function capture(browser, lang, size) {
   await clickText(page, lang === 'he' ? 'נסו את הרגע הראשון' : 'Try your first moment');
   await clickText(page, lang === 'he' ? 'דלג' : 'Skip');
   await page.waitForTimeout(300);
-  await reveal(page, '[data-paywall-fine]', '[data-paywall-scroll]');
+  await framePaywall(page);
   const close = await assertBox(page, '[data-paywall-close]', 'paywall close');
   if (close.top + 0.5 < close.sat) throw new Error(`paywall close sits in the status bar ${JSON.stringify(close)}`);
   if (close.left < 12 || close.right > close.w - 12) throw new Error(`paywall close clipped by the corner ${JSON.stringify(close)}`);
   await assertBox(page, '[data-paywall-fine]', 'paywall fine print');
   const headline = await assertBox(page, '[data-paywall-headline]', 'paywall headline');
   if (headline.top < close.bottom - 2) throw new Error(`paywall headline runs under the close button ${JSON.stringify({ headline, close })}`);
+  const sparkle = await page.evaluate(() => {
+    const el = document.querySelector('[data-paywall-sparkle]');
+    const bar = document.querySelector('[data-paywall-bar]');
+    if (!el) return { hidden: true };
+    const box = el.getBoundingClientRect();
+    const barBottom = bar ? bar.getBoundingClientRect().bottom : 0;
+    return { top: box.top, bottom: box.bottom, barBottom };
+  });
+  if (!sparkle.hidden && sparkle.top < sparkle.barBottom - 1) {
+    throw new Error(`paywall sparkle cut by the top bar ${JSON.stringify(sparkle)}`);
+  }
+  const apple = await page.evaluate(() => /Apple ID|אפל|Apple/.test(document.body.innerText) && /Apple ID/.test(document.body.innerText));
+  if (android && apple) throw new Error('Android paywall still mentions Apple ID');
   await shoot(page, lang, size, '05');
 
   await load(page, lang, {
@@ -254,8 +313,48 @@ async function capture(browser, lang, size) {
     await clickText(page, i < chips.length - 1 ? (lang === 'he' ? 'הבא' : 'Next') : (lang === 'he' ? 'קבל הכוונה' : 'Get guidance'));
   }
   await page.waitForTimeout(2200);
-  await reveal(page, '[data-tonight]', '[data-kb-scroll]');
-  await assertBox(page, '[data-tonight]', 'tonight card', { aboveTab: true });
+  await frameAnswer(page);
+  const answer = await page.evaluate(() => {
+    const scroller = document.querySelector('[data-kb-scroll]');
+    const tab = document.querySelector('[data-tabbar]');
+    const boxOf = (selector) => {
+      const el = document.querySelector(selector);
+      if (!el) return null;
+      const box = el.getBoundingClientRect();
+      return { top: box.top, bottom: box.bottom };
+    };
+    const view = scroller.getBoundingClientRect();
+    const pill = tab.querySelector('div');
+    const tabTop = (pill || tab).getBoundingClientRect().top;
+    const rows = [...document.querySelectorAll('[data-shot-row]')].map((el) => {
+      const box = el.getBoundingClientRect();
+      return { top: box.top, bottom: box.bottom, text: (el.innerText || '').slice(0, 40) };
+    });
+    const cut = rows.filter((row) => row.top < tabTop - 1 && row.bottom > tabTop + 1 && row.top >= view.top - 1 && row.bottom - row.top < tabTop);
+    return {
+      scroll: scroller.scrollTop,
+      viewTop: view.top,
+      tabTop,
+      title: boxOf('[data-response-title]'),
+      forKid: boxOf('[data-response-for]'),
+      sparkle: boxOf('[data-response-sparkle]'),
+      why: boxOf('[data-understand-why]'),
+      cut,
+    };
+  });
+  const fullyIn = (box, label) => {
+    if (!box) throw new Error(`${label} missing`);
+    if (box.top < answer.viewTop - 1 || box.bottom > answer.tabTop + 1) {
+      throw new Error(`${label} clipped ${JSON.stringify(answer)}`);
+    }
+  };
+  fullyIn(answer.title, 'response title');
+  fullyIn(answer.forKid, 'for kid');
+  fullyIn(answer.sparkle, 'response sparkle');
+  if (answer.why && answer.why.top < answer.tabTop - 1 && answer.why.bottom > answer.tabTop + 1) {
+    throw new Error(`understand why cut by the tab bar ${JSON.stringify(answer)}`);
+  }
+  if (answer.cut.length) throw new Error(`answer row cut by the tab bar ${JSON.stringify(answer.cut)}`);
   await shoot(page, lang, size, '03');
 
   await context.close();

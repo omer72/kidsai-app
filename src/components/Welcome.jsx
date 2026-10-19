@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 import { IOSStatusBar } from './IOSFrame';
-import { safeBottom, safeTop } from '../platform';
+import { isAndroidPlatform, safeBottom, safeTop } from '../platform';
 import { billingAvailable, restorePurchases } from '../billing';
 
 export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
@@ -13,8 +13,9 @@ export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
 
   const handleRestore = async () => {
     setRestoreMsg('');
+    const android = isAndroidPlatform();
     if (!billingAvailable()) {
-      setRestoreMsg(t('welcome.restoreUnavailable'));
+      setRestoreMsg(t(android ? 'welcome.restoreUnavailableAndroid' : 'welcome.restoreUnavailable'));
       return;
     }
     setRestoring(true);
@@ -23,7 +24,7 @@ export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
       if (next.entitled) {
         onRestored?.(next);
       } else {
-        setRestoreMsg(t('welcome.noSubscriptionFound'));
+        setRestoreMsg(t(android ? 'welcome.noSubscriptionFoundAndroid' : 'welcome.noSubscriptionFound'));
       }
     } catch (err) {
       setRestoreMsg(err?.message || t('welcome.restoreFailed'));

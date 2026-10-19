@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 import { restorePurchases } from '../billing';
+import { isAndroidPlatform } from '../platform';
 
 export function SubscriptionScreen({ billing, onBack, onChanged, fullscreen }) {
   const { t } = useTranslation();
@@ -25,8 +26,7 @@ export function SubscriptionScreen({ billing, onBack, onChanged, fullscreen }) {
     } finally { setBusy(false); }
   };
 
-  const platform = window?.Capacitor?.getPlatform?.();
-  const isAndroid = platform === 'android';
+  const isAndroid = isAndroidPlatform();
   const manageSubscription = () => {
     if (isAndroid) {
       const url = productId

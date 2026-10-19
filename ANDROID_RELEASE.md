@@ -334,5 +334,5 @@ When ready for production:
 | Install on device | `cd android && ./gradlew installRelease` |
 | Icon (512×512) | `marketing/play/icon-512.png` |
 | Feature graphic (1024×500) | `marketing/play/feature-1024x500.png` |
-| Screenshots | `marketing/shots/01.png` – `05.png` |
+| Screenshots | `marketing/play/01.png` – `05.png` (English) and `marketing/play/he/01.png` – `05.png` (Hebrew), 1080×1920 |
 | Regenerate feature graphic | `cd marketing && node render-feature-graphic.mjs` |

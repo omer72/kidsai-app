@@ -42,7 +42,9 @@
     "alreadySubscriber": "¿Ya tienes suscripción?",
     "disclaimer": "Kidsit AI ofrece orientación reflexiva, no consejo médico ni psicológico. No diagnostica ni trata ninguna condición. Si tienes inquietudes clínicas sobre tu hijo o hija, consulta a un profesional cualificado.",
     "noSubscriptionFound": "No se encontró una suscripción activa en este Apple ID.",
+    "noSubscriptionFoundAndroid": "No se encontró una suscripción activa en esta cuenta de Google Play.",
     "restoreUnavailable": "Restaurar solo está disponible en la versión de App Store.",
+    "restoreUnavailableAndroid": "Restaurar solo está disponible en la versión de Google Play.",
     "restoreFailed": "Fallo al restaurar."
   },
   "onboarding": {
@@ -113,13 +115,16 @@
     "billedMonthly": "Cobrado {{price}} al mes",
     "trialStartFooter": "Acceso completo durante 7 días. No te pediremos pago hasta entonces.",
     "autoRenewDisclosure": "{{price}}, con renovación automática. Cancela al menos 24 horas antes del final del período en los ajustes de tu Apple ID. La parte no usada de una prueba gratuita se pierde al comprar una suscripción.",
+    "autoRenewDisclosureAndroid": "{{price}}, con renovación automática. Cancela al menos 24 horas antes del final del período en <store>Google Play › Pagos y suscripciones</store>. La parte no usada de una prueba gratuita se pierde al comprar una suscripción.",
     "maybeLater": "Quizá más tarde — prueba con 1 hijo gratis",
     "productsLoading": "Los productos de suscripción aún se están cargando. Inténtalo en un momento.",
     "purchaseFailed": "La compra no se completó.",
     "genericError": "Algo salió mal.",
     "restoreFailed": "Fallo al restaurar.",
     "noSubscriptionFound": "No se encontró una suscripción activa en este Apple ID.",
+    "noSubscriptionFoundAndroid": "No se encontró una suscripción activa en esta cuenta de Google Play.",
     "restoreUnavailable": "Compras no disponibles en la vista previa del navegador.",
+    "restoreUnavailableAndroid": "Restaurar solo está disponible en la versión de Google Play.",
     "redeemCode": "¿Tienes un código promocional?",
     "redeemWaiting": "Dale un momento al código…",
     "redeemInProgress": "Un momento — deja que tu código anterior se registre. Si no pasa nada, cierra esta pantalla y vuelve a abrirla antes de intentarlo otra vez.",
@@ -328,7 +333,7 @@
     "manageDetail": "Cancelar, pausar, cambiar plan",
     "restoreDetail": "Para suscripciones compradas previamente",
     "cancel": "Cancelar suscripción",
-    "cancelFooter": "Conservarás el acceso hasta tu fecha de renovación. Tus momentos se guardan en este dispositivo. El texto de la historia se envía a la IA para generar la respuesta."
+    "cancelFooter": "Conservarás el acceso hasta tu fecha de renovación. Tus momentos se guardan en este dispositivo. El texto de la historia y el audio grabado se envían para generar y transcribir la respuesta."
   },
   "tabBar": {
     "home": "Inicio",
@@ -341,7 +346,7 @@
     "body1": "Para darte orientación, Kidsit AI envía dos cosas a OpenAI:",
     "bullet1": "El audio que grabas, transcrito a texto por OpenAI Whisper.",
     "bullet2": "El texto transcrito, junto al contexto que eliges (lugar, estado de ánimo, nombre y edad de tu hijo), enviado a OpenAI GPT-4o-mini para la respuesta.",
-    "body2": "OpenAI no conserva estos datos, no los asocia a tu identidad y no los usa para entrenar modelos. Los perfiles e historial de tus hijos se guardan en este dispositivo. El texto de la historia se envía a la IA para generar la respuesta.",
+    "body2": "Estos datos no se usan para entrenar modelos y se tratan según la política de datos de la API de OpenAI. Los perfiles e historial de tus hijos se guardan en este dispositivo. El texto de la historia se envía a la IA para generar la respuesta.",
     "body3": "Al tocar Aceptar abajo, consientes este procesamiento. Puedes revocarlo en cualquier momento desde Ajustes.",
     "agree": "Acepto — empezar a usar Kidsit AI",
     "decline": "Ahora no",
