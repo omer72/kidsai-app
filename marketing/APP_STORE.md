@@ -55,7 +55,7 @@ PER-CHILD MEMORY
 Each child gets their own profile. Kidsit AI remembers past moments for that specific kid and feeds them back into the next answer so the guidance gets smarter over time. When you mark something as "didn't help," the next answer won't repeat it — it tries a different angle instead.
 
 PRIVATE BY DESIGN
-Your moments and child profiles live on your device. We don't sell data, we don't run ads, and we don't train models on what you write.
+Your moments and child profiles are stored on your device. The story you send is used to write the answer. We don't sell data, we don't run ads, and we don't train models on what you write.
 
 FEATURES
 • Press-and-hold voice or type — your choice
@@ -222,8 +222,8 @@ Reviewer notes:
 | 1 | Welcome screen | *Parenting is hard. **You don't have to do it alone.*** | Warm, science-backed guidance the moment you need it. |
 | 2 | Home (kid selector + mic, mid-recording ideal) | Whisper what just happened. | Voice in. Clarity out. About 10 seconds. |
 | 3 | Response screen (full structured guidance) | A kinder ***second look.*** | Not a lecture. Not a label. Three things you can actually try. |
-| 4 | History tab (3+ logged moments) | Patterns become ***visible.*** | A coach that remembers what works for *your* child. |
-| 5 | Paywall (plan picker + trial CTA) | The full Kidsit AI, ***at your fingertips.*** | Unlimited kids · unlimited moments · private by design. + badge "7-DAY FREE TRIAL · CANCEL ANYTIME" |
+| 4 | History tab (logged moments) | The next answer ***remembers.*** | Every moment makes the next answer fit your child better. |
+| 5 | Paywall (plan picker + trial CTA) | Start free. ***Cancel anytime.*** | Free for one child, no time limit. 7-day Premium trial. |
 
 ---
 

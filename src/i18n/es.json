@@ -57,9 +57,9 @@
       "body": "Recibirás una lectura estructurada: qué pasó, por qué y qué intentar. Basada en investigación del desarrollo infantil."
     },
     "slide3": {
-      "eyebrow": "03 — Detecta los patrones",
-      "title": "Los patrones se vuelven visibles. Para que puedas cambiarlos.",
-      "body": "Con el tiempo, Kidsit AI revela los detonantes, momentos y contextos que se repiten. Con calma. Con cariño."
+      "eyebrow": "03 — Recuerda",
+      "title": "Los momentos anteriores entran en la siguiente respuesta.",
+      "body": "Lo que registras de este hijo, incluido lo que no ayudó, se usa la próxima vez que preguntas."
     },
     "repeatingBadge": "← SE REPITE"
   },
@@ -85,11 +85,7 @@
     "features": {
       "trackEveryChild": {
         "title": "Cada hijo, su propio perfil",
-        "body": "Añade tantos hijos como tengas. Cada uno tiene su perfil y sus patrones propios."
-      },
-      "unlimitedMoments": {
-        "title": "Momentos ilimitados",
-        "body": "Graba, registra, aprende — todas las veces que la crianza lo pida."
+        "body": "Premium añade hijos ilimitados. Cada hijo tiene su propio perfil."
       },
       "patternDetection": {
         "title": "Memoria de momentos anteriores",
@@ -97,7 +93,7 @@
       },
       "private": {
         "title": "Privado. Siempre.",
-        "body": "Los momentos se quedan en este dispositivo. Nada de lo que escribes se usa para entrenar modelos."
+        "body": "Los momentos se guardan en este dispositivo. Nada de lo que escribes se usa para entrenar modelos."
       }
     },
     "yearly": "Anual",
@@ -106,6 +102,7 @@
     "monthly": "Mensual",
     "monthlyDetail": "Paga sobre la marcha",
     "perMonth": "al mes",
+    "pricePair": "{{yearly}} al año o {{monthly}} al mes",
     "bestValue": "MEJOR VALOR",
     "ctaTrialStart": "Empezar prueba gratis de 7 días",
     "ctaSubscribeYearly": "Suscríbete {{price}}/año",
@@ -153,6 +150,8 @@
     "storyPlaceholder": "Mi hija de 2 años se tiró al suelo en el estacionamiento del parque y empezó a gritar. Todos miraban. Le pregunté dos veces…",
     "addLabel": "Añadir",
     "kidYears": "{{age}} años",
+    "kidYearsGirl": "{{age}} años",
+    "kidYearsBoy": "{{age}} años",
     "kidYearsShort": "{{age}}a",
     "errors": {
       "micPermission": "Permiso del micrófono denegado.",
@@ -249,8 +248,7 @@
       "body": "Graba tu primer momento desde Inicio — aparecerá aquí."
     },
     "yourStoryLabel": "Tu historia",
-    "feedbackPrompt": "¿Cómo salió?",
-    "patternsHeader": "Patrones de esta semana"
+    "feedbackPrompt": "¿Cómo salió?"
   },
   "kids": {
     "title": "Hijos",

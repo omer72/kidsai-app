@@ -5,7 +5,7 @@ import { loadSettings, saveSettings, loadKids, saveKids, loadHistory, appendHist
 import { getGuidance, hasApiKey } from './openai';
 import { initBilling, offUpdate, refreshEntitlement, billingAvailable } from './billing';
 import { InAppReview } from '@capacitor-community/in-app-review';
-import { DEMO_RESPONSE } from './constants';
+import { demoResponse } from './constants';
 import { Icon } from './components/Icons';
 import { IOSDevice } from './components/IOSFrame';
 import { TabBar, ConfirmDialog } from './components/primitives';
@@ -52,7 +52,7 @@ function useViewport() {
 }
 
 function MainApp({ settings, setSettings, kids, setKids, history, setHistory, setEntryFeedback, onClearData, fullscreen, billing, onBillingChange }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [tab, setTab] = useState(() => (kids.length === 0 ? 'kids' : 'home'));
   const [activeKidId, setActiveKidId] = useState(kids[0]?.id || null);
   const [flowState, setFlowState] = useState({ stage: 'compose', story: '', ctx: null, response: null, error: null });
@@ -99,7 +99,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
         response = await getGuidance({ story, ctx, kid: activeKid, siblings, history });
       } else {
         await new Promise((r) => setTimeout(r, 1800));
-        response = DEMO_RESPONSE;
+        response = demoResponse(i18n.language);
       }
       setFlowState((s) => ({ ...s, stage: 'response', response }));
     } catch (err) {
@@ -137,13 +137,13 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
         note: feedback?.note || null,
       };
       setHistory(appendHistory(entry));
-      // "Didn't help" is the worse/same follow-up. Those closes never count
-      // and never prompt. A positive close (helped / really helped) on the
-      // 3rd counted use asks once. The OS rate-limits the sheet; we do not retry.
-      const rating = feedback?.rating || null;
-      const didntHelp = rating === 'worse' || rating === 'same';
+      // Only Helped / Really helped count. Close-for-now and the hardware
+      // back button pass no rating, so they do not count. A didn't-help
+      // rating (worse / same) does not count and does not reset the total:
+      // the prompt is three positive saves, not a streak. One shot, no retry.
+      const rating = typeof feedback?.rating === 'string' ? feedback.rating : null;
       const positive = rating === 'better' || rating === 'great';
-      const reviewUses = (settings.reviewUses || 0) + (didntHelp ? 0 : 1);
+      const reviewUses = (settings.reviewUses || 0) + (positive ? 1 : 0);
       const native = !!(window.Capacitor?.isNativePlatform?.());
       const shouldAsk = positive && reviewUses >= 3 && !settings.askedForReview && native;
       if (reviewUses !== (settings.reviewUses || 0) || shouldAsk) {

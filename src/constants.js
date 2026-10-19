@@ -39,7 +39,7 @@ export const URGENCY = [
 // Fallback response used when no API key is set, or as a placeholder.
 export const DEMO_RESPONSE = {
   title: 'A need for control, not defiance',
-  summary: 'Two-year-olds often melt down when a good moment has to end. Maya is likely tired and trying to hold on, not trying to disobey.',
+  summary: 'Two-year-olds often melt down when a good moment has to end. She is likely tired and trying to hold on, not trying to disobey.',
   sections: [
     {
       kind: 'what',
@@ -68,9 +68,40 @@ export const DEMO_RESPONSE = {
   ],
 };
 
-// Sample patterns shown in History when there's nothing real to display yet.
-export const SAMPLE_PATTERNS = [
-];
+const DEMO_RESPONSE_HE = {
+  title: 'צורך בשליטה, לא התרסה',
+  summary: 'בגיל שנתיים התפרקות היא דבר נפוץ כשרגע טוב נגמר. הפעוטה כנראה עייפה ומנסה להיאחז, לא מנסה שלא לציית.',
+  sections: [
+    {
+      kind: 'what',
+      label: 'מה קרה',
+      body: 'היציאה מהפארק עוררה מחאה גדולה. הפעוטה נפלה על הרצפה בחניון וסירבה ללכת. הרגשתם את המבטים, שאלתם אותה פעמיים, ואז הרמתם אותה.',
+    },
+    {
+      kind: 'why',
+      label: 'למה זה קרה',
+      body: 'בגיל שנתיים, סוף הכיף, רעב ומקום ציבורי מצטברים מהר. הגוף עבר למחאה לפני שהיו לה מילים לזה.',
+    },
+    {
+      kind: 'try',
+      label: 'מה לנסות בפעם הבאה',
+      items: [
+        { icon: '🎯', h: 'סמנו מעבר מוקדם', b: 'שתי אזהרות קצרות לפני שעוזבים, ואז היא בוחרת את הדבר האחרון שעושים.' },
+        { icon: '❤️', h: 'קודם נותנים שם לרגש', b: '״היה לך כל כך כיף. קשה מאוד לעצור.״ בלי לתקן, רק לתת שם.' },
+        { icon: '🤝', h: 'הציעו בחירה קטנה', b: '״רוצה ללכת לאוטו יד ביד, או לקפוץ?״ כשהשליטה חוזרת, ההתפרקות מתרככת.' },
+      ],
+    },
+    {
+      kind: 'tonight',
+      label: 'אם רוצים להתחבר שוב הערב',
+      body: 'לפני השינה אפשר לומר: ״היום היה קשה בפארק. אוהבים אותך גם כשיש רגשות גדולים.״ בלי הטפה. רק את זה.',
+    },
+  ],
+};
+
+export function demoResponse(lang) {
+  return String(lang || '').toLowerCase().startsWith('he') ? DEMO_RESPONSE_HE : DEMO_RESPONSE;
+}
 
 // "Get to Know Your Child" intake. `label` is the English source-of-truth sent
 // to the guidance prompt; UI strings come from i18n at `intake.q.<qid>.title`

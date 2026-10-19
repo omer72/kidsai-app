@@ -139,20 +139,30 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
         </div>
       )}
       {onClose && (
-        <button onClick={onClose} style={{
-          position: 'absolute', top: fullscreen ? 'max(20px, env(safe-area-inset-top))' : 58,
-          insetInlineEnd: 18, zIndex: 20,
-          width: 32, height: 32, borderRadius: 32, border: 'none',
-          background: '#FFFFFFCC', cursor: 'pointer',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-          <Icon.Close s={14} c={tokens.ink2}/>
-        </button>
+        <>
+          <div aria-hidden="true" style={{
+            position: 'absolute', top: 0, left: 0, right: 0, zIndex: 15,
+            height: fullscreen ? 'calc(env(safe-area-inset-top, 0px) + 56px)' : 102,
+            background: tokens.bg,
+            pointerEvents: 'none',
+          }}/>
+          <button onClick={onClose} style={{
+            position: 'absolute', top: fullscreen ? 'max(12px, env(safe-area-inset-top))' : 58,
+            insetInlineEnd: 18, zIndex: 20,
+            width: 32, height: 32, borderRadius: 32, border: 'none',
+            background: tokens.surface || '#fff', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <Icon.Close s={14} c={tokens.ink2}/>
+          </button>
+        </>
       )}
 
       <div style={{
         height: '100%', overflowY: 'auto', overflowX: 'hidden',
-        padding: fullscreen ? 'max(60px, env(safe-area-inset-top)) 22px max(28px, env(safe-area-inset-bottom))' : '70px 22px 28px',
+        padding: fullscreen
+          ? 'calc(env(safe-area-inset-top, 0px) + 64px) 22px max(28px, env(safe-area-inset-bottom))'
+          : '110px 22px 28px',
       }}>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 22 }}>
           <div style={{
@@ -186,7 +196,6 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
         }}>
           {[
             { t: t('paywall.features.trackEveryChild.title'), s: t('paywall.features.trackEveryChild.body') },
-            { t: t('paywall.features.unlimitedMoments.title'), s: t('paywall.features.unlimitedMoments.body') },
             { t: t('paywall.features.patternDetection.title'), s: t('paywall.features.patternDetection.body') },
             { t: t('paywall.features.private.title'), s: t('paywall.features.private.body') },
           ].map((f, i, features) => (
@@ -325,7 +334,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
           {isTrialStart
             ? t('paywall.trialStartFooter')
             : <>
-                {t('paywall.autoRenewDisclosure', { price: `${yearlyPrice}/year ${t('common.or') || 'or'} ${monthlyPrice}/month` })}
+                {t('paywall.autoRenewDisclosure', { price: t('paywall.pricePair', { yearly: yearlyPrice, monthly: monthlyPrice }) })}
               </>}
           <br/>
           {!isTrialStart && (

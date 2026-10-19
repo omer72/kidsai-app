@@ -33,8 +33,8 @@ export function loadSettings() {
   if (typeof s.aiConsent !== 'boolean') s.aiConsent = false;
   if (!s.fontSize) s.fontSize = 'small';
   if (typeof s.askedForReview !== 'boolean') s.askedForReview = false;
-  // Completed moments that were not marked "didn't help" (worse / same).
-  // The in-app review prompt waits until this reaches 3, then fires once.
+  // Positive closes only (Helped / Really helped). A didn't-help rating
+  // does not increment this and does not reset it.
   if (typeof s.reviewUses !== 'number' || s.reviewUses < 0) s.reviewUses = 0;
   return s;
 }

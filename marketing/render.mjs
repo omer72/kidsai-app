@@ -9,7 +9,8 @@ import { mkdirSync, existsSync, copyFileSync } from 'fs';
 import sharp from 'sharp';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const HTML = `file://${resolve(__dirname, 'screenshots.html')}`;
+const LANG = process.argv[2] === 'he' ? 'he' : 'en';
+const HTML = `file://${resolve(__dirname, 'screenshots.html')}?lang=${LANG}`;
 
 // ASC device-size buckets:
 const SIZES = {
@@ -21,7 +22,7 @@ const SIZES = {
 };
 const NATIVE = SIZES['6.7']; // we render the HTML at 6.7"
 
-const OUT = resolve(__dirname, 'composed');
+const OUT = resolve(__dirname, LANG === 'he' ? 'composed/he' : 'composed');
 mkdirSync(OUT, { recursive: true });
 
 const browser = await chromium.launch();

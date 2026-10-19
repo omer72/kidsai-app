@@ -95,13 +95,13 @@ WHAT YOU CAN DO
 • Get calm, practical guidance for tantrums, transitions, sleep, screens, sibling conflict, and more
 • One child is free, with no time limit. Premium adds unlimited children
 • Past moments with that child inform the next answer
-• Moments stay on this device
+• Moments are stored on this device
 
 WHO IT'S FOR
 Parents of toddlers, preschoolers, and school-age kids who want a calm second opinion in the heat of the moment — without scrolling through forums or waiting for a therapy appointment.
 
 PRIVACY
-Moments stay on this device. We don't sell your data. Kidsit AI is designed for parents — not children — and never asks for your child's personal information.
+Moments are stored on this device. The story you send is used to write the answer. We don't sell your data. Kidsit AI is designed for parents — not children — and never asks for your child's personal information.
 
 SUBSCRIPTION
 One child is free, with no time limit. Premium is for unlimited children, billed monthly or yearly through Google Play. Cancel anytime in your Google Play account.
@@ -143,7 +143,7 @@ expert-backed guidance. Describe what happened — a tantrum, a tough
 question, a sibling fight — and get a thoughtful response you can
 actually use. One child is free, with no time limit. Premium adds
 unlimited children. Past moments inform the next answer, and moments
-stay on the device.
+are stored on the device.
 
 This is our first Android release. Welcome aboard.
 ```
@@ -164,7 +164,7 @@ For future releases (versionCode 2+), switch to a bulleted changelog format.
 | Government app | No |
 | Financial features | No |
 | Health | No (unless you reposition as wellness) |
-| Data safety | Declare: OpenAI API key stored on-device (user-supplied), parenting moments stored on-device. If you later add analytics/Sentry/crash reporting, update this. |
+| Data safety | Declare: parenting moments are stored on-device. The story text, and voice when the parent records, is sent to the guidance service to produce the answer and is not sold. A user-supplied OpenAI key, if present, stays on-device. If you later add analytics, crash reporting, or Sentry, update this. |
 
 ## 8. Upload to Internal Testing first
 

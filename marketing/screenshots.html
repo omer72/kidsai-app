@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title>Kidsit AI · App Store screenshot mockups</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Heebo:wght@500;700&family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
 <style>
   :root {
     --primary: #2E5BFF;
@@ -16,23 +16,26 @@
     --serif: 'Fraunces', Georgia, serif;
     --sans: 'Inter', system-ui, sans-serif;
   }
+  html[dir="rtl"] {
+    --serif: 'Frank Ruhl Libre', 'Fraunces', Georgia, serif;
+    --sans: 'Heebo', 'Inter', system-ui, sans-serif;
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: #2a2a2a; font-family: var(--sans); color: var(--ink); padding: 80px 0; }
-  /* Native App Store 6.7" dimensions — 1290×2796 — so capturing each .stage
-     at DPR 1 produces a directly uploadable PNG. */
   .stage { width: 1290px; height: 2796px; margin: 0 auto 80px; position: relative;
     box-shadow: 0 60px 160px rgba(0,0,0,0.4); overflow: hidden; }
 
   .gradient-warm  { background: linear-gradient(160deg, #F4EFE6 0%, #FFF 40%, #E6EEFB 100%); }
   .gradient-blue  { background: linear-gradient(180deg, #E6EEFB 0%, #FFF 50%, #F4EFE6 100%); }
-  .gradient-ink   { background: linear-gradient(180deg, #1A1814 0%, #2E5BFF 100%); }
   .gradient-soft  { background: linear-gradient(140deg, #FFF 0%, #E6EEFB 60%, #F4EFE6 100%); }
   .gradient-bold  { background: linear-gradient(160deg, #2E5BFF 0%, #1838B3 100%); }
 
-  .headline-area { padding: 120px 100px 0; text-align: center; }
-  .headline { font-family: var(--serif); font-weight: 500; font-size: 112px;
-    line-height: 1.05; letter-spacing: -3px; color: var(--ink); }
+  .headline-area { padding: 120px 80px 0; text-align: center; }
+  .headline { font-family: var(--serif); font-weight: 500; font-size: 104px;
+    line-height: 1.08; letter-spacing: -2px; color: var(--ink); }
+  html[dir="rtl"] .headline { font-size: 92px; letter-spacing: 0; line-height: 1.2; }
   .headline em { font-style: italic; color: var(--primary); font-weight: 500; }
+  html[dir="rtl"] .headline em { font-style: normal; }
   .headline.light { color: #fff; }
   .headline.light em { color: #A7C8FF; }
   .subhead { font-family: var(--sans); font-weight: 500; font-size: 38px;
@@ -53,142 +56,105 @@
     width: 100%; height: 100%; border-radius: 84px; overflow: hidden;
     background: var(--bg);
   }
-  .phone-screen img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .placeholder {
-    width: 100%; height: 100%; display: flex; align-items: center;
-    justify-content: center; flex-direction: column; gap: 24px;
-    background: var(--bg); color: var(--ink3); padding: 80px; text-align: center;
-    font-size: 28px; line-height: 1.5;
-  }
-  .placeholder b { color: var(--ink2); font-size: 32px; }
-  .placeholder code { font-family: 'JetBrains Mono', monospace; background: #fff; padding: 4px 12px; border-radius: 8px; font-size: 24px; }
+  .phone-screen img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
 
   .label-bar { color: #fff; font-family: var(--sans); font-size: 22px; font-weight: 700;
     letter-spacing: 3px; text-align: center; padding: 12px 24px; background: rgba(0,0,0,0.6);
     border-radius: 8px; display: inline-block; margin: 0 auto 40px; }
-
-  .export-tip {
-    color: #aaa; font-family: var(--sans); font-size: 13px;
-    text-align: center; margin: 0 auto 40px; max-width: 900px;
-    line-height: 1.6; padding: 0 20px;
-  }
-  .export-tip code { background: #444; color: #fff; padding: 2px 6px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; }
+  html[dir="rtl"] .label-bar { letter-spacing: 0; }
 </style>
 </head>
 <body>
 
-<div class="export-tip">
-  Each panel below is rendered at <strong>native App Store 6.7″ resolution: 1290×2796</strong>.<br/>
-  In Chrome, just right-click each <code>.stage</code> → <strong>Inspect</strong>, then in DevTools right-click the <code>&lt;div class="stage"&gt;</code> node → <strong>Capture node screenshot</strong>. The downloaded PNG is App Store-ready as-is.<br/>
-  Your raw screenshots from <code>marketing/shots/01.png</code> … <code>05.png</code> appear inside the phone frames automatically.
-</div>
-
-<!-- ───────────── 1 · Welcome / hero ───────────── -->
-<div class="stage gradient-warm">
+<div class="stage gradient-warm" data-shot="1">
   <div class="headline-area">
-    <div class="label-bar" style="background: rgba(46,91,255,0.12); color: var(--primary);">BUILT BY A PARENT, FOR PARENTS</div>
-    <div class="headline">
-      Built for the<br/>
-      <em>hardest 10 minutes</em><br/>
-      of your day.
-    </div>
+    <div class="label-bar" data-label style="background: rgba(46,91,255,0.12); color: var(--primary);"></div>
+    <div class="headline" data-headline></div>
+    <div class="subhead" data-sub></div>
   </div>
   <div class="phone-wrap" style="bottom: -520px;">
-    <div class="phone">
-      <div class="phone-screen">
-        <img src="shots/01.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
-        <div class="placeholder" style="display:none">
-          <b>Add shots/01.png</b>
-        </div>
-      </div>
-    </div>
+    <div class="phone"><div class="phone-screen"><img data-n="01" alt=""></div></div>
   </div>
 </div>
 
-<!-- ───────────── 2 · Capture the moment ───────────── -->
-<div class="stage gradient-soft">
+<div class="stage gradient-soft" data-shot="2">
   <div class="headline-area">
-    <div class="headline">
-      Whisper what<br/>
-      <em>just happened.</em>
-    </div>
-    <div class="subhead">Press and hold the mic. Tell it like a friend's on the line.</div>
+    <div class="headline" data-headline></div>
+    <div class="subhead" data-sub></div>
   </div>
   <div class="phone-wrap" style="bottom: -520px;">
-    <div class="phone">
-      <div class="phone-screen">
-        <img src="shots/02.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
-        <div class="placeholder" style="display:none">
-          <b>Add shots/02.png</b>
-        </div>
-      </div>
-    </div>
+    <div class="phone"><div class="phone-screen"><img data-n="02" alt=""></div></div>
   </div>
 </div>
 
-<!-- ───────────── 3 · A kinder second look ───────────── -->
-<div class="stage gradient-blue">
+<div class="stage gradient-blue" data-shot="3">
   <div class="headline-area">
-    <div class="headline">
-      A kinder<br/>
-      <em>second look.</em>
-    </div>
-    <div class="subhead">Three things you can actually try — including the exact words to say.</div>
+    <div class="headline" data-headline></div>
+    <div class="subhead" data-sub></div>
   </div>
   <div class="phone-wrap" style="bottom: -520px;">
-    <div class="phone">
-      <div class="phone-screen">
-        <img src="shots/03.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
-        <div class="placeholder" style="display:none">
-          <b>Add shots/03.png</b>
-        </div>
-      </div>
-    </div>
+    <div class="phone"><div class="phone-screen"><img data-n="03" alt=""></div></div>
   </div>
 </div>
 
-<!-- ───────────── 4 · Patterns over time ───────────── -->
-<div class="stage gradient-warm">
+<div class="stage gradient-warm" data-shot="4">
   <div class="headline-area">
-    <div class="headline">
-      Patterns become<br/>
-      <em>visible.</em>
-    </div>
-    <div class="subhead">Every moment makes the next answer smarter — for <em style="font-style: italic; color: var(--primary);">your</em> child.</div>
+    <div class="headline" data-headline></div>
+    <div class="subhead" data-sub></div>
   </div>
   <div class="phone-wrap" style="bottom: -520px;">
-    <div class="phone">
-      <div class="phone-screen">
-        <img src="shots/04.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
-        <div class="placeholder" style="display:none">
-          <b>Add shots/04.png</b>
-        </div>
-      </div>
-    </div>
+    <div class="phone"><div class="phone-screen"><img data-n="04" alt=""></div></div>
   </div>
 </div>
 
-<!-- ───────────── 5 · Start free / paywall ───────────── -->
-<div class="stage gradient-bold">
+<div class="stage gradient-bold" data-shot="5">
   <div class="headline-area">
-    <div class="label-bar">7-DAY FREE TRIAL · CANCEL ANYTIME</div>
-    <div class="headline light">
-      Start free.<br/>
-      <em>Cancel anytime.</em>
-    </div>
-    <div class="subhead light">Unlimited kids · unlimited moments · private by design.</div>
+    <div class="label-bar" data-label></div>
+    <div class="headline light" data-headline></div>
+    <div class="subhead light" data-sub></div>
   </div>
   <div class="phone-wrap" style="bottom: -520px;">
-    <div class="phone">
-      <div class="phone-screen">
-        <img src="shots/05.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
-        <div class="placeholder" style="display:none">
-          <b>Add shots/05.png</b>
-        </div>
-      </div>
-    </div>
+    <div class="phone"><div class="phone-screen"><img data-n="05" alt=""></div></div>
   </div>
 </div>
 
+<script>
+const COPY = {
+  en: {
+    dir: 'ltr',
+    shots: 'shots/',
+    1: { label: 'BUILT BY A PARENT', headline: 'Built by a parent,<br>for parents', sub: 'Built for the hardest 10 minutes of your day.' },
+    2: { headline: 'Whisper what<br><em>just happened.</em>', sub: 'Hold the mic and tell it like a friend on the line.' },
+    3: { headline: 'A kinder<br><em>second look.</em>', sub: 'Three things to try, including the exact words to say.' },
+    4: { headline: 'The next answer<br><em>remembers.</em>', sub: 'Every moment makes the next answer fit your child better.' },
+    5: { label: '7-DAY FREE TRIAL · CANCEL ANYTIME', headline: 'Start free.<br><em>Cancel anytime.</em>', sub: 'Free for one child, no time limit. 7-day Premium trial.' },
+  },
+  he: {
+    dir: 'rtl',
+    shots: 'shots/he/',
+    1: { label: 'נבנתה על ידי הורה', headline: 'נבנתה על ידי הורה,<br>בשביל הורים', sub: 'לעשר הדקות הכי קשות של היום.' },
+    2: { headline: 'מספרים מה<br><em>קרה עכשיו.</em>', sub: 'לוחצים על המיקרופון ומספרים, כמו לחבר בטלפון.' },
+    3: { headline: 'מבט שני,<br><em>רך יותר.</em>', sub: 'שלושה דברים לנסות, כולל המשפט המדויק להגיד.' },
+    4: { headline: 'התשובה הבאה<br><em>זוכרת.</em>', sub: 'כל רגע עוזר לתשובה הבאה להתאים יותר לילד.' },
+    5: { label: '7 ימי ניסיון · ביטול בכל עת', headline: 'מתחילים בחינם.<br><em>מבטלים מתי שרוצים.</em>', sub: 'ילד אחד בחינם, ללא הגבלת זמן. 7 ימי ניסיון ל-Premium.' },
+  },
+};
+const lang = new URLSearchParams(location.search).get('lang') === 'he' ? 'he' : 'en';
+const pack = COPY[lang];
+document.documentElement.lang = lang;
+document.documentElement.dir = pack.dir;
+document.querySelectorAll('.stage').forEach((stage) => {
+  const item = pack[stage.dataset.shot];
+  const headline = stage.querySelector('[data-headline]');
+  const sub = stage.querySelector('[data-sub]');
+  const label = stage.querySelector('[data-label]');
+  if (headline) headline.innerHTML = item.headline;
+  if (sub) sub.textContent = item.sub;
+  if (label) label.textContent = item.label || '';
+});
+document.querySelectorAll('img[data-n]').forEach((img) => {
+  img.src = pack.shots + img.dataset.n + '.png';
+});
+</script>
 </body>
 </html>

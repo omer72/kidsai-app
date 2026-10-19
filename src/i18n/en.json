@@ -57,9 +57,9 @@
       "body": "You'll get back a structured read — what happened, why, and what to try. Rooted in child development research."
     },
     "slide3": {
-      "eyebrow": "03 — Notice the patterns",
-      "title": "Patterns become visible. So you change them.",
-      "body": "Over time, Kidsit AI surfaces the triggers, times, and contexts that keep tripping you up. Quietly, kindly."
+      "eyebrow": "03 — It remembers",
+      "title": "Past moments shape the next answer.",
+      "body": "What you log for this child, including what didn't help, is used the next time you ask."
     },
     "repeatingBadge": "← REPEATING"
   },
@@ -81,11 +81,7 @@
     "features": {
       "trackEveryChild": {
         "title": "Track every child",
-        "body": "Add as many kids as you have. Each gets their own profile and patterns."
-      },
-      "unlimitedMoments": {
-        "title": "Unlimited moments",
-        "body": "Record, log, learn — as often as parenting demands."
+        "body": "Premium adds unlimited children. Each child has their own profile."
       },
       "patternDetection": {
         "title": "Memory of past moments",
@@ -93,7 +89,7 @@
       },
       "private": {
         "title": "Private. Always.",
-        "body": "Moments stay on this device. Nothing you write is used to train models."
+        "body": "Moments are stored on this device. Nothing you write is used to train models."
       }
     },
     "yearly": "Yearly",
@@ -102,6 +98,7 @@
     "monthly": "Monthly",
     "monthlyDetail": "Pay as you go",
     "perMonth": "per month",
+    "pricePair": "{{yearly}} per year or {{monthly}} per month",
     "bestValue": "BEST VALUE",
     "ctaTrialStart": "Start 7-day free trial",
     "ctaSubscribeYearly": "Subscribe {{price}}/yr",
@@ -149,6 +146,8 @@
     "storyPlaceholder": "My 2-year-old dropped onto the floor in the park parking lot and started screaming. Everyone was looking. I tried asking her twice…",
     "addLabel": "Add",
     "kidYears": "{{age}} years",
+    "kidYearsGirl": "{{age}} years",
+    "kidYearsBoy": "{{age}} years",
     "kidYearsShort": "{{age}}y",
     "errors": {
       "micPermission": "Microphone permission denied.",
@@ -245,8 +244,7 @@
       "body": "Record your first moment from Home — it'll appear here."
     },
     "yourStoryLabel": "Your story",
-    "feedbackPrompt": "How did it go?",
-    "patternsHeader": "Patterns this week"
+    "feedbackPrompt": "How did it go?"
   },
   "kids": {
     "title": "Kids",

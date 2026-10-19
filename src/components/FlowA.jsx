@@ -10,6 +10,12 @@ import { transcribeAudio, hasApiKey } from '../openai';
 import { kidAgeYears } from '../storage';
 import { useHardwareBack } from '../backbutton';
 
+function kidYearsKey(kid) {
+  if (kid?.gender === 'girl') return 'flowA.kidYearsGirl';
+  if (kid?.gender === 'boy') return 'flowA.kidYearsBoy';
+  return 'flowA.kidYears';
+}
+
 export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensureConsent }) {
   const { t } = useTranslation();
   const [stage, setStage] = useState('idle');
@@ -147,7 +153,7 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
                       <Avatar kid={k} size={36}/>
                       <div style={{ textAlign: 'start', flex: 1 }}>
                         <div style={{ fontFamily: tokens.sans, fontSize: fs(14), fontWeight: 600, color: tokens.ink, lineHeight: 1.2 }}>{k.name}</div>
-                        {!!kidAgeYears(k) && <div style={{ fontFamily: tokens.sans, fontSize: fs(11), color: tokens.ink3, marginTop: 1 }}>{t('flowA.kidYears', { age: kidAgeYears(k) })}</div>}
+                        {!!kidAgeYears(k) && <div style={{ fontFamily: tokens.sans, fontSize: fs(11), color: tokens.ink3, marginTop: 1 }}>{t(kidYearsKey(k), { age: kidAgeYears(k) })}</div>}
                       </div>
                       {active && (
                         <div style={{
