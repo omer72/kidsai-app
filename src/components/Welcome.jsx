@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 import { IOSStatusBar } from './IOSFrame';
+import { safeBottom, safeTop } from '../platform';
 import { billingAvailable, restorePurchases } from '../billing';
 
 export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
@@ -50,7 +51,7 @@ export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
       <div style={{
         position: 'relative', zIndex: 2, minHeight: '100%',
         display: 'flex', flexDirection: 'column',
-        padding: fullscreen ? 'max(60px, env(safe-area-inset-top)) 28px max(40px, env(safe-area-inset-bottom))' : '90px 28px 40px',
+        padding: fullscreen ? `${safeTop(60)} 28px ${safeBottom(40)}` : '90px 28px 40px',
         boxSizing: 'border-box',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 'auto' }}>

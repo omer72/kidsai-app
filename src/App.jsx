@@ -239,7 +239,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
     <div style={{
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       padding: fullscreen
-        ? `max(${INSET_TOP_MIN}px, calc(env(safe-area-inset-top, 0px) + 36px)) 20px 8px`
+        ? `max(${INSET_TOP_MIN}px, calc(env(safe-area-inset-top, 0px) + 36px), calc(var(--shot-sat, 0px) + 36px)) 20px 8px`
         : '58px 20px 8px',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

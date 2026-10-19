@@ -32,7 +32,7 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
   const tonightSection = response.sections?.find((s) => s.kind === 'tonight');
 
   return (
-    <div style={{ padding: '6px 20px 140px' }}>
+    <div style={{ padding: '6px 20px 180px' }}>
       <div style={{
         background: `linear-gradient(160deg, ${tokens.primarySoft} 0%, ${tokens.surface} 100%)`,
         borderRadius: 24, padding: '22px 22px 24px', marginBottom: 16,
@@ -117,7 +117,7 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
       )}
 
       {tonightSection?.body && (
-        <div style={{
+        <div data-tonight style={{
           background: '#FFF8E8', borderRadius: 16, padding: '14px 16px',
           marginBottom: 10, border: '1px solid #F4E5BD',
           display: 'flex', gap: 12,

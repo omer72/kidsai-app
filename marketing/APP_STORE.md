@@ -219,7 +219,7 @@ Reviewer notes:
 
 | # | What to capture | Headline overlay | Subhead |
 | - | --------------- | ---------------- | ------- |
-| 1 | Welcome screen | *Parenting is hard. **You don't have to do it alone.*** | Warm, science-backed guidance the moment you need it. |
+| 1 | Welcome screen | The hardest ***10 minutes.*** | Calm guidance, right when you need it. The in-app badge already says "Built by a parent, for parents," so the frame does not repeat it. |
 | 2 | Home (kid selector + mic, mid-recording ideal) | Whisper what just happened. | Voice in. Clarity out. About 10 seconds. |
 | 3 | Response screen (full structured guidance) | A kinder ***second look.*** | Not a lecture. Not a label. Three things you can actually try. |
 | 4 | History tab (logged moments) | The next answer ***remembers.*** | Every moment makes the next answer fit your child better. |

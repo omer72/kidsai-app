@@ -21,46 +21,51 @@
     --sans: 'Heebo', 'Inter', system-ui, sans-serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #2a2a2a; font-family: var(--sans); color: var(--ink); padding: 80px 0; }
-  .stage { width: 1290px; height: 2796px; margin: 0 auto 80px; position: relative;
-    box-shadow: 0 60px 160px rgba(0,0,0,0.4); overflow: hidden; }
+  html, body { background: #111; font-family: var(--sans); color: var(--ink); margin: 0; padding: 0; height: 100%; }
+  .stage { width: 100vw; height: 100vh; position: relative; overflow: hidden;
+    display: flex; flex-direction: column; align-items: center; }
 
   .gradient-warm  { background: linear-gradient(160deg, #F4EFE6 0%, #FFF 40%, #E6EEFB 100%); }
   .gradient-blue  { background: linear-gradient(180deg, #E6EEFB 0%, #FFF 50%, #F4EFE6 100%); }
   .gradient-soft  { background: linear-gradient(140deg, #FFF 0%, #E6EEFB 60%, #F4EFE6 100%); }
   .gradient-bold  { background: linear-gradient(160deg, #2E5BFF 0%, #1838B3 100%); }
 
-  .headline-area { padding: 120px 80px 0; text-align: center; }
-  .headline { font-family: var(--serif); font-weight: 500; font-size: 104px;
-    line-height: 1.08; letter-spacing: -2px; color: var(--ink); }
-  html[dir="rtl"] .headline { font-size: 92px; letter-spacing: 0; line-height: 1.2; }
+  .headline-area { width: 100%; padding: 4.2vh 7vw 1.2vh; text-align: center; flex: 0 0 auto; }
+  .headline { font-family: var(--serif); font-weight: 500; font-size: 6.2vw;
+    line-height: 1.05; letter-spacing: -0.03em; color: var(--ink); }
+  html[dir="rtl"] .headline { font-size: 5.6vw; letter-spacing: 0; line-height: 1.16; }
   .headline em { font-style: italic; color: var(--primary); font-weight: 500; }
   html[dir="rtl"] .headline em { font-style: normal; }
   .headline.light { color: #fff; }
   .headline.light em { color: #A7C8FF; }
-  .subhead { font-family: var(--sans); font-weight: 500; font-size: 38px;
-    color: var(--ink2); margin-top: 32px; line-height: 1.45; }
+  .subhead { font-family: var(--sans); font-weight: 500; font-size: 2.35vw;
+    color: var(--ink2); margin-top: 1.3vh; line-height: 1.35; }
   .subhead.light { color: rgba(255,255,255,0.85); }
 
-  .phone-wrap { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); }
+  .phone-wrap {
+    flex: 1 1 auto; width: 100%; min-height: 0;
+    display: flex; justify-content: center; align-items: flex-end;
+  }
   .phone {
-    width: 720px; height: 1520px; background: #111; border-radius: 100px;
-    padding: 16px; box-shadow: 0 32px 72px rgba(0,0,0,0.25);
+    height: 100%; width: auto; max-width: 90%;
+    aspect-ratio: 9 / 19.5; background: #0c0c0c;
+    border-radius: 7% / 3.3%; padding: 1.3%;
+    box-shadow: 0 28px 60px rgba(0,0,0,0.28);
     position: relative;
   }
   .phone::before {
-    content: ''; position: absolute; top: 36px; left: 50%; transform: translateX(-50%);
-    width: 200px; height: 56px; background: #000; border-radius: 44px; z-index: 2;
+    content: ''; position: absolute; top: 1.65%; left: 50%; transform: translateX(-50%);
+    width: 23%; height: 2.05%; background: #000; border-radius: 40px; z-index: 2;
   }
   .phone-screen {
-    width: 100%; height: 100%; border-radius: 84px; overflow: hidden;
+    width: 100%; height: 100%; border-radius: 6% / 2.8%; overflow: hidden;
     background: var(--bg);
   }
   .phone-screen img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
 
-  .label-bar { color: #fff; font-family: var(--sans); font-size: 22px; font-weight: 700;
-    letter-spacing: 3px; text-align: center; padding: 12px 24px; background: rgba(0,0,0,0.6);
-    border-radius: 8px; display: inline-block; margin: 0 auto 40px; }
+  .label-bar { color: #fff; font-family: var(--sans); font-size: 1.55vw; font-weight: 700;
+    letter-spacing: 0.14em; text-align: center; padding: 0.7vh 1.6vw; background: rgba(0,0,0,0.6);
+    border-radius: 8px; display: inline-block; margin: 0 auto 1.4vh; }
   html[dir="rtl"] .label-bar { letter-spacing: 0; }
 </style>
 </head>
@@ -68,11 +73,10 @@
 
 <div class="stage gradient-warm" data-shot="1">
   <div class="headline-area">
-    <div class="label-bar" data-label style="background: rgba(46,91,255,0.12); color: var(--primary);"></div>
     <div class="headline" data-headline></div>
     <div class="subhead" data-sub></div>
   </div>
-  <div class="phone-wrap" style="bottom: -520px;">
+  <div class="phone-wrap">
     <div class="phone"><div class="phone-screen"><img data-n="01" alt=""></div></div>
   </div>
 </div>
@@ -82,7 +86,7 @@
     <div class="headline" data-headline></div>
     <div class="subhead" data-sub></div>
   </div>
-  <div class="phone-wrap" style="bottom: -520px;">
+  <div class="phone-wrap">
     <div class="phone"><div class="phone-screen"><img data-n="02" alt=""></div></div>
   </div>
 </div>
@@ -92,7 +96,7 @@
     <div class="headline" data-headline></div>
     <div class="subhead" data-sub></div>
   </div>
-  <div class="phone-wrap" style="bottom: -520px;">
+  <div class="phone-wrap">
     <div class="phone"><div class="phone-screen"><img data-n="03" alt=""></div></div>
   </div>
 </div>
@@ -102,7 +106,7 @@
     <div class="headline" data-headline></div>
     <div class="subhead" data-sub></div>
   </div>
-  <div class="phone-wrap" style="bottom: -520px;">
+  <div class="phone-wrap">
     <div class="phone"><div class="phone-screen"><img data-n="04" alt=""></div></div>
   </div>
 </div>
@@ -113,7 +117,7 @@
     <div class="headline light" data-headline></div>
     <div class="subhead light" data-sub></div>
   </div>
-  <div class="phone-wrap" style="bottom: -520px;">
+  <div class="phone-wrap">
     <div class="phone"><div class="phone-screen"><img data-n="05" alt=""></div></div>
   </div>
 </div>
@@ -123,7 +127,7 @@ const COPY = {
   en: {
     dir: 'ltr',
     shots: 'shots/',
-    1: { label: 'BUILT BY A PARENT', headline: 'Built by a parent,<br>for parents', sub: 'Built for the hardest 10 minutes of your day.' },
+    1: { headline: 'The hardest<br><em>10 minutes.</em>', sub: 'Calm guidance, right when you need it.' },
     2: { headline: 'Whisper what<br><em>just happened.</em>', sub: 'Hold the mic and tell it like a friend on the line.' },
     3: { headline: 'A kinder<br><em>second look.</em>', sub: 'Three things to try, including the exact words to say.' },
     4: { headline: 'The next answer<br><em>remembers.</em>', sub: 'Every moment makes the next answer fit your child better.' },
@@ -132,14 +136,16 @@ const COPY = {
   he: {
     dir: 'rtl',
     shots: 'shots/he/',
-    1: { label: 'נבנתה על ידי הורה', headline: 'נבנתה על ידי הורה,<br>בשביל הורים', sub: 'לעשר הדקות הכי קשות של היום.' },
+    1: { headline: 'עשר הדקות<br><em>הכי קשות.</em>', sub: 'הכוונה רגועה, בדיוק כשצריך אותה.' },
     2: { headline: 'מספרים מה<br><em>קרה עכשיו.</em>', sub: 'לוחצים על המיקרופון ומספרים, כמו לחבר בטלפון.' },
     3: { headline: 'מבט שני,<br><em>רך יותר.</em>', sub: 'שלושה דברים לנסות, כולל המשפט המדויק להגיד.' },
     4: { headline: 'התשובה הבאה<br><em>זוכרת.</em>', sub: 'כל רגע עוזר לתשובה הבאה להתאים יותר לילד.' },
-    5: { label: '7 ימי ניסיון · ביטול בכל עת', headline: 'מתחילים בחינם.<br><em>מבטלים מתי שרוצים.</em>', sub: 'ילד אחד בחינם, ללא הגבלת זמן. 7 ימי ניסיון ל-Premium.' },
+    5: { label: '7 ימי ניסיון · ביטול בכל עת', headline: 'מתחילים בחינם.<br><em>מבטלים מתי שרוצים.</em>', sub: 'ילד אחד בחינם, ללא הגבלת זמן. 7 ימי ניסיון בפרימיום.' },
   },
 };
-const lang = new URLSearchParams(location.search).get('lang') === 'he' ? 'he' : 'en';
+const params = new URLSearchParams(location.search);
+const lang = params.get('lang') === 'he' ? 'he' : 'en';
+const size = params.get('size') || '6.7';
 const pack = COPY[lang];
 document.documentElement.lang = lang;
 document.documentElement.dir = pack.dir;
@@ -153,7 +159,8 @@ document.querySelectorAll('.stage').forEach((stage) => {
   if (label) label.textContent = item.label || '';
 });
 document.querySelectorAll('img[data-n]').forEach((img) => {
-  img.src = pack.shots + img.dataset.n + '.png';
+  const folder = size === '6.7' ? '' : size + '/';
+  img.src = pack.shots + folder + img.dataset.n + '.png';
 });
 </script>
 </body>

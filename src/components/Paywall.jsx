@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 import { IOSStatusBar } from './IOSFrame';
+import { safeBottom, safeTop } from '../platform';
 import { billingAvailable, getOfferings, introOfferPeriod, onBillingUpdate, presentCodeRedemptionSheet, priceString, purchasePackage, restorePurchases } from '../billing';
 
 const REDEEM_COOLDOWN_MS = 20000;
@@ -95,6 +96,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
   }, [redeemLockedUntil]);
 
   const redeemLocked = Date.now() < redeemLockedUntil;
+  const dense = typeof window !== 'undefined' && window.innerHeight <= 720;
 
   const handleRestore = async () => {
     setError('');
@@ -142,13 +144,13 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
         <>
           <div aria-hidden="true" style={{
             position: 'absolute', top: 0, left: 0, right: 0, zIndex: 15,
-            height: fullscreen ? 'calc(env(safe-area-inset-top, 0px) + 56px)' : 102,
+            height: fullscreen ? `calc(${safeTop(0)} + ${dense ? 44 : 52}px)` : 102,
             background: tokens.bg,
             pointerEvents: 'none',
           }}/>
-          <button onClick={onClose} style={{
-            position: 'absolute', top: fullscreen ? 'max(12px, env(safe-area-inset-top))' : 58,
-            insetInlineEnd: 18, zIndex: 20,
+          <button data-paywall-close onClick={onClose} style={{
+            position: 'absolute', top: fullscreen ? safeTop(12) : 58,
+            insetInlineEnd: 'max(24px, var(--shot-sax, 0px))', zIndex: 20,
             width: 32, height: 32, borderRadius: 32, border: 'none',
             background: tokens.surface || '#fff', cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -158,41 +160,41 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
         </>
       )}
 
-      <div style={{
+      <div data-paywall-scroll style={{
         height: '100%', overflowY: 'auto', overflowX: 'hidden',
         padding: fullscreen
-          ? 'calc(env(safe-area-inset-top, 0px) + 64px) 22px max(28px, env(safe-area-inset-bottom))'
-          : '110px 22px 28px',
+          ? `calc(${safeTop(0)} + ${dense ? 40 : 56}px) 22px ${safeBottom(dense ? 16 : 36)}`
+          : '102px 22px 36px',
       }}>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 22 }}>
+        {!dense && <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
           <div style={{
-            width: 78, height: 78, borderRadius: 78, position: 'relative',
+            width: 64, height: 64, borderRadius: 64, position: 'relative',
             background: `radial-gradient(circle at 35% 30%, ${tokens.primary} 0%, ${tokens.primaryInk} 80%)`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             boxShadow: `0 16px 36px ${tokens.primary}40`,
           }}>
-            <Icon.Sparkle s={32} c="#fff"/>
+            <Icon.Sparkle s={26} c="#fff"/>
           </div>
-        </div>
+        </div>}
 
-        <div style={{
-          fontFamily: tokens.serif, fontSize: fs(30), lineHeight: 1.1, color: tokens.ink,
-          letterSpacing: -0.7, fontWeight: 500, textAlign: 'center', marginBottom: 10,
+        <div data-paywall-headline style={{
+          fontFamily: tokens.serif, fontSize: fs(dense ? 22 : 28), lineHeight: 1.08, color: tokens.ink,
+          letterSpacing: -0.7, fontWeight: 500, textAlign: 'center', marginBottom: dense ? 4 : 8,
           padding: '0 8px',
         }}>
           {t('paywall.headline1')}<br/>
           <span style={{ fontStyle: 'italic', color: tokens.primary }}>{t('paywall.headline2')}</span>
         </div>
         <div style={{
-          fontFamily: tokens.sans, fontSize: fs(14), color: tokens.ink2, textAlign: 'center',
-          maxWidth: 300, margin: '0 auto 24px', lineHeight: 1.5,
+          fontFamily: tokens.sans, fontSize: fs(dense ? 13 : 14), color: tokens.ink2, textAlign: 'center',
+          maxWidth: 300, margin: dense ? '0 auto 8px' : '0 auto 16px', lineHeight: 1.35,
         }}>
           {t('paywall.subhead', { trial })}
         </div>
 
         <div style={{
-          background: '#FFF', borderRadius: 20, padding: '18px 18px 6px',
-          border: `1px solid ${tokens.line}`, marginBottom: 18,
+          background: '#FFF', borderRadius: 20, padding: dense ? '8px 14px 2px' : '12px 16px 4px',
+          border: `1px solid ${tokens.line}`, marginBottom: dense ? 8 : 12,
         }}>
           {[
             { t: t('paywall.features.trackEveryChild.title'), s: t('paywall.features.trackEveryChild.body') },
@@ -201,7 +203,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
           ].map((f, i, features) => (
             <div key={i} style={{
               display: 'flex', gap: 12, alignItems: 'flex-start',
-              padding: '10px 0',
+              padding: dense ? '5px 0' : '8px 0',
               borderBottom: i < features.length - 1 ? `1px solid ${tokens.line}` : 'none',
             }}>
               <div style={{
@@ -212,21 +214,21 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
                 <Icon.Check s={13} c={tokens.primary}/>
               </div>
               <div>
-                <div style={{ fontFamily: tokens.sans, fontSize: fs(14.5), fontWeight: 600, color: tokens.ink, marginBottom: 2 }}>{f.t}</div>
-                <div style={{ fontFamily: tokens.sans, fontSize: fs(13), color: tokens.ink2, lineHeight: 1.45 }}>{f.s}</div>
+                <div style={{ fontFamily: tokens.sans, fontSize: fs(dense ? 13.5 : 14.5), fontWeight: 600, color: tokens.ink, marginBottom: 2 }}>{f.t}</div>
+                <div style={{ fontFamily: tokens.sans, fontSize: fs(dense ? 12 : 13), color: tokens.ink2, lineHeight: dense ? 1.3 : 1.45 }}>{f.s}</div>
               </div>
             </div>
           ))}
         </div>
 
         {!isTrialStart && (<>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: dense ? 6 : 8, marginBottom: dense ? 8 : 12 }}>
           {/* Yearly — direct purchase button. Tap = open Apple IAP sheet. */}
           <button
             onClick={() => handlePurchase('yearly')}
             disabled={busy || (billingAvailable() && (!packagesLoaded || !yearlyPkg))}
             style={{
-              padding: '18px 18px 16px', borderRadius: 16,
+              padding: dense ? '10px 12px' : '14px 16px', borderRadius: 16,
               cursor: (busy || (billingAvailable() && (!packagesLoaded || !yearlyPkg))) ? 'progress' : 'pointer',
               textAlign: 'start',
               background: tokens.ink, border: 'none', color: '#fff', position: 'relative',
@@ -241,7 +243,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
             }}>{t('paywall.bestValue')}</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ flex: 1 }}>
-                <div style={{ fontFamily: tokens.sans, fontSize: fs(16), fontWeight: 700, marginBottom: 4 }}>
+                <div style={{ fontFamily: tokens.sans, fontSize: fs(dense ? 15 : 16), fontWeight: 700, marginBottom: dense ? 2 : 4 }}>
                   {t('paywall.yearly')}
                 </div>
                 <div style={{ fontFamily: tokens.sans, fontSize: fs(13), opacity: 0.85, lineHeight: 1.35 }}>
@@ -259,7 +261,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
             onClick={() => handlePurchase('monthly')}
             disabled={busy || (billingAvailable() && (!packagesLoaded || !monthlyPkg))}
             style={{
-              padding: '18px 18px 16px', borderRadius: 16,
+              padding: dense ? '10px 12px' : '14px 16px', borderRadius: 16,
               cursor: (busy || (billingAvailable() && (!packagesLoaded || !monthlyPkg))) ? 'progress' : 'pointer',
               textAlign: 'start',
               background: '#FFF', border: `2px solid ${tokens.line}`,
@@ -267,7 +269,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
             }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ flex: 1 }}>
-                <div style={{ fontFamily: tokens.sans, fontSize: fs(16), fontWeight: 700, color: tokens.ink, marginBottom: 4 }}>
+                <div style={{ fontFamily: tokens.sans, fontSize: fs(dense ? 15 : 16), fontWeight: 700, color: tokens.ink, marginBottom: dense ? 2 : 4 }}>
                   {t('paywall.monthly')}
                 </div>
                 <div style={{ fontFamily: tokens.sans, fontSize: fs(13), color: tokens.ink2, lineHeight: 1.35 }}>
@@ -283,7 +285,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
 
         {showRedeemCode && (
           <button onClick={handleRedeemCode} disabled={busy || redeemLocked} style={{
-            width: '100%', marginBottom: 16, padding: '12px 14px', borderRadius: 12,
+            width: '100%', marginBottom: 10, padding: '10px 14px', borderRadius: 12,
             background: tokens.primarySoft, border: `1px solid ${tokens.primary}33`,
             cursor: (busy || redeemLocked) ? 'not-allowed' : 'pointer',
             opacity: redeemLocked ? 0.6 : 1,
@@ -318,7 +320,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
           </button>
         )}
         {onStart && !isTrialStart && (
-          <div style={{ textAlign: 'center', marginTop: 14, marginBottom: 4 }}>
+          <div style={{ textAlign: 'center', marginTop: dense ? 4 : 8, marginBottom: 2 }}>
             <button onClick={onStart} disabled={busy} style={{
               background: 'transparent', border: 'none',
               padding: '10px 16px', cursor: busy ? 'not-allowed' : 'pointer',
@@ -327,9 +329,9 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
             }}>{t('paywall.maybeLater')}</button>
           </div>
         )}
-        <div style={{
-          textAlign: 'center', marginTop: 12,
-          fontFamily: tokens.sans, fontSize: fs(11), color: tokens.ink3, lineHeight: 1.6,
+        <div data-paywall-fine style={{
+          textAlign: 'center', marginTop: dense ? 6 : 10,
+          fontFamily: tokens.sans, fontSize: fs(dense ? 10.5 : 11), color: tokens.ink3, lineHeight: dense ? 1.4 : 1.55,
         }}>
           {isTrialStart
             ? t('paywall.trialStartFooter')

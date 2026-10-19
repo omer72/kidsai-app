@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { tokens, fs } from '../theme';
+import { safeBottom, safeTop } from '../platform';
 import { Icon } from './Icons';
 import { IOSStatusBar } from './IOSFrame';
 
@@ -61,36 +62,37 @@ function LensArt() {
   );
 }
 
-function PatternArt() {
-  const dots = [
-    { x: 20, y: 80, r: 8, c: tokens.primary },
-    { x: 60, y: 60, r: 10, c: tokens.primary },
-    { x: 100, y: 70, r: 7, c: tokens.primary },
-    { x: 140, y: 40, r: 14, c: tokens.primary, big: true },
-    { x: 180, y: 65, r: 9, c: tokens.primary },
-    { x: 220, y: 50, r: 11, c: tokens.primary, big: true },
-    { x: 40, y: 130, r: 7, c: '#7C5BE8' },
-    { x: 95, y: 120, r: 9, c: '#7C5BE8' },
-    { x: 150, y: 140, r: 7, c: '#7C5BE8' },
-    { x: 200, y: 125, r: 8, c: '#7C5BE8' },
-  ];
+function MemoryArt() {
   return (
-    <div style={{ position: 'relative', width: 260, height: 200 }}>
-      <svg width="260" height="200" viewBox="0 0 260 200">
-        <path d="M 140 40 Q 180 30, 220 50" stroke={tokens.primary} strokeWidth="1.5" strokeDasharray="3 3" fill="none" opacity="0.5"/>
-        {dots.map((d, i) => (
-          <g key={i}>
-            {d.big && <circle cx={d.x} cy={d.y} r={d.r + 6} fill={d.c} opacity="0.15"/>}
-            <circle cx={d.x} cy={d.y} r={d.r} fill={d.c}/>
-          </g>
-        ))}
-      </svg>
+    <div style={{ position: 'relative', width: 260, height: 210 }}>
       <div style={{
-        position: 'absolute', top: 10, right: 0, padding: '6px 10px',
-        background: '#FFF', borderRadius: 10, border: `1px solid ${tokens.line}`,
-        fontFamily: tokens.sans, fontSize: fs(10), fontWeight: 700, color: tokens.primary,
-        letterSpacing: 0.5, boxShadow: '0 4px 12px rgba(11,29,58,0.06)',
-      }}>{useTranslation().t('onboarding.repeatingBadge')}</div>
+        position: 'absolute', top: 4, insetInlineStart: 6, width: 148, padding: '12px 14px',
+        background: '#FFF', borderRadius: 14, border: `1px solid ${tokens.line}`,
+        transform: 'rotate(-7deg)', boxShadow: '0 8px 20px rgba(11,29,58,0.08)',
+      }}>
+        <div style={{ height: 6, width: 54, borderRadius: 4, background: tokens.ink3, marginBottom: 8, opacity: 0.55 }}/>
+        <div style={{ height: 5, width: '100%', borderRadius: 4, background: tokens.line, marginBottom: 5 }}/>
+        <div style={{ height: 5, width: '70%', borderRadius: 4, background: tokens.line }}/>
+      </div>
+      <div style={{
+        position: 'absolute', top: 72, insetInlineStart: 112,
+        width: 32, height: 32, borderRadius: 32, background: tokens.primarySoft,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={tokens.primary} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M12 5v14M6 13l6 6 6-6"/>
+        </svg>
+      </div>
+      <div style={{
+        position: 'absolute', top: 112, insetInlineStart: 36, width: 200, padding: '14px 16px',
+        background: '#FFF', borderRadius: 16, border: `1px solid ${tokens.primary}55`,
+        boxShadow: `0 14px 28px ${tokens.primary}22`,
+      }}>
+        <div style={{ height: 7, width: 78, borderRadius: 4, background: tokens.primary, marginBottom: 10 }}/>
+        <div style={{ height: 5, width: '100%', borderRadius: 4, background: tokens.line, marginBottom: 6 }}/>
+        <div style={{ height: 5, width: '86%', borderRadius: 4, background: tokens.line, marginBottom: 6 }}/>
+        <div style={{ height: 5, width: '62%', borderRadius: 4, background: tokens.line }}/>
+      </div>
     </div>
   );
 }
@@ -101,7 +103,7 @@ export function OnboardingScreen({ onDone, fullscreen }) {
   const slides = [
     { eyebrow: t('onboarding.slide1.eyebrow'), title: t('onboarding.slide1.title'), body: t('onboarding.slide1.body'), art: 'mic' },
     { eyebrow: t('onboarding.slide2.eyebrow'), title: t('onboarding.slide2.title'), body: t('onboarding.slide2.body'), art: 'lens' },
-    { eyebrow: t('onboarding.slide3.eyebrow'), title: t('onboarding.slide3.title'), body: t('onboarding.slide3.body'), art: 'pattern' },
+    { eyebrow: t('onboarding.slide3.eyebrow'), title: t('onboarding.slide3.title'), body: t('onboarding.slide3.body'), art: 'memory' },
   ];
   const s = slides[i];
 
@@ -118,7 +120,7 @@ export function OnboardingScreen({ onDone, fullscreen }) {
       )}
 
       <button onClick={onDone} style={{
-        position: 'absolute', top: fullscreen ? 'max(20px, env(safe-area-inset-top))' : 58,
+        position: 'absolute', top: fullscreen ? safeTop(20) : 58,
         right: 22, zIndex: 20,
         background: 'transparent', border: 'none', cursor: 'pointer',
         fontFamily: tokens.sans, fontSize: fs(13), color: tokens.ink3, fontWeight: 500,
@@ -127,13 +129,13 @@ export function OnboardingScreen({ onDone, fullscreen }) {
       <div style={{
         flex: 1, minHeight: 0, overflowY: 'auto', overflowX: 'hidden', WebkitOverflowScrolling: 'touch',
         display: 'flex', flexDirection: 'column',
-        padding: fullscreen ? 'max(60px, env(safe-area-inset-top)) 28px 0' : '90px 28px 0',
+        padding: fullscreen ? `${safeTop(60)} 28px 0` : '90px 28px 0',
         boxSizing: 'border-box',
       }}>
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 200, marginBottom: 24 }}>
           {s.art === 'mic' && <MicArt/>}
           {s.art === 'lens' && <LensArt/>}
-          {s.art === 'pattern' && <PatternArt/>}
+          {s.art === 'memory' && <MemoryArt/>}
         </div>
 
         <div>
@@ -154,7 +156,7 @@ export function OnboardingScreen({ onDone, fullscreen }) {
       <div style={{
         flexShrink: 0,
         display: 'flex', alignItems: 'center', gap: 12,
-        padding: fullscreen ? '20px 28px max(28px, env(safe-area-inset-bottom))' : '20px 28px 32px',
+        padding: fullscreen ? `20px 28px ${safeBottom(28)}` : '20px 28px 32px',
         background: tokens.bg,
       }}>
         <div style={{ display: 'flex', gap: 6, flex: 1 }}>

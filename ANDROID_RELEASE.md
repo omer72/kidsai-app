@@ -116,7 +116,8 @@ Email us at omer+support@kidsit.ai. We read every message.
 |-------|------|------|
 | App icon | `marketing/play/icon-512.png` | 512×512 PNG, no alpha |
 | Feature graphic | `marketing/play/feature-1024x500.png` | 1024×500 PNG |
-| Phone screenshots | `marketing/shots/01.png` – `05.png` | 1290×2796 (raw, unframed) |
+| Phone screenshots (English) | `marketing/play/01.png` – `05.png` | 1080×1920 PNG, 9:16. Do not upload the iOS shots; they are taller than 2:1 and Play rejects them. |
+| Phone screenshots (Hebrew) | `marketing/play/he/01.png` – `05.png` | 1080×1920 PNG, 9:16 |
 
 To regenerate the feature graphic after editing `marketing/feature-graphic.html`:
 ```bash
