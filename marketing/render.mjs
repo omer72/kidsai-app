@@ -9,6 +9,7 @@ import { mkdirSync, copyFileSync } from 'fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const LANG = process.argv[2] === 'he' ? 'he' : 'en';
+const onlyShot = /^\d\d$/.test(process.argv[3] || '') ? process.argv[3] : '';
 
 const SIZES = {
   '6.9': [1320, 2868],
@@ -35,6 +36,7 @@ for (const [label, [w, h]] of Object.entries(SIZES)) {
   mkdirSync(dir, { recursive: true });
   for (let i = 0; i < stages.length; i++) {
     const n = String(i + 1).padStart(2, '0');
+    if (onlyShot && n !== onlyShot) continue;
     const file = resolve(dir, `${n}.png`);
     await stages[i].screenshot({ path: file, omitBackground: false });
     if (label === '6.7') copyFileSync(file, resolve(OUT, `${n}.png`));

@@ -3,7 +3,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 import { IOSStatusBar } from './IOSFrame';
-import { isAndroidPlatform, safeBottom, safeTop } from '../platform';
+import { isAndroidPlatform, safeBottom, safeTop, storePlatform } from '../platform';
 import { billingAvailable, getOfferings, introOfferPeriod, onBillingUpdate, presentCodeRedemptionSheet, priceString, purchasePackage, restorePurchases } from '../billing';
 
 const REDEEM_COOLDOWN_MS = 20000;
@@ -67,7 +67,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
   const handleRedeemCode = async () => {
     setError('');
     if (!billingAvailable()) {
-      setError(t('paywall.promoCodeUnavailable'));
+      setError(t(storePlatform() === 'web' ? 'paywall.promoCodeUnavailableWeb' : 'paywall.promoCodeUnavailable'));
       return;
     }
     if (Date.now() < redeemLockedUntil) {
@@ -96,7 +96,8 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
   }, [redeemLockedUntil]);
 
   const redeemLocked = Date.now() < redeemLockedUntil;
-  const isAndroid = isAndroidPlatform();
+  const store = storePlatform();
+  const isAndroid = store === 'android';
   const viewportH = typeof window !== 'undefined' ? window.innerHeight : 932;
   // dense: Play's 640-tall slot hides the orb so the fine print fits.
   // snug: 6.1" and 6.3" keep the orb, with tighter spacing so it stays
@@ -107,16 +108,16 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
 
   const handleRestore = async () => {
     setError('');
-    const android = isAndroidPlatform();
+    const store = storePlatform();
     if (!billingAvailable()) {
-      setError(t(android ? 'paywall.restoreUnavailableAndroid' : 'paywall.restoreUnavailable'));
+      setError(t(store === 'android' ? 'paywall.restoreUnavailableAndroid' : 'paywall.restoreUnavailable'));
       return;
     }
     setBusy(true);
     try {
       const next = await restorePurchases();
       if (next.entitled) onPurchased?.(next);
-      else setError(t(android ? 'paywall.noSubscriptionFoundAndroid' : 'paywall.noSubscriptionFound'));
+      else setError(t(store === 'android' ? 'paywall.noSubscriptionFoundAndroid' : store === 'web' ? 'paywall.noSubscriptionFoundWeb' : 'paywall.noSubscriptionFound'));
     } catch (err) {
       setError(err?.message || t('paywall.restoreFailed'));
     } finally {
@@ -352,7 +353,7 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
                        style={{ color: tokens.ink2, textDecoration: 'underline' }} />
                   ) }}
                 />
-              : t('paywall.autoRenewDisclosure', { price: pricePair })}
+              : t(store === 'web' ? 'paywall.autoRenewDisclosureWeb' : 'paywall.autoRenewDisclosure', { price: pricePair })}
           <br/>
           {!isTrialStart && (
             <>

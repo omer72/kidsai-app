@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 import { IOSStatusBar } from './IOSFrame';
-import { isAndroidPlatform, safeBottom, safeTop } from '../platform';
+import { safeBottom, safeTop, storePlatform } from '../platform';
 import { billingAvailable, restorePurchases } from '../billing';
 
 export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
@@ -13,9 +13,10 @@ export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
 
   const handleRestore = async () => {
     setRestoreMsg('');
-    const android = isAndroidPlatform();
+    const store = storePlatform();
+    const suffix = store === 'android' ? 'Android' : store === 'web' ? 'Web' : '';
     if (!billingAvailable()) {
-      setRestoreMsg(t(android ? 'welcome.restoreUnavailableAndroid' : 'welcome.restoreUnavailable'));
+      setRestoreMsg(t(`welcome.restoreUnavailable${suffix}`));
       return;
     }
     setRestoring(true);
@@ -24,7 +25,7 @@ export function WelcomeScreen({ onStart, onRestored, fullscreen }) {
       if (next.entitled) {
         onRestored?.(next);
       } else {
-        setRestoreMsg(t(android ? 'welcome.noSubscriptionFoundAndroid' : 'welcome.noSubscriptionFound'));
+        setRestoreMsg(t(`welcome.noSubscriptionFound${suffix}`));
       }
     } catch (err) {
       setRestoreMsg(err?.message || t('welcome.restoreFailed'));

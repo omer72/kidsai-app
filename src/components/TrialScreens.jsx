@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 import { restorePurchases } from '../billing';
-import { isAndroidPlatform } from '../platform';
+import { storePlatform } from '../platform';
 
 export function SubscriptionScreen({ billing, onBack, onChanged, fullscreen }) {
   const { t } = useTranslation();
@@ -26,17 +26,15 @@ export function SubscriptionScreen({ billing, onBack, onChanged, fullscreen }) {
     } finally { setBusy(false); }
   };
 
-  const isAndroid = isAndroidPlatform();
+  const store = storePlatform();
   const manageSubscription = () => {
-    if (isAndroid) {
+    if (store === 'android') {
       const url = productId
         ? `https://play.google.com/store/account/subscriptions?sku=${encodeURIComponent(productId)}&package=ai.kidsit.app`
         : 'https://play.google.com/store/account/subscriptions';
       window.open(url, '_blank');
-    } else if (window?.Capacitor?.isNativePlatform?.()) {
+    } else if (store === 'ios') {
       window.location.href = 'itms-apps://apps.apple.com/account/subscriptions';
-    } else {
-      window.open('https://apps.apple.com/account/subscriptions', '_blank');
     }
   };
 
@@ -97,7 +95,7 @@ export function SubscriptionScreen({ billing, onBack, onChanged, fullscreen }) {
         }}>
           {[
             { label: isYearly ? t('subscription.switchToMonthly') : t('subscription.switchToYearly'), detail: isYearly ? t('subscription.switchToMonthlyDetail') : t('subscription.switchToYearlyDetail'), onClick: manageSubscription },
-            { label: isAndroid ? t('subscription.manageInGooglePlay') : t('subscription.manageInAppleId'), detail: t('subscription.manageDetail'), onClick: manageSubscription },
+            { label: t(store === 'android' ? 'subscription.manageInGooglePlay' : store === 'ios' ? 'subscription.manageInAppleId' : 'subscription.manageSubscription'), detail: t('subscription.manageDetail'), onClick: manageSubscription },
             { label: t('common.restorePurchase'), detail: t('subscription.restoreDetail'), onClick: handleRestore },
           ].map((row, i, arr) => (
             <button key={i} onClick={row.onClick} disabled={busy} style={{

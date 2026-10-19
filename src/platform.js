@@ -1,5 +1,11 @@
+export function storePlatform() {
+  const name = typeof window !== 'undefined' ? window.Capacitor?.getPlatform?.() : '';
+  if (name === 'android' || name === 'ios') return name;
+  return 'web';
+}
+
 export function isAndroidPlatform() {
-  return typeof window !== 'undefined' && window.Capacitor?.getPlatform?.() === 'android';
+  return storePlatform() === 'android';
 }
 
 export const IS_ANDROID = isAndroidPlatform();

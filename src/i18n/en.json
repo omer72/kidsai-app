@@ -43,8 +43,10 @@
     "disclaimer": "Kidsit AI offers reflective guidance, not medical or psychological advice. It does not diagnose or treat any condition. For clinical concerns about your child, please consult a qualified professional.",
     "noSubscriptionFound": "No active subscription found on this Apple ID.",
     "noSubscriptionFoundAndroid": "No active subscription found on this Google Play account.",
+    "noSubscriptionFoundWeb": "No active subscription found.",
     "restoreUnavailable": "Restore is only available on the App Store build.",
     "restoreUnavailableAndroid": "Restore is only available on the Google Play build.",
+    "restoreUnavailableWeb": "Restore purchases in the iOS or Android app.",
     "restoreFailed": "Restore failed."
   },
   "onboarding": {
@@ -112,6 +114,7 @@
     "trialStartFooter": "Full access for 7 days. We won't ask for payment until then.",
     "autoRenewDisclosure": "{{price}}, auto-renewing. Cancel anytime at least 24 hours before the period ends via your Apple ID account settings. Any unused portion of a free trial is forfeited when you purchase a subscription.",
     "autoRenewDisclosureAndroid": "{{price}}, auto-renewing. Cancel anytime at least 24 hours before the period ends via <store>Google Play › Payments & subscriptions</store>. Any unused portion of a free trial is forfeited when you purchase a subscription.",
+    "autoRenewDisclosureWeb": "{{price}}, auto-renewing. Cancel anytime at least 24 hours before the period ends. Any unused portion of a free trial is forfeited when you purchase a subscription.",
     "maybeLater": "Maybe later — try with 1 kid free",
     "productsLoading": "Subscription products are still loading. Try again in a moment.",
     "purchaseFailed": "Purchase did not complete.",
@@ -119,12 +122,14 @@
     "restoreFailed": "Restore failed.",
     "noSubscriptionFound": "No active subscription found on this Apple ID.",
     "noSubscriptionFoundAndroid": "No active subscription found on this Google Play account.",
+    "noSubscriptionFoundWeb": "No active subscription found.",
     "restoreUnavailable": "Purchases unavailable in browser preview.",
     "restoreUnavailableAndroid": "Restore is only available on the Google Play build.",
     "redeemCode": "Have a promo code?",
     "redeemWaiting": "Give your code a moment…",
     "redeemInProgress": "Hang on — give your last code a moment to register. If nothing happens, close this screen and reopen it before trying again.",
-    "promoCodeUnavailable": "Promo codes can only be redeemed in the App Store build."
+    "promoCodeUnavailable": "Promo codes can only be redeemed in the App Store build.",
+    "promoCodeUnavailableWeb": "Promo codes can be redeemed in the iOS or Android app."
   },
   "flowA": {
     "greeting": {
@@ -326,10 +331,11 @@
     "switchToYearlyDetail": "Save 51% · $59.99/year",
     "manageInAppleId": "Manage in Apple ID",
     "manageInGooglePlay": "Manage in Google Play",
+    "manageSubscription": "Manage subscription",
     "manageDetail": "Cancel, pause, change plan",
     "restoreDetail": "For previously purchased subscriptions",
     "cancel": "Cancel subscription",
-    "cancelFooter": "You'll keep access until your renewal date. Your moments are stored on this device. The story text and any recorded audio are sent to generate and transcribe the answer."
+    "cancelFooter": "You'll keep access until your renewal date. Your moments are stored on this device. The story text and any recorded audio are sent to transcribe the recording and generate the answer."
   },
   "tabBar": {
     "home": "Home",

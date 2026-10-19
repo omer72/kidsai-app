@@ -43,8 +43,10 @@
     "disclaimer": "Kidsit AI מציעה הכוונה רפלקטיבית, לא ייעוץ רפואי או פסיכולוגי. היא לא מאבחנת ולא מטפלת באף מצב. אם יש לכם דאגה קלינית לגבי הילד, פנו לאיש מקצוע מוסמך.",
     "noSubscriptionFound": "לא נמצא מנוי פעיל בחשבון Apple ID הזה.",
     "noSubscriptionFoundAndroid": "לא נמצא מנוי פעיל בחשבון Google Play הזה.",
+    "noSubscriptionFoundWeb": "לא נמצא מנוי פעיל.",
     "restoreUnavailable": "שחזור זמין רק בגרסת App Store.",
     "restoreUnavailableAndroid": "שחזור זמין רק בגרסת Google Play.",
+    "restoreUnavailableWeb": "שחזור רכישות זמין באפליקציה ל-iOS או ל-Android.",
     "restoreFailed": "השחזור נכשל."
   },
   "onboarding": {
@@ -120,6 +122,7 @@
     "trialStartFooter": "גישה מלאה ל-7 ימים. לא נבקש תשלום עד אז.",
     "autoRenewDisclosure": "{{price}}, עם חידוש אוטומטי. ביטול אפשרי לפחות 24 שעות לפני סוף התקופה דרך הגדרות חשבון Apple ID. החלק שלא נוצל מהתקופה החינמית מתבטל בעת רכישת מנוי.",
     "autoRenewDisclosureAndroid": "{{price}}, עם חידוש אוטומטי. ביטול אפשרי לפחות 24 שעות לפני סוף התקופה דרך <store>Google Play › תשלומים ומנויים</store>. החלק שלא נוצל מהתקופה החינמית מתבטל בעת רכישת מנוי.",
+    "autoRenewDisclosureWeb": "{{price}}, עם חידוש אוטומטי. ביטול אפשרי לפחות 24 שעות לפני סוף התקופה. החלק שלא נוצל מהתקופה החינמית מתבטל בעת רכישת מנוי.",
     "maybeLater": "אולי בפעם אחרת — נסו עם ילד אחד בחינם",
     "productsLoading": "מוצרי המנוי עוד נטענים. נסו שוב בעוד רגע.",
     "purchaseFailed": "הרכישה לא הושלמה.",
@@ -127,12 +130,14 @@
     "restoreFailed": "השחזור נכשל.",
     "noSubscriptionFound": "לא נמצא מנוי פעיל בחשבון Apple ID הזה.",
     "noSubscriptionFoundAndroid": "לא נמצא מנוי פעיל בחשבון Google Play הזה.",
+    "noSubscriptionFoundWeb": "לא נמצא מנוי פעיל.",
     "restoreUnavailable": "רכישות לא זמינות בתצוגה מקדימה בדפדפן.",
     "restoreUnavailableAndroid": "שחזור זמין רק בגרסת Google Play.",
     "redeemCode": "יש לכם קוד קופון?",
     "redeemWaiting": "תנו לקוד רגע…",
     "redeemInProgress": "רגע — תנו לקוד הקודם זמן להירשם. אם לא קרה כלום, סגרו את המסך הזה ופתחו אותו מחדש לפני שתנסו שוב.",
-    "promoCodeUnavailable": "קודי קופון ניתנים למימוש רק בגרסת App Store."
+    "promoCodeUnavailable": "קודי קופון ניתנים למימוש רק בגרסת App Store.",
+    "promoCodeUnavailableWeb": "קודי קופון ניתנים למימוש באפליקציה ל-iOS או ל-Android."
   },
   "flowA": {
     "greeting": {
@@ -334,10 +339,11 @@
     "switchToYearlyDetail": "חסכו 51% · $59.99/שנה",
     "manageInAppleId": "ניהול ב-Apple ID",
     "manageInGooglePlay": "ניהול ב-Google Play",
+    "manageSubscription": "ניהול המנוי",
     "manageDetail": "ביטול, השהיה, החלפת תוכנית",
     "restoreDetail": "למנויים שנרכשו בעבר",
     "cancel": "ביטול מנוי",
-    "cancelFooter": "תשמרו על הגישה עד תאריך החידוש. הרגעים נשמרים במכשיר הזה. הטקסט של הסיפור וכל הקלטה נשלחים כדי ליצור את התשובה ולתמלל אותה."
+    "cancelFooter": "תשמרו על הגישה עד תאריך החידוש. הרגעים נשמרים במכשיר הזה. הטקסט של הסיפור וכל הקלטה נשלחים כדי לתמלל את ההקלטה וליצור את התשובה."
   },
   "tabBar": {
     "home": "ראשי",

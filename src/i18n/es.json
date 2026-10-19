@@ -43,8 +43,10 @@
     "disclaimer": "Kidsit AI ofrece orientación reflexiva, no consejo médico ni psicológico. No diagnostica ni trata ninguna condición. Si tienes inquietudes clínicas sobre tu hijo o hija, consulta a un profesional cualificado.",
     "noSubscriptionFound": "No se encontró una suscripción activa en este Apple ID.",
     "noSubscriptionFoundAndroid": "No se encontró una suscripción activa en esta cuenta de Google Play.",
+    "noSubscriptionFoundWeb": "No se encontró una suscripción activa.",
     "restoreUnavailable": "Restaurar solo está disponible en la versión de App Store.",
     "restoreUnavailableAndroid": "Restaurar solo está disponible en la versión de Google Play.",
+    "restoreUnavailableWeb": "Restaura las compras en la app de iOS o Android.",
     "restoreFailed": "Fallo al restaurar."
   },
   "onboarding": {
@@ -116,6 +118,7 @@
     "trialStartFooter": "Acceso completo durante 7 días. No te pediremos pago hasta entonces.",
     "autoRenewDisclosure": "{{price}}, con renovación automática. Cancela al menos 24 horas antes del final del período en los ajustes de tu Apple ID. La parte no usada de una prueba gratuita se pierde al comprar una suscripción.",
     "autoRenewDisclosureAndroid": "{{price}}, con renovación automática. Cancela al menos 24 horas antes del final del período en <store>Google Play › Pagos y suscripciones</store>. La parte no usada de una prueba gratuita se pierde al comprar una suscripción.",
+    "autoRenewDisclosureWeb": "{{price}}, con renovación automática. Cancela al menos 24 horas antes del final del período. La parte no usada de una prueba gratuita se pierde al comprar una suscripción.",
     "maybeLater": "Quizá más tarde — prueba con 1 hijo gratis",
     "productsLoading": "Los productos de suscripción aún se están cargando. Inténtalo en un momento.",
     "purchaseFailed": "La compra no se completó.",
@@ -123,12 +126,14 @@
     "restoreFailed": "Fallo al restaurar.",
     "noSubscriptionFound": "No se encontró una suscripción activa en este Apple ID.",
     "noSubscriptionFoundAndroid": "No se encontró una suscripción activa en esta cuenta de Google Play.",
+    "noSubscriptionFoundWeb": "No se encontró una suscripción activa.",
     "restoreUnavailable": "Compras no disponibles en la vista previa del navegador.",
     "restoreUnavailableAndroid": "Restaurar solo está disponible en la versión de Google Play.",
     "redeemCode": "¿Tienes un código promocional?",
     "redeemWaiting": "Dale un momento al código…",
     "redeemInProgress": "Un momento — deja que tu código anterior se registre. Si no pasa nada, cierra esta pantalla y vuelve a abrirla antes de intentarlo otra vez.",
-    "promoCodeUnavailable": "Los códigos promocionales solo pueden canjearse en la versión de App Store."
+    "promoCodeUnavailable": "Los códigos promocionales solo pueden canjearse en la versión de App Store.",
+    "promoCodeUnavailableWeb": "Los códigos promocionales se canjean en la app de iOS o Android."
   },
   "flowA": {
     "greeting": {
@@ -330,10 +335,11 @@
     "switchToYearlyDetail": "Ahorra 51% · $59,99/año",
     "manageInAppleId": "Gestionar en Apple ID",
     "manageInGooglePlay": "Gestionar en Google Play",
+    "manageSubscription": "Gestionar suscripción",
     "manageDetail": "Cancelar, pausar, cambiar plan",
     "restoreDetail": "Para suscripciones compradas previamente",
     "cancel": "Cancelar suscripción",
-    "cancelFooter": "Conservarás el acceso hasta tu fecha de renovación. Tus momentos se guardan en este dispositivo. El texto de la historia y el audio grabado se envían para generar y transcribir la respuesta."
+    "cancelFooter": "Conservarás el acceso hasta tu fecha de renovación. Tus momentos se guardan en este dispositivo. El texto de la historia y el audio grabado se envían para transcribir la grabación y generar la respuesta."
   },
   "tabBar": {
     "home": "Inicio",

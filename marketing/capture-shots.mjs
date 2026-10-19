@@ -9,6 +9,8 @@ import { fileURLToPath } from 'url';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const base = process.argv[2] || 'http://127.0.0.1:5173';
+const onlyShots = new Set((process.env.SHOTS || '').split(',').filter(Boolean));
+const wantShot = (name) => onlyShots.size === 0 || onlyShots.has(name);
 
 const SIZES = [
   { folder: '', width: 430, height: 932, out: 'shots' },
@@ -150,43 +152,36 @@ async function framePaywall(page) {
   await page.waitForTimeout(180);
 }
 
-// Shot 03 stays at the top of the answer. A row that would be sliced by the
-// tab bar is pushed fully below it, so the frame ends on a whole card.
+// Shot 03 stays at the top of the answer. Any row that is not fully above
+// the full-width tab bar is hidden, along with everything after it, so the
+// frame ends on a complete card. No spacer is inserted.
 async function frameAnswer(page) {
   await page.waitForSelector('[data-response-title]', { timeout: 8000 });
-  const placed = await page.evaluate(() => {
+  await page.evaluate(() => {
     const scroller = document.querySelector('[data-kb-scroll]');
     const tab = document.querySelector('[data-tabbar]');
     if (scroller) scroller.scrollTop = 0;
-    if (!scroller || !tab) return { missing: true };
-    // The tab bar's top padding fades out, so a row can clear the
-    // element's box and still be sliced by the opaque pill.
-    const pill = tab.querySelector('div');
-    const limit = (pill || tab).getBoundingClientRect().top;
-    const row = [...document.querySelectorAll('[data-shot-row]')].find((el) => {
-      const box = el.getBoundingClientRect();
-      return box.top < limit - 1 && box.bottom > limit + 1 && box.top > 0;
-    });
-    if (!row) return { limit, pushed: false };
-    const before = row.getBoundingClientRect().top;
-    const extra = limit - before + 4;
-    const spacer = document.createElement('div');
-    spacer.setAttribute('data-shot-spacer', '');
-    spacer.style.height = `${extra}px`;
-    spacer.style.flexShrink = '0';
-    row.parentNode.insertBefore(spacer, row);
-    return {
-      limit,
-      pushed: true,
-      extra,
-      before,
-      after: row.getBoundingClientRect().top,
-      text: (row.innerText || '').slice(0, 32),
-    };
+    if (!scroller || !tab) return;
+    const limit = tab.getBoundingClientRect().top;
+    const rows = [...document.querySelectorAll('[data-shot-row]')];
+    const cut = rows.find((el) => el.getBoundingClientRect().bottom > limit - 1);
+    if (cut) {
+      const hide = (node) => { node.style.display = 'none'; };
+      hide(cut);
+      let node = cut;
+      while (node && node !== scroller) {
+        let sibling = node.nextElementSibling;
+        while (sibling) {
+          hide(sibling);
+          sibling = sibling.nextElementSibling;
+        }
+        node = node.parentElement;
+      }
+    }
+    const box = scroller.getBoundingClientRect();
+    const clipBottom = Math.max(0, box.bottom - limit);
+    scroller.style.clipPath = `inset(0px 0px ${clipBottom}px 0px)`;
   });
-  if (placed?.pushed && placed.after < placed.limit) {
-    throw new Error(`could not clear the tab bar ${JSON.stringify(placed)}`);
-  }
   await page.waitForTimeout(120);
 }
 
@@ -240,9 +235,12 @@ async function capture(browser, lang, size) {
   const page = await context.newPage();
   await page.goto(base, { waitUntil: 'networkidle' });
 
-  await load(page, lang, {});
-  await shoot(page, lang, size, '01');
+  if (wantShot('01')) {
+    await load(page, lang, {});
+    await shoot(page, lang, size, '01');
+  }
 
+  if (wantShot('05')) {
   await load(page, lang, { 'kidai.settings.v1': settings(false) });
   await clickText(page, lang === 'he' ? 'נסו את הרגע הראשון' : 'Try your first moment');
   await clickText(page, lang === 'he' ? 'דלג' : 'Skip');
@@ -268,15 +266,20 @@ async function capture(browser, lang, size) {
   const apple = await page.evaluate(() => /Apple ID|אפל|Apple/.test(document.body.innerText) && /Apple ID/.test(document.body.innerText));
   if (android && apple) throw new Error('Android paywall still mentions Apple ID');
   await shoot(page, lang, size, '05');
+  }
 
+  if (wantShot('02') || wantShot('04') || wantShot('03')) {
   await load(page, lang, {
     'kidai.settings.v1': settings(true),
     'kidai.kids.v1': [kid(lang)],
     'kidai.history.v1': history(lang),
   });
-  await assertBox(page, '[data-type-link]', 'type link', { aboveTab: true });
-  await shoot(page, lang, size, '02');
+  if (wantShot('02')) {
+    await assertBox(page, '[data-type-link]', 'type link', { aboveTab: true });
+    await shoot(page, lang, size, '02');
+  }
 
+  if (wantShot('04')) {
   await clickTab(page, 1);
   const titles = history(lang).map((row) => row.title);
   await page.waitForTimeout(200);
@@ -302,8 +305,10 @@ async function capture(browser, lang, size) {
     await page.waitForTimeout(180);
   }
   await shoot(page, lang, size, '04');
+  }
 
-  await clickTab(page, 0);
+  if (wantShot('03')) {
+  if (wantShot('04')) await clickTab(page, 0);
   await clickText(page, lang === 'he' ? 'או הקלידו' : 'Or type it out');
   await page.locator('textarea').fill(STORY[lang]);
   await clickText(page, lang === 'he' ? 'המשך' : 'Continue');
@@ -317,31 +322,35 @@ async function capture(browser, lang, size) {
   const answer = await page.evaluate(() => {
     const scroller = document.querySelector('[data-kb-scroll]');
     const tab = document.querySelector('[data-tabbar]');
+    const visible = (el) => !!el && el.getClientRects().length > 0 && getComputedStyle(el).display !== 'none';
     const boxOf = (selector) => {
       const el = document.querySelector(selector);
-      if (!el) return null;
+      if (!visible(el)) return null;
       const box = el.getBoundingClientRect();
-      return { top: box.top, bottom: box.bottom };
+      return { top: box.top, bottom: box.bottom, width: box.width };
     };
     const view = scroller.getBoundingClientRect();
-    const pill = tab.querySelector('div');
-    const tabTop = (pill || tab).getBoundingClientRect().top;
-    const rows = [...document.querySelectorAll('[data-shot-row]')].map((el) => {
+    const tabBox = tab.getBoundingClientRect();
+    const rows = [...document.querySelectorAll('[data-shot-row]')].filter(visible).map((el) => {
       const box = el.getBoundingClientRect();
-      return { top: box.top, bottom: box.bottom, text: (el.innerText || '').slice(0, 40) };
+      return { top: box.top, bottom: box.bottom, width: box.width, text: (el.innerText || '').slice(0, 40) };
     });
-    const cut = rows.filter((row) => row.top < tabTop - 1 && row.bottom > tabTop + 1 && row.top >= view.top - 1 && row.bottom - row.top < tabTop);
+    const cut = rows.filter((row) => row.bottom > tabBox.top + 1 && row.top < tabBox.bottom);
     return {
       scroll: scroller.scrollTop,
       viewTop: view.top,
-      tabTop,
+      tabTop: tabBox.top,
+      tabWidth: tabBox.width,
+      screen: window.innerWidth,
+      spacer: !!document.querySelector('[data-shot-spacer]'),
       title: boxOf('[data-response-title]'),
       forKid: boxOf('[data-response-for]'),
       sparkle: boxOf('[data-response-sparkle]'),
-      why: boxOf('[data-understand-why]'),
       cut,
     };
   });
+  if (answer.spacer) throw new Error('answer frame inserted a spacer');
+  if (answer.tabWidth < answer.screen - 2) throw new Error(`tab bar is not full width ${JSON.stringify(answer)}`);
   const fullyIn = (box, label) => {
     if (!box) throw new Error(`${label} missing`);
     if (box.top < answer.viewTop - 1 || box.bottom > answer.tabTop + 1) {
@@ -351,11 +360,10 @@ async function capture(browser, lang, size) {
   fullyIn(answer.title, 'response title');
   fullyIn(answer.forKid, 'for kid');
   fullyIn(answer.sparkle, 'response sparkle');
-  if (answer.why && answer.why.top < answer.tabTop - 1 && answer.why.bottom > answer.tabTop + 1) {
-    throw new Error(`understand why cut by the tab bar ${JSON.stringify(answer)}`);
-  }
-  if (answer.cut.length) throw new Error(`answer row cut by the tab bar ${JSON.stringify(answer.cut)}`);
+  if (answer.cut.length) throw new Error(`answer row crosses the tab bar ${JSON.stringify(answer.cut)}`);
   await shoot(page, lang, size, '03');
+  }
+  }
 
   await context.close();
 }

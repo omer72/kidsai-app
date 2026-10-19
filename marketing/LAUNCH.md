@@ -172,8 +172,8 @@ the park, the meltdown about socks, the bedtime negotiation gone sideways.
 ### Tweet 6 — privacy + price
 
 ```
-Your kid data is stored on your device. We don't sell it. We don't train models
-on it. All AI calls go through our server which doesn't retain anything.
+Your kid data is stored on your device. We don't sell it. The AI provider
+processes the text under its API data policy, and nothing is used for training.
 
 Free to try with 1 kid (no time limit). Premium is for unlimited
 children. Past moments with that child inform the next answer.
