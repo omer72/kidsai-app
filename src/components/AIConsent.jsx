@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { tokens, fs } from '../theme';
+import { safeBottom, safeTop } from '../platform';
 import { Icon } from './Icons';
 
 export function AIConsentModal({ onAgree, onDecline, fullscreen }) {
@@ -9,7 +10,7 @@ export function AIConsentModal({ onAgree, onDecline, fullscreen }) {
       position: 'absolute', inset: 0, zIndex: 200,
       background: 'rgba(11, 29, 58, 0.55)',
       display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
-      padding: fullscreen ? 'max(40px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom))' : '40px 16px 20px',
+      padding: fullscreen ? `${safeTop(40)} 16px ${safeBottom(20)}` : '40px 16px 20px',
     }}>
       <div style={{
         background: tokens.bg, borderRadius: 24, width: '100%', maxWidth: 460,

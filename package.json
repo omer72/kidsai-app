@@ -11,7 +11,7 @@
     "ios": "vite build && cap sync ios && cap open ios",
     "android": "vite build && cap sync android && cap open android",
     "cap:sync": "vite build && cap sync",
-    "postinstall": "sed -i '' s/proguard-android.txt/proguard-android-optimize.txt/ node_modules/@capacitor-community/in-app-review/android/build.gradle || true"
+    "postinstall": "node scripts/patch-in-app-review-proguard.mjs"
   },
   "dependencies": {
     "@capacitor-community/in-app-review": "^8.0.0",

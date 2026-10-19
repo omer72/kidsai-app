@@ -1,17 +1,16 @@
-// Render each .stage in screenshots.html as a 1290×2796 PNG, then resize
-// to every iPhone display size ASC asks for.
-// Run: cd marketing && npx --yes playwright@1.60.0 install chromium && node render.mjs
+// Render each .stage in screenshots.html at every iPhone pixel size.
+// Each size is a real viewport render, not a resize of the 6.7" frame.
+// Run: cd marketing && node render.mjs [en|he]
 
 import { chromium } from 'playwright';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
-import { mkdirSync, existsSync, copyFileSync } from 'fs';
-import sharp from 'sharp';
+import { mkdirSync, copyFileSync } from 'fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const HTML = `file://${resolve(__dirname, 'screenshots.html')}`;
+const LANG = process.argv[2] === 'he' ? 'he' : 'en';
+const onlyShot = /^\d\d$/.test(process.argv[3] || '') ? process.argv[3] : '';
 
-// ASC device-size buckets:
 const SIZES = {
   '6.9': [1320, 2868],
   '6.7': [1290, 2796],
@@ -19,43 +18,32 @@ const SIZES = {
   '6.3': [1206, 2622],
   '6.1': [1170, 2532],
 };
-const NATIVE = SIZES['6.7']; // we render the HTML at 6.7"
 
-const OUT = resolve(__dirname, 'composed');
+const OUT = resolve(__dirname, LANG === 'he' ? 'composed/he' : 'composed');
 mkdirSync(OUT, { recursive: true });
 
 const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: NATIVE[0], height: NATIVE[1] } });
-await page.goto(HTML, { waitUntil: 'networkidle' });
-// give web fonts time to load
-await page.waitForTimeout(800);
 
-const stages = await page.locator('.stage').all();
-console.log(`found ${stages.length} stages`);
-
-for (let i = 0; i < stages.length; i++) {
-  const buf = await stages[i].screenshot({ omitBackground: false });
-  const n = String(i + 1).padStart(2, '0');
-  const native = resolve(OUT, `${n}.png`);
-  await sharp(buf).png().toFile(native);
-  console.log(`  ✓ ${n}.png (native 1290×2796)`);
-
-  // generate every required size
-  for (const [label, [w, h]] of Object.entries(SIZES)) {
-    if (label === '6.7') continue; // already saved as native
-    const dir = resolve(OUT, label);
-    mkdirSync(dir, { recursive: true });
-    await sharp(buf).resize(w, h, { fit: 'fill' }).png().toFile(resolve(dir, `${n}.png`));
-  }
-}
-
-// also derive a top-level 6.7" copy for convenience
-for (const n of ['01','02','03','04','05']) {
-  const src = resolve(OUT, `${n}.png`);
-  const dir = resolve(OUT, '6.7');
+for (const [label, [w, h]] of Object.entries(SIZES)) {
+  const page = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
+  const html = `file://${resolve(__dirname, 'screenshots.html')}?lang=${LANG}&size=${label}`;
+  await page.goto(html, { waitUntil: 'networkidle' });
+  await page.evaluate(() => document.fonts.ready);
+  await page.waitForTimeout(400);
+  const stages = await page.locator('.stage').all();
+  if (stages.length !== 5) throw new Error(`expected 5 stages, found ${stages.length}`);
+  const dir = resolve(OUT, label);
   mkdirSync(dir, { recursive: true });
-  copyFileSync(src, resolve(dir, `${n}.png`));
+  for (let i = 0; i < stages.length; i++) {
+    const n = String(i + 1).padStart(2, '0');
+    if (onlyShot && n !== onlyShot) continue;
+    const file = resolve(dir, `${n}.png`);
+    await stages[i].screenshot({ path: file, omitBackground: false });
+    if (label === '6.7') copyFileSync(file, resolve(OUT, `${n}.png`));
+    console.log(`  ✓ ${label}/${n}.png (${w}×${h})`);
+  }
+  await page.close();
 }
 
 await browser.close();
-console.log('done. composed screenshots in marketing/composed/');
+console.log(`done. composed screenshots in ${OUT}`);

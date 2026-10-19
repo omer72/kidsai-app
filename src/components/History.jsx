@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 import { Avatar, Card, Segmented } from './primitives';
-import { MOODS, LOCATIONS, SAMPLE_PATTERNS } from '../constants';
+import { MOODS, LOCATIONS } from '../constants';
 
 export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
   const { t } = useTranslation();
@@ -16,7 +16,6 @@ export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
   const [filter, setFilter] = useState('all');
   const [openId, setOpenId] = useState(null);
   const items = history.filter((h) => (filter === 'all' ? true : h.kidId === filter));
-  const showPatterns = history.length >= 3;
 
   const isNight = (timestamp) => {
     const d = new Date(timestamp);
@@ -29,32 +28,6 @@ export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
       <div style={{ ...tokens.type.h2, fontSize: fs(28), color: tokens.ink, marginBottom: 14 }}>
         {t('history.title')}
       </div>
-
-      {showPatterns && (
-        <div style={{ marginBottom: 20 }}>
-          <div style={{ ...tokens.type.label, color: tokens.ink3, marginBottom: 10 }}>
-            {t('history.patternsHeader')}
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {SAMPLE_PATTERNS.map((p, i) => (
-              <Card key={i} pad={14} style={{ borderInlineStart: `3px solid ${tokens.primary}` }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                  <Icon.TrendUp s={14} c={tokens.primary}/>
-                  <div style={{ fontFamily: tokens.sans, fontSize: fs(14), fontWeight: 600, color: tokens.ink }}>{p.title}</div>
-                  <div style={{
-                    marginInlineStart: 'auto', fontFamily: tokens.mono, fontSize: fs(12),
-                    color: tokens.primaryInk, background: tokens.primarySoft,
-                    padding: '2px 8px', borderRadius: 10, fontWeight: 600,
-                  }}>×{p.count}</div>
-                </div>
-                <div style={{ fontFamily: tokens.sans, fontSize: fs(13), lineHeight: 1.45, color: tokens.ink2 }}>
-                  {p.detail}
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-      )}
 
       <div style={{ marginBottom: 12 }}>
         <Segmented

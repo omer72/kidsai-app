@@ -32,13 +32,13 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
   const tonightSection = response.sections?.find((s) => s.kind === 'tonight');
 
   return (
-    <div style={{ padding: '6px 20px 140px' }}>
-      <div style={{
+    <div style={{ padding: '4px 20px 180px' }}>
+      <div data-shot-row style={{
         background: `linear-gradient(160deg, ${tokens.primarySoft} 0%, ${tokens.surface} 100%)`,
-        borderRadius: 24, padding: '22px 22px 24px', marginBottom: 16,
+        borderRadius: 24, padding: '16px 18px 16px', marginBottom: 12,
         position: 'relative', overflow: 'hidden',
       }}>
-        <div style={{
+        <div data-response-sparkle style={{
           position: 'absolute', top: 22, insetInlineEnd: 22,
           width: 36, height: 36, borderRadius: 36,
           background: `radial-gradient(circle at 35% 30%, ${tokens.primary} 0%, ${tokens.primaryInk} 80%)`,
@@ -47,16 +47,16 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
         }}>
           <Icon.Sparkle s={16} c="#fff"/>
         </div>
-        <div style={{ ...tokens.type.label, color: tokens.primaryInk, marginBottom: 12, paddingInlineEnd: 48 }}>
+        <div data-response-for style={{ ...tokens.type.label, color: tokens.primaryInk, marginBottom: 8, paddingInlineEnd: 48 }}>
           {kid?.name ? t('response.forKidJustNow', { kidName: kid.name }) : t('response.forYourChildJustNow')}
         </div>
-        <div style={{
+        <div data-response-title style={{
           ...tokens.type.h2,
-          color: tokens.ink, paddingInlineEnd: 48, marginBottom: 14,
+          color: tokens.ink, paddingInlineEnd: 48, marginBottom: 10,
         }}>
           {response.title}.
         </div>
-        <div style={{ height: 1, background: tokens.line, opacity: 0.6, marginBottom: 14 }}/>
+        <div style={{ height: 1, background: tokens.line, opacity: 0.6, marginBottom: 10 }}/>
         <div style={{ ...tokens.type.bodyLg, color: tokens.ink, fontWeight: 400 }}>
           {response.summary}
         </div>
@@ -64,11 +64,11 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
 
       {trySection?.items?.length > 0 && (
         <div style={{
-          background: tokens.surface, borderRadius: 22, padding: '20px 18px 18px',
-          border: `1px solid ${tokens.line}`, marginBottom: 14,
+          background: tokens.surface, borderRadius: 22, padding: '14px 16px 12px',
+          border: `1px solid ${tokens.line}`, marginBottom: 12,
           boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
             <div style={{
               width: 30, height: 30, borderRadius: 30,
               background: tokens.primary, color: '#fff',
@@ -81,13 +81,13 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
               {t('response.tryNextTime')}
             </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {trySection.items.map((it, j) => {
               const isPrimary = j === 0;
               return (
-                <div key={j} style={{
+                <div key={j} data-shot-row style={{
                   background: isPrimary ? tokens.primarySoft : tokens.bg,
-                  borderRadius: 16, padding: '14px 14px',
+                  borderRadius: 16, padding: '11px 12px',
                   display: 'flex', gap: 12, alignItems: 'flex-start',
                   border: isPrimary ? `1px solid ${tokens.primary}20` : '1px solid transparent',
                 }}>
@@ -117,7 +117,7 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
       )}
 
       {tonightSection?.body && (
-        <div style={{
+        <div data-tonight data-shot-row style={{
           background: '#FFF8E8', borderRadius: 16, padding: '14px 16px',
           marginBottom: 10, border: '1px solid #F4E5BD',
           display: 'flex', gap: 12,
@@ -135,7 +135,7 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
       )}
 
       {whySection?.body && (
-        <button onClick={() => setWhyOpen(!whyOpen)} style={{
+        <button data-understand-why data-shot-row onClick={() => setWhyOpen(!whyOpen)} style={{
           width: '100%', textAlign: 'start', cursor: 'pointer',
           background: 'transparent', border: `1px solid ${tokens.line}`,
           borderRadius: 14, padding: '12px 14px', marginBottom: 8,
@@ -158,7 +158,7 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
       )}
 
       {whatSection?.body && (
-        <button onClick={() => setWhatOpen(!whatOpen)} style={{
+        <button data-shot-row onClick={() => setWhatOpen(!whatOpen)} style={{
           width: '100%', textAlign: 'start', cursor: 'pointer',
           background: 'transparent', border: `1px solid ${tokens.line}`,
           borderRadius: 14, padding: '12px 14px', marginBottom: 18,

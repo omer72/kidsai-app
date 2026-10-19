@@ -32,17 +32,21 @@
     "or": "o"
   },
   "welcome": {
-    "badge": "La confianza de 24.000 familias",
+    "badge": "Creada por un padre, para padres",
     "headline1": "Criar es",
     "headline2": "difícil.",
     "headline3a": "No tienes que",
     "headline3b": "hacerlo solo.",
-    "subhead": "Cuenta lo que acaba de pasar. Recibe orientación cálida y basada en ciencia en 12 segundos.",
+    "subhead": "Cuenta lo que acaba de pasar. Recibe orientación cálida y basada en ciencia en ~10 segundos.",
     "cta": "Prueba tu primer momento — gratis",
     "alreadySubscriber": "¿Ya tienes suscripción?",
     "disclaimer": "Kidsit AI ofrece orientación reflexiva, no consejo médico ni psicológico. No diagnostica ni trata ninguna condición. Si tienes inquietudes clínicas sobre tu hijo o hija, consulta a un profesional cualificado.",
     "noSubscriptionFound": "No se encontró una suscripción activa en este Apple ID.",
+    "noSubscriptionFoundAndroid": "No se encontró una suscripción activa en esta cuenta de Google Play.",
+    "noSubscriptionFoundWeb": "No se encontró una suscripción activa.",
     "restoreUnavailable": "Restaurar solo está disponible en la versión de App Store.",
+    "restoreUnavailableAndroid": "Restaurar solo está disponible en la versión de Google Play.",
+    "restoreUnavailableWeb": "Restaura las compras en la app de iOS o Android.",
     "restoreFailed": "Fallo al restaurar."
   },
   "onboarding": {
@@ -57,11 +61,10 @@
       "body": "Recibirás una lectura estructurada: qué pasó, por qué y qué intentar. Basada en investigación del desarrollo infantil."
     },
     "slide3": {
-      "eyebrow": "03 — Detecta los patrones",
-      "title": "Los patrones se vuelven visibles. Para que puedas cambiarlos.",
-      "body": "Con el tiempo, Kidsit AI revela los detonantes, momentos y contextos que se repiten. Con calma. Con cariño."
-    },
-    "repeatingBadge": "← SE REPITE"
+      "eyebrow": "03 — Recuerda",
+      "title": "Los momentos anteriores entran en la siguiente respuesta.",
+      "body": "Lo que registras de este hijo, incluido lo que no ayudó, se usa la próxima vez que preguntas."
+    }
   },
   "paywall": {
     "headline1": "Todo Kidsit AI,",
@@ -85,23 +88,15 @@
     "features": {
       "trackEveryChild": {
         "title": "Cada hijo, su propio perfil",
-        "body": "Añade tantos hijos como tengas. Cada uno tiene su perfil y sus patrones propios."
-      },
-      "unlimitedMoments": {
-        "title": "Momentos ilimitados",
-        "body": "Graba, registra, aprende — todas las veces que la crianza lo pida."
+        "body": "Premium añade hijos ilimitados. Cada hijo tiene su propio perfil."
       },
       "patternDetection": {
-        "title": "Detección de patrones",
-        "body": "Aviso semanal de detonantes y de lo que realmente está funcionando."
-      },
-      "coParentSharing": {
-        "title": "Compartir con tu pareja",
-        "body": "Envía cualquier momento a tu pareja para que estén alineados."
+        "title": "Memoria de momentos anteriores",
+        "body": "Los momentos anteriores de cada hijo entran en la siguiente respuesta, incluido lo que no ayudó."
       },
       "private": {
         "title": "Privado. Siempre.",
-        "body": "Cifrado de extremo a extremo. Nunca se usa para entrenar modelos."
+        "body": "Los momentos se guardan en este dispositivo. Nada de lo que escribes se usa para entrenar modelos."
       }
     },
     "yearly": "Anual",
@@ -110,6 +105,7 @@
     "monthly": "Mensual",
     "monthlyDetail": "Paga sobre la marcha",
     "perMonth": "al mes",
+    "pricePair": "{{yearly}} al año o {{monthly}} al mes",
     "bestValue": "MEJOR VALOR",
     "ctaTrialStart": "Empezar prueba gratis de 7 días",
     "ctaSubscribeYearly": "Suscríbete {{price}}/año",
@@ -121,17 +117,23 @@
     "billedMonthly": "Cobrado {{price}} al mes",
     "trialStartFooter": "Acceso completo durante 7 días. No te pediremos pago hasta entonces.",
     "autoRenewDisclosure": "{{price}}, con renovación automática. Cancela al menos 24 horas antes del final del período en los ajustes de tu Apple ID. La parte no usada de una prueba gratuita se pierde al comprar una suscripción.",
+    "autoRenewDisclosureAndroid": "{{price}}, con renovación automática. Cancela al menos 24 horas antes del final del período en <store>Google Play › Pagos y suscripciones</store>. La parte no usada de una prueba gratuita se pierde al comprar una suscripción.",
+    "autoRenewDisclosureWeb": "{{price}}, con renovación automática. Cancela al menos 24 horas antes del final del período. La parte no usada de una prueba gratuita se pierde al comprar una suscripción.",
     "maybeLater": "Quizá más tarde — prueba con 1 hijo gratis",
     "productsLoading": "Los productos de suscripción aún se están cargando. Inténtalo en un momento.",
     "purchaseFailed": "La compra no se completó.",
     "genericError": "Algo salió mal.",
     "restoreFailed": "Fallo al restaurar.",
     "noSubscriptionFound": "No se encontró una suscripción activa en este Apple ID.",
+    "noSubscriptionFoundAndroid": "No se encontró una suscripción activa en esta cuenta de Google Play.",
+    "noSubscriptionFoundWeb": "No se encontró una suscripción activa.",
     "restoreUnavailable": "Compras no disponibles en la vista previa del navegador.",
+    "restoreUnavailableAndroid": "Restaurar solo está disponible en la versión de Google Play.",
     "redeemCode": "¿Tienes un código promocional?",
     "redeemWaiting": "Dale un momento al código…",
     "redeemInProgress": "Un momento — deja que tu código anterior se registre. Si no pasa nada, cierra esta pantalla y vuelve a abrirla antes de intentarlo otra vez.",
-    "promoCodeUnavailable": "Los códigos promocionales solo pueden canjearse en la versión de App Store."
+    "promoCodeUnavailable": "Los códigos promocionales solo pueden canjearse en la versión de App Store.",
+    "promoCodeUnavailableWeb": "Los códigos promocionales se canjean en la app de iOS o Android."
   },
   "flowA": {
     "greeting": {
@@ -154,9 +156,11 @@
     "orTypeItOut": "O escríbelo",
     "yourStory": "Tu historia",
     "tellWhatHappened": "Cuéntale a Kidsit AI lo que pasó.",
-    "storyPlaceholder": "Se tiró al suelo en el estacionamiento del parque y empezó a gritar. Todos miraban. Le pregunté dos veces…",
+    "storyPlaceholder": "Mi hija de 2 años se tiró al suelo en el estacionamiento del parque y empezó a gritar. Todos miraban. Le pregunté dos veces…",
     "addLabel": "Añadir",
     "kidYears": "{{age}} años",
+    "kidYearsGirl": "{{age}} años",
+    "kidYearsBoy": "{{age}} años",
     "kidYearsShort": "{{age}}a",
     "errors": {
       "micPermission": "Permiso del micrófono denegado.",
@@ -253,8 +257,7 @@
       "body": "Graba tu primer momento desde Inicio — aparecerá aquí."
     },
     "yourStoryLabel": "Tu historia",
-    "feedbackPrompt": "¿Cómo salió?",
-    "patternsHeader": "Patrones de esta semana"
+    "feedbackPrompt": "¿Cómo salió?"
   },
   "kids": {
     "title": "Hijos",
@@ -332,29 +335,11 @@
     "switchToYearlyDetail": "Ahorra 51% · $59,99/año",
     "manageInAppleId": "Gestionar en Apple ID",
     "manageInGooglePlay": "Gestionar en Google Play",
+    "manageSubscription": "Gestionar suscripción",
     "manageDetail": "Cancelar, pausar, cambiar plan",
     "restoreDetail": "Para suscripciones compradas previamente",
     "cancel": "Cancelar suscripción",
-    "cancelFooter": "Conservarás el acceso hasta tu fecha de renovación. Tus momentos siguen privados y guardados."
-  },
-  "trialBanner": {
-    "endsToday": "Tu prueba termina hoy",
-    "endsTomorrow": "Tu prueba termina mañana",
-    "daysLeft": "Te quedan {{daysLeft}} días de prueba",
-    "statsWithKid": "Has registrado {{count}} momentos. Los patrones de {{kidName}} empiezan a aclararse — sigue así.",
-    "stats": "Has registrado {{count}} momentos. Los patrones empiezan a aclararse — sigue así.",
-    "continueCTA": "Continúa con Kidsit AI"
-  },
-  "lapsed": {
-    "title": "Tu prueba terminó.",
-    "subhead": "Tus momentos y patrones están a salvo — esperan tu regreso.",
-    "momentsAndKids": "{{moments}} momento · {{kids}} hijo",
-    "momentsAndKidsPlural": "{{moments}} momentos · {{kids}} hijos",
-    "momentsOnly": "{{moments}} momento",
-    "momentsOnlyPlural": "{{moments}} momentos",
-    "historyPaused": "Tu historial está en pausa, no borrado.",
-    "resumeYearlyCTA": "Reanudar Kidsit AI · {{price}}/año",
-    "payMonthlyInstead": "Pagar mensualmente · {{price}}/mes"
+    "cancelFooter": "Conservarás el acceso hasta tu fecha de renovación. Tus momentos se guardan en este dispositivo. El texto de la historia y el audio grabado se envían para transcribir la grabación y generar la respuesta."
   },
   "tabBar": {
     "home": "Inicio",
@@ -367,7 +352,7 @@
     "body1": "Para darte orientación, Kidsit AI envía dos cosas a OpenAI:",
     "bullet1": "El audio que grabas, transcrito a texto por OpenAI Whisper.",
     "bullet2": "El texto transcrito, junto al contexto que eliges (lugar, estado de ánimo, nombre y edad de tu hijo), enviado a OpenAI GPT-4o-mini para la respuesta.",
-    "body2": "OpenAI no conserva estos datos, no los asocia a tu identidad y no los usa para entrenar modelos. Los perfiles e historial de tus hijos permanecen solo en este dispositivo.",
+    "body2": "Estos datos no se usan para entrenar modelos y se tratan según la política de datos de la API de OpenAI. Los perfiles e historial de tus hijos se guardan en este dispositivo. El texto de la historia se envía a la IA para generar la respuesta.",
     "body3": "Al tocar Aceptar abajo, consientes este procesamiento. Puedes revocarlo en cualquier momento desde Ajustes.",
     "agree": "Acepto — empezar a usar Kidsit AI",
     "decline": "Ahora no",

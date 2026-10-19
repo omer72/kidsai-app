@@ -91,23 +91,23 @@ HOW IT WORKS
 Describe what just happened, or what's coming up. Kidsit AI replies with calm, practical guidance you can actually use — grounded in child development research, not generic advice.
 
 WHAT YOU CAN DO
-• Log parenting moments across each of your kids
-• Get instant, personalized guidance for tantrums, transitions, sleep, screens, sibling conflict, and more
-• Build a history of what works for your family
-• Quick text or voice input — describe the moment in your own words
-• Multiple kids, ages, and personalities supported
+• Describe a moment in your own words, by text or voice
+• Get calm, practical guidance for tantrums, transitions, sleep, screens, sibling conflict, and more
+• One child is free, with no time limit. Premium adds unlimited children
+• Past moments with that child inform the next answer
+• Moments are stored on this device
 
 WHO IT'S FOR
 Parents of toddlers, preschoolers, and school-age kids who want a calm second opinion in the heat of the moment — without scrolling through forums or waiting for a therapy appointment.
 
 PRIVACY
-Your moments stay private. We don't sell your data. Kidsit AI is designed for parents — not children — and never asks for your child's personal information.
+Moments are stored on this device. The story you send is used to write the answer. We don't sell your data. Kidsit AI is designed for parents — not children — and never asks for your child's personal information.
 
 SUBSCRIPTION
-Kidsit AI is free to try. Unlimited guidance requires a subscription, billed monthly or annually through Google Play. Cancel anytime in your Google Play account.
+One child is free, with no time limit. Premium is for unlimited children, billed monthly or yearly through Google Play. Cancel anytime in your Google Play account.
 
 QUESTIONS OR FEEDBACK
-Email us at omere@appcard.com. We read every message.
+Email us at omer+support@kidsit.ai. We read every message.
 ```
 
 ### Graphics (all generated, sitting in `marketing/play/`)
@@ -116,7 +116,8 @@ Email us at omere@appcard.com. We read every message.
 |-------|------|------|
 | App icon | `marketing/play/icon-512.png` | 512×512 PNG, no alpha |
 | Feature graphic | `marketing/play/feature-1024x500.png` | 1024×500 PNG |
-| Phone screenshots | `marketing/shots/01.png` – `05.png` | 1290×2796 (raw, unframed) |
+| Phone screenshots (English) | `marketing/play/01.png` – `05.png` | 1080×1920 PNG, 9:16. Do not upload the iOS shots; they are taller than 2:1 and Play rejects them. |
+| Phone screenshots (Hebrew) | `marketing/play/he/01.png` – `05.png` | 1080×1920 PNG, 9:16 |
 
 To regenerate the feature graphic after editing `marketing/feature-graphic.html`:
 ```bash
@@ -131,7 +132,7 @@ cd marketing && node render-feature-graphic.mjs
 
 ### Contact
 
-- **Email (public on store page):** `omere@appcard.com`
+- **Email (public on store page):** `omer+support@kidsit.ai`
 - **Website:** (leave blank unless you want one public)
 - **Privacy policy URL:** `https://kidsit.ai/privacy`
 
@@ -141,8 +142,9 @@ cd marketing && node render-feature-graphic.mjs
 Kidsit AI helps parents handle tough parenting moments with calm,
 expert-backed guidance. Describe what happened — a tantrum, a tough
 question, a sibling fight — and get a thoughtful response you can
-actually use. Track moments across each child, learn what works,
-and grow your toolkit over time.
+actually use. One child is free, with no time limit. Premium adds
+unlimited children. Past moments inform the next answer, and moments
+are stored on the device.
 
 This is our first Android release. Welcome aboard.
 ```
@@ -163,7 +165,7 @@ For future releases (versionCode 2+), switch to a bulleted changelog format.
 | Government app | No |
 | Financial features | No |
 | Health | No (unless you reposition as wellness) |
-| Data safety | Declare: OpenAI API key stored on-device (user-supplied), parenting moments stored on-device. If you later add analytics/Sentry/crash reporting, update this. |
+| Data safety | Declare: parenting moments are stored on-device. The story text, and voice when the parent records, is sent to the guidance service to produce the answer and is not sold. A user-supplied OpenAI key, if present, stays on-device. If you later add analytics, crash reporting, or Sentry, update this. |
 
 ## 8. Upload to Internal Testing first
 
@@ -323,7 +325,7 @@ When ready for production:
 |------|-------|
 | Package name | `ai.kidsit.app` |
 | Privacy policy URL | `https://kidsit.ai/privacy` |
-| Contact email | `omere@appcard.com` |
+| Contact email | `omer+support@kidsit.ai` |
 | Keystore path | `~/keystores/kidsai-upload.jks` |
 | Keystore config | `android/keystore.properties` |
 | Version (current) | `versionCode 1`, `versionName "1.0"` in `android/app/build.gradle:13-14` |
@@ -332,5 +334,5 @@ When ready for production:
 | Install on device | `cd android && ./gradlew installRelease` |
 | Icon (512×512) | `marketing/play/icon-512.png` |
 | Feature graphic (1024×500) | `marketing/play/feature-1024x500.png` |
-| Screenshots | `marketing/shots/01.png` – `05.png` |
+| Screenshots | `marketing/play/01.png` – `05.png` (English) and `marketing/play/he/01.png` – `05.png` (Hebrew), 1080×1920 |
 | Regenerate feature graphic | `cd marketing && node render-feature-graphic.mjs` |

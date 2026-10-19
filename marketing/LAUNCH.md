@@ -33,7 +33,7 @@ Upload these in order from `marketing/composed/`:
 1. `01.png` — Welcome hero
 2. `02.png` — Home with mic mid-recording
 3. `03.png` — Response: "A kinder second look"
-4. `04.png` — History detail (patterns over time)
+4. `04.png` — History of past moments
 5. `05.png` — Paywall with 7-day free trial
 
 (All at 1290 × 2796 — Product Hunt accepts iPhone screenshots at any size, but these match the App Store exactly so the listing feels consistent.)
@@ -73,11 +73,12 @@ Three things I want to be honest about:
 2. The guidance is grounded in Adlerian / Haim Ginott / Faber-Mazlish
    parenting research — empathy first, advice last. It's NOT therapy
    or medical advice.
-3. Your kid data stays on your device. We don't sell it. We don't
+3. Your kid data is stored on your device. We don't sell it. We don't
    train models on it.
 
-Free to use with 1 kid. Premium unlocks multiple kids + pattern
-detection over time. 7-day free trial on both plans.
+Free to use with 1 kid, no time limit. Premium is for unlimited
+children. Past moments with that child inform the next answer.
+7-day free trial on both plans.
 
 For parents reading this — what's the 6 PM moment of your day you
 wish you had this for? Tell me and I'll respond to everyone.
@@ -171,11 +172,12 @@ the park, the meltdown about socks, the bedtime negotiation gone sideways.
 ### Tweet 6 — privacy + price
 
 ```
-Your kid data stays on your device. We don't sell it. We don't train models
-on it. All AI calls go through our server which doesn't retain anything.
+Your kid data is stored on your device. We don't sell it. The AI provider
+processes the text under its API data policy, and nothing is used for training.
 
-Free to try with 1 kid (no time limit). Premium unlocks every child + pattern
-detection over time. 7 days free, $9.99/mo or $59.99/yr.
+Free to try with 1 kid (no time limit). Premium is for unlimited
+children. Past moments with that child inform the next answer.
+7 days free, $9.99/mo or $59.99/yr.
 ```
 
 ### Tweet 7 — the CTA
@@ -225,7 +227,7 @@ Three things I want to be honest about:
 
 → It's iOS only for now
 → It's not therapy or medical advice
-→ Your child's data stays on your device
+→ Your child's data is stored on your device
 
 We launched today on Product Hunt. If this resonates with you, the
 link is in the comments. And for the parents reading this — what's

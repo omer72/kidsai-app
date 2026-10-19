@@ -231,9 +231,9 @@ export function TabBar({ current, onChange }) {
     { id: 'settings', icon: Icon.Settings, label: t('tabBar.settings') },
   ];
   return (
-    <div style={{
+    <div data-tabbar style={{
       position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 40,
-      paddingBottom: `max(${INSET_BOTTOM_MIN}px, calc(env(safe-area-inset-bottom, 0px) + 22px))`, paddingTop: 10,
+      paddingBottom: `max(${INSET_BOTTOM_MIN}px, calc(env(safe-area-inset-bottom, 0px) + 22px), calc(var(--shot-sab, 0px) + 22px))`, paddingTop: 10,
       background: `linear-gradient(to top, ${tokens.bg} 60%, transparent 100%)`,
       display: 'flex', justifyContent: 'center', gap: 6,
     }}>

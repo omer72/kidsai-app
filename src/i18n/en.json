@@ -32,17 +32,21 @@
     "or": "or"
   },
   "welcome": {
-    "badge": "Trusted by 24,000 parents",
+    "badge": "Built by a parent, for parents",
     "headline1": "Parenting is",
     "headline2": "hard.",
     "headline3a": "You don't have",
     "headline3b": "to do it alone.",
-    "subhead": "Whisper what just happened. Get warm, science-backed guidance in 12 seconds.",
+    "subhead": "Whisper what just happened. Get warm, science-backed guidance in ~10 seconds.",
     "cta": "Try your first moment — free",
     "alreadySubscriber": "Already a subscriber?",
     "disclaimer": "Kidsit AI offers reflective guidance, not medical or psychological advice. It does not diagnose or treat any condition. For clinical concerns about your child, please consult a qualified professional.",
     "noSubscriptionFound": "No active subscription found on this Apple ID.",
+    "noSubscriptionFoundAndroid": "No active subscription found on this Google Play account.",
+    "noSubscriptionFoundWeb": "No active subscription found.",
     "restoreUnavailable": "Restore is only available on the App Store build.",
+    "restoreUnavailableAndroid": "Restore is only available on the Google Play build.",
+    "restoreUnavailableWeb": "Restore purchases in the iOS or Android app.",
     "restoreFailed": "Restore failed."
   },
   "onboarding": {
@@ -57,11 +61,10 @@
       "body": "You'll get back a structured read — what happened, why, and what to try. Rooted in child development research."
     },
     "slide3": {
-      "eyebrow": "03 — Notice the patterns",
-      "title": "Patterns become visible. So you change them.",
-      "body": "Over time, Kidsit AI surfaces the triggers, times, and contexts that keep tripping you up. Quietly, kindly."
-    },
-    "repeatingBadge": "← REPEATING"
+      "eyebrow": "03 — It remembers",
+      "title": "Past moments shape the next answer.",
+      "body": "What you log for this child, including what didn't help, is used the next time you ask."
+    }
   },
   "paywall": {
     "headline1": "The full Kidsit AI,",
@@ -81,23 +84,15 @@
     "features": {
       "trackEveryChild": {
         "title": "Track every child",
-        "body": "Add as many kids as you have. Each gets their own profile and patterns."
-      },
-      "unlimitedMoments": {
-        "title": "Unlimited moments",
-        "body": "Record, log, learn — as often as parenting demands."
+        "body": "Premium adds unlimited children. Each child has their own profile."
       },
       "patternDetection": {
-        "title": "Pattern detection",
-        "body": "Weekly notice of triggers and what's actually working."
-      },
-      "coParentSharing": {
-        "title": "Co-parent sharing",
-        "body": "Send any moment to your partner so you're aligned."
+        "title": "Memory of past moments",
+        "body": "Earlier moments with each child are used in the next answer, including what didn't help."
       },
       "private": {
         "title": "Private. Always.",
-        "body": "End-to-end encrypted. Never used to train models."
+        "body": "Moments are stored on this device. Nothing you write is used to train models."
       }
     },
     "yearly": "Yearly",
@@ -106,6 +101,7 @@
     "monthly": "Monthly",
     "monthlyDetail": "Pay as you go",
     "perMonth": "per month",
+    "pricePair": "{{yearly}} per year or {{monthly}} per month",
     "bestValue": "BEST VALUE",
     "ctaTrialStart": "Start 7-day free trial",
     "ctaSubscribeYearly": "Subscribe {{price}}/yr",
@@ -117,17 +113,23 @@
     "billedMonthly": "Billed {{price}} per month",
     "trialStartFooter": "Full access for 7 days. We won't ask for payment until then.",
     "autoRenewDisclosure": "{{price}}, auto-renewing. Cancel anytime at least 24 hours before the period ends via your Apple ID account settings. Any unused portion of a free trial is forfeited when you purchase a subscription.",
+    "autoRenewDisclosureAndroid": "{{price}}, auto-renewing. Cancel anytime at least 24 hours before the period ends via <store>Google Play › Payments & subscriptions</store>. Any unused portion of a free trial is forfeited when you purchase a subscription.",
+    "autoRenewDisclosureWeb": "{{price}}, auto-renewing. Cancel anytime at least 24 hours before the period ends. Any unused portion of a free trial is forfeited when you purchase a subscription.",
     "maybeLater": "Maybe later — try with 1 kid free",
     "productsLoading": "Subscription products are still loading. Try again in a moment.",
     "purchaseFailed": "Purchase did not complete.",
     "genericError": "Something went wrong.",
     "restoreFailed": "Restore failed.",
     "noSubscriptionFound": "No active subscription found on this Apple ID.",
+    "noSubscriptionFoundAndroid": "No active subscription found on this Google Play account.",
+    "noSubscriptionFoundWeb": "No active subscription found.",
     "restoreUnavailable": "Purchases unavailable in browser preview.",
+    "restoreUnavailableAndroid": "Restore is only available on the Google Play build.",
     "redeemCode": "Have a promo code?",
     "redeemWaiting": "Give your code a moment…",
     "redeemInProgress": "Hang on — give your last code a moment to register. If nothing happens, close this screen and reopen it before trying again.",
-    "promoCodeUnavailable": "Promo codes can only be redeemed in the App Store build."
+    "promoCodeUnavailable": "Promo codes can only be redeemed in the App Store build.",
+    "promoCodeUnavailableWeb": "Promo codes can be redeemed in the iOS or Android app."
   },
   "flowA": {
     "greeting": {
@@ -150,9 +152,11 @@
     "orTypeItOut": "Or type it out",
     "yourStory": "Your story",
     "tellWhatHappened": "Tell Kidsit AI what happened.",
-    "storyPlaceholder": "She dropped to the ground in the park parking lot and started screaming. Everyone was looking. I tried asking her twice…",
+    "storyPlaceholder": "My 2-year-old dropped onto the floor in the park parking lot and started screaming. Everyone was looking. I tried asking her twice…",
     "addLabel": "Add",
     "kidYears": "{{age}} years",
+    "kidYearsGirl": "{{age}} years",
+    "kidYearsBoy": "{{age}} years",
     "kidYearsShort": "{{age}}y",
     "errors": {
       "micPermission": "Microphone permission denied.",
@@ -249,8 +253,7 @@
       "body": "Record your first moment from Home — it'll appear here."
     },
     "yourStoryLabel": "Your story",
-    "feedbackPrompt": "How did it go?",
-    "patternsHeader": "Patterns this week"
+    "feedbackPrompt": "How did it go?"
   },
   "kids": {
     "title": "Kids",
@@ -328,29 +331,11 @@
     "switchToYearlyDetail": "Save 51% · $59.99/year",
     "manageInAppleId": "Manage in Apple ID",
     "manageInGooglePlay": "Manage in Google Play",
+    "manageSubscription": "Manage subscription",
     "manageDetail": "Cancel, pause, change plan",
     "restoreDetail": "For previously purchased subscriptions",
     "cancel": "Cancel subscription",
-    "cancelFooter": "You'll keep access until your renewal date. Your moments stay private and saved."
-  },
-  "trialBanner": {
-    "endsToday": "Trial ends today",
-    "endsTomorrow": "Trial ends tomorrow",
-    "daysLeft": "{{daysLeft}} days left in your trial",
-    "statsWithKid": "You've logged {{count}} moments. {{kidName}}'s patterns are starting to come into focus — keep going.",
-    "stats": "You've logged {{count}} moments. Patterns are starting to come into focus — keep going.",
-    "continueCTA": "Continue with Kidsit AI"
-  },
-  "lapsed": {
-    "title": "Your trial ended.",
-    "subhead": "Your moments and patterns are safe — they're waiting for you to come back.",
-    "momentsAndKids": "{{moments}} moment · {{kids}} kid",
-    "momentsAndKidsPlural": "{{moments}} moments · {{kids}} kids",
-    "momentsOnly": "{{moments}} moment",
-    "momentsOnlyPlural": "{{moments}} moments",
-    "historyPaused": "Your history is paused, not deleted.",
-    "resumeYearlyCTA": "Resume Kidsit AI · {{price}}/year",
-    "payMonthlyInstead": "Pay monthly instead · {{price}}/mo"
+    "cancelFooter": "You'll keep access until your renewal date. Your moments are stored on this device. The story text and any recorded audio are sent to transcribe the recording and generate the answer."
   },
   "tabBar": {
     "home": "Home",
@@ -363,7 +348,7 @@
     "body1": "To give you guidance, Kidsit AI sends two things to OpenAI:",
     "bullet1": "The audio you record, transcribed to text by OpenAI Whisper.",
     "bullet2": "The transcribed text, plus the context you pick (location, mood, your child's first name and age), sent to OpenAI GPT-4o-mini for the response.",
-    "body2": "OpenAI does not retain this data, does not link it to your identity, and does not use it to train models. Your child profiles and history remain only on this device.",
+    "body2": "This data is not used to train models, and it is handled under OpenAI's API data policy. Your child profiles and history are stored on this device. The story text is sent to the AI to generate the answer.",
     "body3": "By tapping Agree below, you consent to this processing. You can revoke this at any time in Settings.",
     "agree": "I agree — start using Kidsit AI",
     "decline": "Not now",

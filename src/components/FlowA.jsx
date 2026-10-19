@@ -10,8 +10,32 @@ import { transcribeAudio, hasApiKey } from '../openai';
 import { kidAgeYears } from '../storage';
 import { useHardwareBack } from '../backbutton';
 
+function useScreenTier() {
+  const read = () => {
+    const h = window.innerHeight;
+    if (h <= 700) return 'short';
+    if (h <= 880) return 'compact';
+    return 'regular';
+  };
+  const [tier, setTier] = useState(read);
+  useEffect(() => {
+    const onResize = () => setTier(read());
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+  return tier;
+}
+
+function kidYearsKey(kid) {
+  if (kid?.gender === 'girl') return 'flowA.kidYearsGirl';
+  if (kid?.gender === 'boy') return 'flowA.kidYearsBoy';
+  return 'flowA.kidYears';
+}
+
 export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensureConsent }) {
   const { t } = useTranslation();
+  const tier = useScreenTier();
+  const tight = tier !== 'regular';
   const [stage, setStage] = useState('idle');
   const [elapsed, setElapsed] = useState(0);
   const [story, setStory] = useState('');
@@ -105,9 +129,10 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
     const greeting = h < 12 ? t('flowA.greeting.morning') : h < 18 ? t('flowA.greeting.afternoon') : t('flowA.greeting.evening');
     const activeKidObj = kids.find((k) => k.id === activeKid) || kids[0];
     const noKid = kids.length === 0;
+    const micSize = tier === 'short' ? 84 : tier === 'compact' ? 128 : 156;
     return (
-      <div style={{ padding: '14px 22px 140px', minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ marginBottom: 16 }}>
+      <div style={{ padding: tight ? '8px 22px 128px' : '14px 22px 140px', minHeight: '100%', boxSizing: 'border-box', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ marginBottom: tight ? 8 : 16 }}>
           <div style={{ fontFamily: tokens.sans, fontSize: fs(13), color: tokens.ink3, fontWeight: 500 }}>{greeting}</div>
           <div style={{ fontFamily: tokens.serif, fontSize: fs(22), fontWeight: 500, color: tokens.ink, marginTop: 2, letterSpacing: -0.2 }}>
             {activeKidObj
@@ -117,7 +142,7 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
         </div>
 
         {kids.length > 0 && (
-          <div style={{ marginBottom: 18 }}>
+          <div style={{ marginBottom: tight ? 10 : 18 }}>
             <div style={{
               fontFamily: tokens.sans, fontSize: fs(11), fontWeight: 700,
               color: tokens.ink3, letterSpacing: 0.8, textTransform: 'uppercase',
@@ -147,7 +172,7 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
                       <Avatar kid={k} size={36}/>
                       <div style={{ textAlign: 'start', flex: 1 }}>
                         <div style={{ fontFamily: tokens.sans, fontSize: fs(14), fontWeight: 600, color: tokens.ink, lineHeight: 1.2 }}>{k.name}</div>
-                        {!!kidAgeYears(k) && <div style={{ fontFamily: tokens.sans, fontSize: fs(11), color: tokens.ink3, marginTop: 1 }}>{t('flowA.kidYears', { age: kidAgeYears(k) })}</div>}
+                        {!!kidAgeYears(k) && <div style={{ fontFamily: tokens.sans, fontSize: fs(11), color: tokens.ink3, marginTop: 1 }}>{t(kidYearsKey(k), { age: kidAgeYears(k) })}</div>}
                       </div>
                       {active && (
                         <div style={{
@@ -266,9 +291,11 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
                 ? t('flowA.promptTranscribing')
                 : t('flowA.promptIdle')}
           </div>
-          <div style={{ marginTop: 14, height: 56 }}>
-            <LiveWaveform active={stage === 'recording'} bars={32}/>
-          </div>
+          {tier !== 'short' && (
+            <div style={{ marginTop: tight ? 8 : 14, height: tight ? 40 : 56 }}>
+              <LiveWaveform active={stage === 'recording'} bars={32}/>
+            </div>
+          )}
           {stage === 'recording' && (
             <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
               <div style={{ width: 8, height: 8, borderRadius: 8, background: tokens.danger, animation: 'pg-pulse 1s infinite' }}/>
@@ -280,19 +307,19 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
           )}
         </Card>
 
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 32 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: tier === 'short' ? 4 : tight ? 12 : 32 }}>
           <MicButton
             recording={stage === 'recording'}
             onStart={handleMicStart}
             onStop={handleMicStop}
-            size={156}
+            size={micSize}
             disabled={noKid || stage === 'transcribing'}
           />
-          <div style={{ marginTop: 16, fontFamily: tokens.sans, fontSize: fs(13), color: tokens.ink3, fontWeight: 500 }}>
+          <div style={{ marginTop: tight ? 8 : 16, fontFamily: tokens.sans, fontSize: fs(13), color: tokens.ink3, fontWeight: 500 }}>
             {stage === 'recording' ? t('flowA.releaseWhenDone') : stage === 'transcribing' ? t('common.working') : t('flowA.pressAndHold')}
           </div>
-          <button onClick={() => setStage('recorded')} disabled={noKid || stage === 'transcribing'} style={{
-            marginTop: 14, background: 'transparent', border: 'none',
+          <button data-type-link onClick={() => setStage('recorded')} disabled={noKid || stage === 'transcribing'} style={{
+            marginTop: tight ? 6 : 14, background: 'transparent', border: 'none',
             cursor: noKid || stage === 'transcribing' ? 'not-allowed' : 'pointer',
             fontFamily: tokens.sans, fontSize: fs(13), color: tokens.primary, fontWeight: 600,
             opacity: noKid || stage === 'transcribing' ? 0.5 : 1,
