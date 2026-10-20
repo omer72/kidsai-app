@@ -16,6 +16,21 @@ Each App Store version maps to `MARKETING_VERSION` in `ios/App/App.xcodeproj/pro
 
 ---
 
+## [1.0.12] — 2026-10-20
+
+iOS **1.0.12 (8)**.
+
+### Added
+- **Hebrew.** The in-app UI, the iOS microphone permission and display name, and the native language list (`he`) are localized for Hebrew.
+
+### Changed
+- **Review prompt.** The App Store review sheet is requested only after the third moment marked as helped or really helped, and only in the native app. Closing with no rating does not count. A didn't-help rating does not count and does not reset the total. One request per install.
+- **Paywall copy.** English and Hebrew list only what the app does: Premium for unlimited children, each with their own profile; earlier moments (including what didn't help) used in the next answer; moments stored on this device and not used to train models. One child stays free with no time limit. The 7-day free trial is unchanged.
+- **Support email.** Store contact is `omer+support@kidsit.ai`.
+- **Google Play subscription wording.** Cancel, restore, and "no subscription found" copy on Android names Google Play (Payments & subscriptions) instead of Apple ID.
+
+---
+
 ## [1.0.0] — 2026-05-16
 
 First public release. Submitted to App Store Review on 2026-05-16. iOS build **1.0 (2)**.
