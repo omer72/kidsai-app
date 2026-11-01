@@ -12,6 +12,7 @@ import {
   sentKey,
   situationLabel,
 } from '../digest';
+import { isNativeApp } from '../platform';
 import { InsightsShare, ShareExplainer, EqualActions } from './InsightsShare';
 
 export function SituationPicker({ value, onChange, label }) {
@@ -85,7 +86,8 @@ export function DigestScreen({
   const [shareOpen, setShareOpen] = useState(false);
   const [explainOpen, setExplainOpen] = useState(false);
   const sent = hasSentPeriod(digestMeta, kid.id, aggregate.periodKey);
-  const showNudge = !settings.shareInsights && !digestMeta.sharePrompted && (digestMeta.digestsOpened || 0) >= 3;
+  const nativeShare = isNativeApp();
+  const showNudge = nativeShare && !settings.shareInsights && !digestMeta.sharePrompted && (digestMeta.digestsOpened || 0) >= 3;
   const title = cfg.cadence === 'day'
     ? t('digest.titleDay', { name: kid.name })
     : t('digest.titleWeek', { name: kid.name });
@@ -190,7 +192,7 @@ export function DigestScreen({
         </div>
       )}
 
-      {settings.shareInsights && (
+      {nativeShare && settings.shareInsights && (
         sent ? (
           <div style={{ ...tokens.type.bodySm, color: tokens.ink2 }}>{t('insights.alreadySent')}</div>
         ) : (
@@ -207,35 +209,39 @@ export function DigestScreen({
         )
       )}
 
-      <ShareExplainer
-        open={explainOpen}
-        onCancel={() => {
-          setExplainOpen(false);
-          setDigestMeta({ ...digestMeta, sharePrompted: true });
-        }}
-        onConfirm={() => {
-          setExplainOpen(false);
-          setSettings({ ...settings, shareInsights: true });
-          setDigestMeta({ ...digestMeta, sharePrompted: true });
-        }}
-      />
-      <InsightsShare
-        open={shareOpen}
-        onClose={() => setShareOpen(false)}
-        history={history}
-        kid={kid}
-        kids={kids}
-        cadence={cfg.cadence}
-        now={now}
-        onSent={(periodKey) => {
-          const key = sentKey(kid.id, periodKey);
-          if (digestMeta.sentPeriods?.includes(key)) return;
-          setDigestMeta({
-            ...digestMeta,
-            sentPeriods: [...(digestMeta.sentPeriods || []), key],
-          });
-        }}
-      />
+      {nativeShare && (
+        <ShareExplainer
+          open={explainOpen}
+          onCancel={() => {
+            setExplainOpen(false);
+            setDigestMeta({ ...digestMeta, sharePrompted: true });
+          }}
+          onConfirm={() => {
+            setExplainOpen(false);
+            setSettings({ ...settings, shareInsights: true });
+            setDigestMeta({ ...digestMeta, sharePrompted: true });
+          }}
+        />
+      )}
+      {nativeShare && (
+        <InsightsShare
+          open={shareOpen}
+          onClose={() => setShareOpen(false)}
+          history={history}
+          kid={kid}
+          kids={kids}
+          cadence={cfg.cadence}
+          now={now}
+          onSent={(periodKey) => {
+            const key = sentKey(kid.id, periodKey);
+            if (digestMeta.sentPeriods?.includes(key)) return;
+            setDigestMeta({
+              ...digestMeta,
+              sentPeriods: [...(digestMeta.sentPeriods || []), key],
+            });
+          }}
+        />
+      )}
     </div>
   );
 }

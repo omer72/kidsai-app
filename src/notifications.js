@@ -2,12 +2,9 @@
 // template and must not include a child's name. Web builds no-op.
 
 import { capacitorWeekday } from './taxonomy.js';
+import { isNativeApp } from './platform.js';
 
 const NOTIFICATION_ID = 73421;
-
-function isNative() {
-  return typeof window !== 'undefined' && !!window.Capacitor?.isNativePlatform?.();
-}
 
 async function localNotifications() {
   const mod = await import('@capacitor/local-notifications');
@@ -15,7 +12,7 @@ async function localNotifications() {
 }
 
 export async function cancelDigestNotification() {
-  if (!isNative()) return;
+  if (!isNativeApp()) return;
   try {
     const LocalNotifications = await localNotifications();
     await LocalNotifications.cancel({ notifications: [{ id: NOTIFICATION_ID }] });
@@ -25,7 +22,7 @@ export async function cancelDigestNotification() {
 }
 
 export async function syncDigestNotification({ enabled, cadence, weekday, hour, body }) {
-  if (!isNative()) return { scheduled: false, reason: 'web' };
+  if (!isNativeApp()) return { scheduled: false, reason: 'web' };
   try {
     const LocalNotifications = await localNotifications();
     await LocalNotifications.cancel({ notifications: [{ id: NOTIFICATION_ID }] });

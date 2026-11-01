@@ -6,6 +6,7 @@ import { Card, Label, Segmented } from './primitives';
 import { setLanguage, getLanguage } from '../i18n';
 import { digestConfig, notificationBody } from '../digest';
 import { syncDigestNotification } from '../notifications';
+import { isNativeApp } from '../platform';
 import { ShareExplainer } from './InsightsShare';
 
 function Toggle({ on, label, onClick }) {
@@ -37,6 +38,7 @@ export function SettingsScreen({ settings, setSettings, onClearData, billing, in
   const [explainOpen, setExplainOpen] = useState(false);
   const [notifNote, setNotifNote] = useState('');
   const digest = digestConfig(settings);
+  const native = isNativeApp();
 
   const pushSchedule = (next, lang) => {
     const cfg = digestConfig(next);
@@ -161,7 +163,7 @@ export function SettingsScreen({ settings, setSettings, onClearData, billing, in
           value={getLanguage()?.split('-')[0] || 'en'}
           onChange={(v) => {
             setLanguage(v);
-            if (digest.enabled) pushSchedule(settings, v);
+            if (digest.enabled && native) pushSchedule(settings, v);
           }}
           options={[
             { value: 'en', label: t('settings.languageEn') },
@@ -208,7 +210,7 @@ export function SettingsScreen({ settings, setSettings, onClearData, billing, in
                 { value: 'day', label: t('settings.cadenceDay') },
               ]}
             />
-            {digest.cadence === 'week' && (
+            {native && digest.cadence === 'week' && (
               <>
                 <div style={{ ...tokens.type.bodySm, color: tokens.ink3, margin: '10px 0 6px' }}>{t('settings.digestDay')}</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
@@ -230,55 +232,63 @@ export function SettingsScreen({ settings, setSettings, onClearData, billing, in
                 </div>
               </>
             )}
-            <div style={{ ...tokens.type.bodySm, color: tokens.ink3, margin: '10px 0 6px' }}>{t('settings.digestHour')}</div>
-            <select
-              aria-label={t('settings.digestHour')}
-              value={digest.hour}
-              onChange={(e) => setDigest({ hour: Number(e.target.value) })}
-              style={{
-                width: '100%', maxWidth: '100%', boxSizing: 'border-box',
-                padding: '10px 12px', borderRadius: 12,
-                border: `1px solid ${tokens.line}`, background: tokens.surface,
-                color: tokens.ink, fontFamily: tokens.sans, fontSize: fs(14),
-              }}
-            >
-              {Array.from({ length: 24 }, (_, hour) => (
-                <option key={hour} value={hour}>{String(hour).padStart(2, '0')}:00</option>
-              ))}
-            </select>
-            {notifNote && (
-              <div style={{ ...tokens.type.bodySm, color: tokens.ink2, marginTop: 8 }}>{notifNote}</div>
+            {native && (
+              <>
+                <div style={{ ...tokens.type.bodySm, color: tokens.ink3, margin: '10px 0 6px' }}>{t('settings.digestHour')}</div>
+                <select
+                  aria-label={t('settings.digestHour')}
+                  value={digest.hour}
+                  onChange={(e) => setDigest({ hour: Number(e.target.value) })}
+                  style={{
+                    width: '100%', maxWidth: '100%', boxSizing: 'border-box',
+                    padding: '10px 12px', borderRadius: 12,
+                    border: `1px solid ${tokens.line}`, background: tokens.surface,
+                    color: tokens.ink, fontFamily: tokens.sans, fontSize: fs(14),
+                  }}
+                >
+                  {Array.from({ length: 24 }, (_, hour) => (
+                    <option key={hour} value={hour}>{String(hour).padStart(2, '0')}:00</option>
+                  ))}
+                </select>
+                {notifNote && (
+                  <div style={{ ...tokens.type.bodySm, color: tokens.ink2, marginTop: 8 }}>{notifNote}</div>
+                )}
+              </>
             )}
           </div>
         )}
       </Card>
-      <Card pad={14} style={{ marginBottom: 18 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ flex: 1, minWidth: 0, ...tokens.type.bodySm, color: tokens.ink2 }}>
-            <div style={{ fontWeight: 650, color: tokens.ink, marginBottom: 4 }}>{t('settings.shareToggle')}</div>
-            {settings.shareInsights ? t('settings.shareHintOn') : t('settings.shareHintOff')}
-            {!digest.enabled && (
-              <div style={{ marginTop: 6 }}>{t('settings.shareNeedsDigest')}</div>
-            )}
+      {native && (
+        <Card pad={14} style={{ marginBottom: 18 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ flex: 1, minWidth: 0, ...tokens.type.bodySm, color: tokens.ink2 }}>
+              <div style={{ fontWeight: 650, color: tokens.ink, marginBottom: 4 }}>{t('settings.shareToggle')}</div>
+              {settings.shareInsights ? t('settings.shareHintOn') : t('settings.shareHintOff')}
+              {!digest.enabled && (
+                <div style={{ marginTop: 6 }}>{t('settings.shareNeedsDigest')}</div>
+              )}
+            </div>
+            <Toggle
+              on={!!settings.shareInsights}
+              label={t('settings.shareToggle')}
+              onClick={() => {
+                if (settings.shareInsights) setSettings({ ...settings, shareInsights: false });
+                else setExplainOpen(true);
+              }}
+            />
           </div>
-          <Toggle
-            on={!!settings.shareInsights}
-            label={t('settings.shareToggle')}
-            onClick={() => {
-              if (settings.shareInsights) setSettings({ ...settings, shareInsights: false });
-              else setExplainOpen(true);
-            }}
-          />
-        </div>
-      </Card>
-      <ShareExplainer
-        open={explainOpen}
-        onCancel={() => setExplainOpen(false)}
-        onConfirm={() => {
-          setExplainOpen(false);
-          setSettings({ ...settings, shareInsights: true });
-        }}
-      />
+        </Card>
+      )}
+      {native && (
+        <ShareExplainer
+          open={explainOpen}
+          onCancel={() => setExplainOpen(false)}
+          onConfirm={() => {
+            setExplainOpen(false);
+            setSettings({ ...settings, shareInsights: true });
+          }}
+        />
+      )}
 
       <Label>{t('settings.dataLabel')}</Label>
       <Card pad={14}>

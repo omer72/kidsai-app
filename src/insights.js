@@ -1,4 +1,7 @@
 // Anonymous insights POST. No auth header, no RevenueCat id, no cookies.
+// Web never sends, even if a stored flag still says sharing is on.
+
+import { isNativeApp } from './platform.js';
 
 export const DEFAULT_INSIGHTS_URL = 'https://kidsit.ai/api/insights';
 export const APP_VERSION = '0.1.0';
@@ -23,6 +26,7 @@ export function insightsRequest(payload) {
 }
 
 export async function postInsights(payload, fetchImpl = globalThis.fetch) {
+  if (!isNativeApp()) return { ok: false, skipped: 'web' };
   const response = await fetchImpl(insightsEndpoint(), insightsRequest(payload));
   if (!response.ok) {
     let detail = '';

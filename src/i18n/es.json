@@ -563,6 +563,7 @@
     "textWarning": "No escribas nombres, lugares, datos de contacto ni datos médicos. Verás el texto depurado antes de enviarlo. El texto libre se borra a los 90 días.",
     "showJson": "Ver el JSON",
     "hideJson": "Ocultar el JSON",
+    "nameToken": "[niño/a]",
     "scrubbedLabel": "Texto depurado que se enviará",
     "leftOut": "Los momentos sin categoría se quedan en el dispositivo y no entran en este envío.",
     "sending": "Enviando…",

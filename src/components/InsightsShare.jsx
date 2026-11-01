@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { tokens, fs } from '../theme';
 import { useHardwareBack } from '../backbutton';
-import { storePlatform } from '../platform';
+import { isNativeApp, storePlatform } from '../platform';
 import {
   buildInsightsPayload,
   moveLabel,
@@ -150,7 +150,7 @@ export function InsightsShare({
     includeSituations, includeMoves, includeRating, includeText,
   ]);
 
-  if (!open) return null;
+  if (!open || !isNativeApp()) return null;
   const { payload, scrubbed } = built;
   const lang = i18n.language;
   const lines = [];
@@ -169,6 +169,7 @@ export function InsightsShare({
   lines.push(t('insights.humanWeek', { week: payload.period_key }));
 
   const send = async () => {
+    if (!isNativeApp()) return;
     if (status === 'sending') return;
     setStatus('sending');
     setError('');

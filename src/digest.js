@@ -19,12 +19,26 @@ const DICTS = { en, es, he };
 
 export const COUNT_CAP = 30;
 export const FREE_TEXT_MAX = 500;
+// Hebrew stays [ילד]. English and Spanish use their own placeholder.
+// NAME_TOKEN remains the Hebrew token for callers that already imported it.
 export const NAME_TOKEN = '[ילד]';
-const HE_PREFIX = 'והשבלמכ';
+// Attached clitics only, longest first so ול wins over ו or ל.
+// Not every letter that happens to sit in front of a name: תנועה stays intact.
+const HE_PREFIXES = [
+  'וה', 'וש', 'וב', 'ול', 'ומ', 'וכ',
+  'שה', 'שב', 'של', 'שמ', 'שכ',
+  'כש', 'מה',
+  'ו', 'ה', 'ש', 'ב', 'ל', 'מ', 'כ',
+];
 
 export function normalizeLang(lang) {
   const code = String(lang || 'en').toLowerCase().split('-')[0];
   return DICTS[code] ? code : 'en';
+}
+
+export function nameToken(lang) {
+  const token = DICTS[normalizeLang(lang)]?.insights?.nameToken;
+  return typeof token === 'string' && token ? token : NAME_TOKEN;
 }
 
 export function normalizePlatform(platform) {
@@ -334,7 +348,8 @@ function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-export function scrubPII(text, kids, { max = FREE_TEXT_MAX } = {}) {
+export function scrubPII(text, kids, { max = FREE_TEXT_MAX, lang = 'en' } = {}) {
+  const token = nameToken(lang);
   let out = String(text || '');
   out = out.replace(/https?:\/\/[^\s<>"']+/gi, '[url]');
   out = out.replace(/(^|[^\p{L}\p{N}])(www\.[^\s<>"']+)/giu, '$1[url]');
@@ -357,12 +372,13 @@ export function scrubPII(text, kids, { max = FREE_TEXT_MAX } = {}) {
     if ([...name].length >= 2) names.push(name);
   }
   names.sort((a, b) => [...b].length - [...a].length);
+  const prefixes = HE_PREFIXES.map(escapeRegExp).join('|');
   for (const name of names) {
     const re = new RegExp(
-      `(^|[^\\p{L}\\p{N}])([${HE_PREFIX}]{0,2})(${escapeRegExp(name)})(?=$|[^\\p{L}\\p{N}])`,
+      `(^|[^\\p{L}\\p{N}])(${prefixes})?(${escapeRegExp(name)})(?=$|[^\\p{L}\\p{N}])`,
       'giu',
     );
-    out = out.replace(re, `$1${NAME_TOKEN}`);
+    out = out.replace(re, `$1$2${token}`);
   }
   out = out.trim();
   const chars = [...out];
@@ -393,12 +409,13 @@ export function buildInsightsPayload({
   includeFreeText = true,
 } = {}) {
   const aggregate = aggregateDigest(history, { kidId, cadence, now });
+  const language = normalizeLang(lang);
   const payload = {
     schema_v: 1,
     taxonomy_v: 1,
     period: aggregate.period,
     period_key: aggregate.periodKey,
-    lang: normalizeLang(lang),
+    lang: language,
     platform: normalizePlatform(platform),
     app_version: minorVersion(appVersion),
     situations: includeSituations ? situationRows(aggregate.situations) : [],
@@ -411,7 +428,7 @@ export function buildInsightsPayload({
   if (safeRating) payload.rating = safeRating;
   let scrubbed = '';
   if (includeFreeText) {
-    scrubbed = scrubPII(freeText, kids);
+    scrubbed = scrubPII(freeText, kids, { lang: language });
     if (scrubbed) {
       payload.free_text = scrubbed;
       payload.free_text_scrubbed = true;

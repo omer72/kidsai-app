@@ -3,6 +3,7 @@ import test from 'node:test';
 import {
   COUNT_CAP,
   NAME_TOKEN,
+  nameToken,
   aggregateDigest,
   buildInsightsPayload,
   capacitorWeekday,
@@ -189,10 +190,12 @@ test('scrubber removes names with Hebrew prefixes, plus contact details', () => 
     'on 01/11/2026 and 2026-11-01',
     'NOA waved',
   ].join(' ');
-  const out = scrubPII(input, kids);
+  const out = scrubPII(input, kids, { lang: 'he' });
   for (const prefix of ['ו', 'ה', 'ש', 'ב', 'ל', 'מ', 'כ']) {
     assert.equal(out.includes(`${prefix}נועה`), false, prefix);
+    assert.match(out, new RegExp(`${prefix}\\[ילד\\]`), prefix);
   }
+  assert.match(out, /וה\[ילד\]/);
   assert.equal(out.includes('והנועה'), false);
   assert.equal(out.includes('נועה'), false);
   assert.match(out, /דני נשאר/);
@@ -213,6 +216,49 @@ test('scrubber removes names with Hebrew prefixes, plus contact details', () => 
   assert.match(out, /\[id\]/);
   assert.match(out, /\[date\]/);
   assert.equal(scrubPII('אבא', [{ name: 'א' }]), 'אבא');
+});
+
+test('name token follows the payload language', () => {
+  const kids = [{ name: 'Noa' }, { name: 'נועה' }];
+  assert.equal(nameToken('en'), '[child]');
+  assert.equal(nameToken('en-US'), '[child]');
+  assert.equal(nameToken('es'), '[niño/a]');
+  assert.equal(nameToken('he'), '[ילד]');
+  assert.equal(nameToken('he'), NAME_TOKEN);
+  assert.equal(scrubPII('Noa cried', kids, { lang: 'en' }), '[child] cried');
+  assert.equal(scrubPII('Noa lloró', kids, { lang: 'es-ES' }), '[niño/a] lloró');
+  assert.equal(scrubPII('נועה בכתה', kids, { lang: 'he-IL' }), '[ילד] בכתה');
+  const { payload } = buildInsightsPayload({
+    history: [],
+    kidId: 'k1',
+    now: NOW,
+    lang: 'es',
+    platform: 'ios',
+    freeText: 'hoy Noa',
+    kids,
+    includeSituations: false,
+    includeMoves: false,
+    includeRating: false,
+  });
+  assert.equal(payload.lang, 'es');
+  assert.equal(payload.free_text, 'hoy [niño/a]');
+});
+
+test('Hebrew name prefixes are kept and ordinary words are not rewritten', () => {
+  const kids = [{ name: 'נועה' }];
+  const opt = { lang: 'he' };
+  assert.equal(scrubPII('ולנועה באה', kids, opt), 'ול[ילד] באה');
+  assert.equal(scrubPII('לנועה באה', kids, opt), 'ל[ילד] באה');
+  assert.equal(scrubPII('ונועה באה', kids, opt), 'ו[ילד] באה');
+  assert.equal(scrubPII('ושנועה באה', kids, opt), 'וש[ילד] באה');
+  assert.equal(scrubPII('כשנועה באה', kids, opt), 'כש[ילד] באה');
+  assert.equal(scrubPII('מהנועה באה', kids, opt), 'מה[ילד] באה');
+  for (const prefix of ['ה', 'ב', 'כ', 'מ', 'ש']) {
+    assert.equal(scrubPII(`${prefix}נועה באה`, kids, opt), `${prefix}[ילד] באה`, prefix);
+  }
+  assert.equal(scrubPII('התנועה נמשכת', kids, opt), 'התנועה נמשכת');
+  assert.equal(scrubPII('דני נשאר', [{ name: 'דן' }], opt), 'דני נשאר');
+  assert.equal(scrubPII('דן הלך', [{ name: 'דן' }], opt), '[ילד] הלך');
 });
 
 test('free text is capped at 500 characters', () => {
