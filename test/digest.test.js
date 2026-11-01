@@ -17,6 +17,7 @@ import { APP_VERSION, insightsRequest, resolveInsightsUrl } from '../src/insight
 import pkg from '../package.json' with { type: 'json' };
 import { classifySituation, normalizeGuidance } from '../src/taxonomy.js';
 import en from '../src/i18n/en.json' with { type: 'json' };
+import es from '../src/i18n/es.json' with { type: 'json' };
 import he from '../src/i18n/he.json' with { type: 'json' };
 
 function ts(y, m, d, h = 12, min = 0) {
@@ -334,14 +335,38 @@ test('notification copy is generic in Hebrew and English', () => {
   assert.match(enPoint, /choice/i);
 });
 
-test('consent copy names the profile, siblings, history, and RevenueCat header', () => {
-  for (const bag of [en.aiConsent, he.aiConsent]) {
-    const text = `${bag.bullet2} ${bag.bullet3} ${bag.body1}`;
+test('consent copy limits guidance to the current child and still names RevenueCat', () => {
+  for (const bag of [en.aiConsent, he.aiConsent, es.aiConsent]) {
+    const text = `${bag.bullet2} ${bag.settingsHintEnabled} ${bag.bullet3} ${bag.body1}`;
     assert.match(text, /RevenueCat|X-RC-User/);
-    assert.match(bag.bullet2, /היסטוריה|history|historial/i);
+    assert.match(bag.bullet2, /היסטוריה האחרונה|recent history|historial reciente/i);
+    assert.match(bag.bullet2, /הילד הנוכחי|this child's|niño actual/i);
+    assert.match(bag.bullet2, /ילדים אחרים|other children|demás niños/i);
+    assert.doesNotMatch(bag.bullet2, /every child|כל הילדים|cada niño/i);
+    assert.doesNotMatch(bag.bullet2, /siblings \(name|אחים והאחיות \(שם|hermanos \(nombre/i);
+    assert.match(bag.body1, /OpenAI/);
   }
-  assert.match(en.aiConsent.bullet2, /siblings/i);
   assert.match(en.aiConsent.bullet2, /intake|notes/i);
-  assert.match(he.aiConsent.bullet2, /אחים/);
+  assert.match(en.aiConsent.settingsHintEnabled, /Other children are not included/);
+  assert.match(he.aiConsent.bullet2, /הילד הנוכחי/);
+  assert.match(he.aiConsent.settingsHintEnabled, /ילדים אחרים לא נכללים/);
+  assert.match(es.aiConsent.settingsHintEnabled, /Los demás niños no se incluyen/);
   assert.match(he.aiConsent.bullet3, /X-RC-User/);
+  assert.match(en.aiConsent.bullet3, /anonymous insights/);
+  assert.match(he.aiConsent.bullet3, /תובנות אנונימיות/);
+});
+
+test('Kidsit price phrases stay unchanged', () => {
+  assert.equal(en.subscription.switchToMonthlyDetail, '$9.99/month');
+  assert.equal(en.subscription.switchToYearlyDetail, 'Save 51% · $59.99/year');
+  assert.equal(en.subscription.yearlyPriceLine, '$59.99/year');
+  assert.equal(en.subscription.monthlyPriceLine, '$9.99/month');
+  assert.equal(he.subscription.switchToMonthlyDetail, '$9.99/חודש');
+  assert.equal(he.subscription.switchToYearlyDetail, 'חסכו 51% · $59.99/שנה');
+  assert.equal(he.subscription.yearlyPriceLine, '$59.99/שנה');
+  assert.equal(he.subscription.monthlyPriceLine, '$9.99/חודש');
+  assert.equal(es.subscription.switchToMonthlyDetail, '$9,99/mes');
+  assert.equal(es.subscription.switchToYearlyDetail, 'Ahorra 51% · $59,99/año');
+  assert.equal(es.subscription.yearlyPriceLine, '$59,99/año');
+  assert.equal(es.subscription.monthlyPriceLine, '$9,99/mes');
 });

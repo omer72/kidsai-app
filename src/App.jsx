@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { applyTheme, applyFontSize, tokens, fs } from './theme';
-import { loadSettings, saveSettings, loadKids, saveKids, loadHistory, appendHistory, updateHistoryEntry, clearAll, kidAgeYears, loadDigestMeta, saveDigestMeta } from './storage';
+import { loadSettings, saveSettings, loadKids, saveKids, loadHistory, appendHistory, updateHistoryEntry, clearAll, loadDigestMeta, saveDigestMeta } from './storage';
 import { getGuidance, hasApiKey } from './openai';
 import { normalizeGuidance } from './taxonomy';
 import { aggregateDigest, digestConfig, noteDigestOpened } from './digest';
@@ -96,12 +96,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
     try {
       let response;
       if (hasApiKey()) {
-        // siblings come from the full kids list (incl. paywall-locked ones —
-        // they're still real family members) so the model can read birth order
-        const siblings = kids
-          .filter((k) => k.id !== activeKid?.id)
-          .map((k) => ({ name: k.name, age: kidAgeYears(k), birthdate: k.birthdate, gender: k.gender }));
-        response = normalizeGuidance(await getGuidance({ story, ctx, kid: activeKid, siblings, history }));
+        response = normalizeGuidance(await getGuidance({ story, ctx, kid: activeKid, history }));
       } else {
         await new Promise((r) => setTimeout(r, 1800));
         response = normalizeGuidance(demoResponse(i18n.language));
