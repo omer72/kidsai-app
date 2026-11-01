@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import { LOCATIONS, MOODS, INVOLVED, URGENCY, INTAKE_QUESTIONS } from '../../src/constants.js';
+import { normalizeGuidance } from '../../src/taxonomy.js';
 import { requireEntitlement } from '../lib/entitlement.js';
 
 const MODEL = 'gpt-4o-mini';
@@ -259,23 +260,37 @@ function buildUserPrompt({ story, ctx, kid, siblings, history }) {
     '',
     'Schema (use this exact shape, all keys present):',
     `{
+  "situation": "one id from the closed list below",
   "title": "short title naming the need or pattern under the surface behavior — NOT the behavior itself",
   "summary": "1-2 sentences. A warm, non-judgmental reframe a tired parent can absorb in one breath. No advice yet.",
   "sections": [
     { "kind": "what", "label": "What happened", "body": "2-3 sentences. Plain-language recap of the parent's story, in the parent's own register. No interpretation yet." },
     { "kind": "why", "label": "Why it happened", "body": "3-4 sentences. The developmental + emotional read. Name the unmet need, the brain state, and the age-appropriate reality. Surface the second interpretation here." },
     { "kind": "try", "label": "What to try next time", "items": [
-      { "h": "imperative phrase (3-6 words)", "b": "1-2 sentence concrete script or action. If a sentence is meant to be spoken to the child, put it in quotes." },
-      { "h": "...", "b": "..." },
-      { "h": "...", "b": "..." }
+      { "h": "imperative phrase (3-6 words)", "b": "1-2 sentence concrete script or action. If a sentence is meant to be spoken to the child, put it in quotes.", "move": "choice" },
+      { "h": "...", "b": "...", "move": "name_feeling" },
+      { "h": "...", "b": "...", "move": "describe" }
     ]},
     { "kind": "tonight", "label": "If you want to reconnect tonight", "body": "ONE warm sentence the parent could say at bedtime — quote it. No teaching. Pure connection." }
   ]
 }`,
     '',
+    'situation must be exactly one of: transitions, bedtime_sleep, screens, homework_tasks, limits_cooperation, tantrum_anger, siblings, social_friends, fears_anxiety, eating, other. Pick the single best fit for THIS moment. Use other if none fit. Do not invent a value.',
+    'Each try item\'s move must be exactly one of: acknowledge, name_feeling, fantasy, choice, describe, give_info, one_word, own_feeling, note, amends, problem_solving, hint, overhear, co_regulate, connect, other. The move is the toolkit technique that item uses. Do not invent a value.',
+    '',
     'Constraints on the items array: exactly 3 items. Each item must be actionable in the next 60 seconds of a real moment. At least one item must be a literal sentence the parent can say. No item may recommend threats, punishments, bribery, or trait-praise.',
     'VARIETY CONSTRAINT: when past moments list "advice given", at least 2 of the 3 items must use a DIFFERENT toolkit move than anything previously given — pick from: describe what you see, give information, say it in ONE word, say your own feeling, grant the wish in fantasy, a playful written note, make amends, joint problem-solving, a hint instead of a takeover, let the child overhear something positive. "Acknowledge the feeling / offer a choice / give a hug" is your default trio — if any of those appear in "advice given", do not lead with them again.',
   ].join('\n');
+}
+
+function coerceGuidanceJson(text) {
+  try {
+    const parsed = JSON.parse(text);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return text;
+    return JSON.stringify(normalizeGuidance(parsed));
+  } catch {
+    return text;
+  }
 }
 
 const CORS = {
@@ -313,15 +328,16 @@ export default async function handler(req) {
       model: MODEL,
       response_format: { type: 'json_object' },
       temperature: 0.7,
-      max_completion_tokens: 700,
+      max_completion_tokens: 1200,
       messages: [
         { role: 'system', content: buildSystemPrompt(language) },
         { role: 'user', content: userPrompt },
       ],
     });
     const text = resp.choices?.[0]?.message?.content ?? '{}';
-    if (debug) console.log('--- RESPONSE ---\n' + text);
-    return new Response(text, {
+    const safe = coerceGuidanceJson(text);
+    if (debug) console.log('--- RESPONSE ---\n' + safe);
+    return new Response(safe, {
       status: 200,
       headers: { ...CORS, 'Content-Type': 'application/json' },
     });

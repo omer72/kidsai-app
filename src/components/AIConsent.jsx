@@ -48,7 +48,8 @@ export function AIConsentModal({ onAgree, onDecline, fullscreen }) {
           fontFamily: tokens.sans, fontSize: fs(13.5), lineHeight: 1.55, color: tokens.ink,
         }}>
           <li style={{ marginBottom: 8 }}>{t('aiConsent.bullet1')}</li>
-          <li>{t('aiConsent.bullet2')}</li>
+          <li style={{ marginBottom: 8 }}>{t('aiConsent.bullet2')}</li>
+          <li>{t('aiConsent.bullet3')}</li>
         </ul>
         <div style={{
           fontFamily: tokens.sans, fontSize: fs(13), lineHeight: 1.55, color: tokens.ink2,

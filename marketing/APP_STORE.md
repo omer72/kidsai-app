@@ -150,6 +150,21 @@ In ASC → **App Privacy → Data Types → Edit**, declare:
 - **Linked to user:** No
 - **Used for tracking:** No
 
+### Product Interaction (optional anonymous insights)
+Declare this even though a product-improvement program can be optional. The share toggle is off by default, each send is confirmed, and nothing is linked to an identity.
+- **Data type:** Usage Data → Product Interaction (counts by situation, optional 1–5 rating)
+- **Used for:** Analytics
+- **Linked to user:** No
+- **Used for tracking:** No
+
+### Other User Content (optional free text on an insight)
+Already declared for stories. If a parent opts in and adds a note, also mark Analytics. Free text is deleted after 90 days. Do not link it to a user.
+- **Used for:** App Functionality and Analytics
+- **Linked to user:** No
+- **Used for tracking:** No
+
+**Not collected by the digest:** child names, stories, AI replies, age, gender, or the RevenueCat id. The weekly/daily summary is built on device.
+
 **Everything else:** No data collected. No identifiers used for tracking. No third-party analytics.
 
 ---

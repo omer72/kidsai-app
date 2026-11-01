@@ -3,8 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 import { PrimaryButton } from './primitives';
+import { SituationPicker } from './Digest';
 
-export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
+export function ResponseScreen({ response, kid, error, onFollowup, onDone, onSituation }) {
   const { t } = useTranslation();
   const [saved, setSaved] = useState(false);
   const [whyOpen, setWhyOpen] = useState(false);
@@ -61,6 +62,16 @@ export function ResponseScreen({ response, kid, error, onFollowup, onDone }) {
           {response.summary}
         </div>
       </div>
+
+      {onSituation && (
+        <div style={{ marginBottom: 12 }}>
+          <SituationPicker
+            label={t('digest.situationPrompt')}
+            value={response.situation}
+            onChange={onSituation}
+          />
+        </div>
+      )}
 
       {trySection?.items?.length > 0 && (
         <div style={{
