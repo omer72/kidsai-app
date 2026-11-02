@@ -29,6 +29,7 @@ iOS **1.0.13 (9)**. Android **1.0.13 (17)**. Android's previous store version wa
 - **Guidance request.** A request now carries only the open child's profile and up to eight of that child's recent moments. Other children's names, profiles, and history are not sent. The server drops them again if an older client still posts them. The consent copy matches that.
 - **Insights stay off the web.** The summary still opens in the browser, but the share controls are hidden and the send path never posts.
 - **Name scrubbing follows the note's language.** English and Spanish use their own placeholder. Hebrew keeps attached prefixes on the Hebrew placeholder.
+- **Insights app version.** The anonymous payload's `app_version` is the installed version at major.minor. On the phone that is `App.getInfo().version`. In the browser it is the store version injected at build time. It is not the `package.json` version.
 
 ---
 

@@ -47,7 +47,7 @@ Body (`buildInsightsPayload` in `src/digest.js`):
 | `period_key` | always | ISO week, such as `2026-W44`, including when the digest is daily. Not the calendar date. |
 | `lang` | always | `en`, `he`, or `es` |
 | `platform` | always | `ios` or `android` |
-| `app_version` | always | Major.minor only. The value is `minorVersion` of `package.json`, which is `0.1.0`, so the field is `"0.1"`. It is not the store version 1.0.13. |
+| `app_version` | always | Major.minor only. On a phone this is `App.getInfo().version` (`MARKETING_VERSION` / `versionName`). For 1.0.13 that is `1.0.13`, so the field is `"1.0"`. In a browser, Vite injects that same store version and `getInfo` is not called. |
 | `situations` | always (may be `[]`) | Counts by a fixed situation id: `great`, `better`, `same`, `worse`, `unrated`. Each count is capped at 30. `unclassified` is omitted. |
 | `moves` | only if any | Approach id plus `worked` and `not_worked`, capped at 30. |
 | `rating` | only if chosen | Integer 1–5. |
@@ -75,7 +75,7 @@ Apple’s “linked” question means the data is associated with an identity (a
 | Story, open child’s profile, recent moments | **Yes.** The body includes the child’s name and birth date, and the same request carries `X-RC-User`. | **No.** |
 | RevenueCat app user id | **Yes.** It is the identifier. | **No.** |
 | Purchase status | **Yes.** It is stored on that RevenueCat id. | **No.** |
-| Anonymous insights (counts, approaches, rating, note, language, platform, `"0.1"`, ISO week) | **No.** No identifier is sent. `credentials` is `omit`. | **No.** Purpose is to improve Kidsit. Not ads. |
+| Anonymous insights (counts, approaches, rating, note, language, platform, app version `"1.0"`, ISO week) | **No.** No identifier is sent. `credentials` is `omit`. | **No.** Purpose is to improve Kidsit. Not ads. |
 
 The public policy says guidance prompts are not stored, recordings are not kept, and the RevenueCat id is not part of the text sent to the model. That is what `netlify/functions/guidance.js` does, apart from an optional `DEBUG_PROMPTS` log. It does not de-identify the request before Kidsit’s function receives it, so the App Store answer for those types is still **linked: Yes**.
 
@@ -161,16 +161,12 @@ Play has no separate “linked” toggle. Use the table in “Linked to the user
 
 1. **`docs/store-privacy-labels.md` did not exist** on main at `8780b5ad`. The answers above are the new source for the forms.
 
-2. **`marketing/APP_STORE.md` marks Audio Data, Other User Content, and Purchases as “Linked to user: No”**, and it says no identifiers are collected. The client sends `X-RC-User` on the same request as the recording and as the story, and the story body includes the child’s name and birth date. Consent copy in `src/i18n/en.json` already says a RevenueCat id is sent. For 1.0.13 those three types are **linked: Yes**, and **Identifiers → User ID** has to be declared. The Product Interaction block on that page (Analytics, not linked, not tracking) matches the insights code.
+2. **Other User Content cannot be “not linked” on the App Store form** just because the insight note is anonymous. The same data type is used for the guidance story, which is linked. `marketing/APP_STORE.md` now says linked Yes for that type, with Analytics as the extra purpose for the note.
 
-3. **Other User Content cannot be “not linked” on the App Store form** just because the insight note is anonymous. The same data type is used for the guidance story, which is linked. Analytics is an additional purpose, which that page already suggests for the note.
+3. **`ANDROID_RELEASE.md` says a user-supplied OpenAI key, if present, stays on the device.** The app has no settings field and no code path for a user-supplied OpenAI key. `src/openai.js` calls `VITE_API_BASE`. The key is a server env var. The same paragraph’s insights line (App interactions and other user-generated content, optional, Analytics, not shared, HTTPS) matches the code.
 
-4. **`ANDROID_RELEASE.md` says a user-supplied OpenAI key, if present, stays on the device.** The app has no settings field and no code path for a user-supplied OpenAI key. `src/openai.js` calls `VITE_API_BASE`. The key is a server env var. The same paragraph’s insights line (App interactions and other user-generated content, optional, Analytics, not shared, HTTPS) matches the code.
+4. **90-day deletion of insight free text is not implemented in this repository.** The in-app copy and <https://kidsit.ai/en/privacy> both state it, and the policy says counts may be kept longer and that one anonymous row cannot be deleted without the parent quoting the text. Do not treat this repo as proof that the job runs. There is no insights function under `netlify/functions/`.
 
-5. **`app_version` on an insight is `"0.1"`, not `"1.0"`.** `src/insights.js` sets `APP_VERSION` from the constant `'0.1.0'`, and `package.json` `"version"` is `0.1.0`. `minorVersion` sends `0.1`. The store versions bumped in this release are iOS 1.0.13 (9) and Android 1.0.13 (17). The public policy says the insights row includes “the app version at major.minor only,” which a reader will take as the shipping version. The code does not send 1.0.
+5. **`DEBUG_PROMPTS` can log a guidance prompt**, which includes the story and profile notes, to the function log. It is off unless that env var is set. The public policy says prompts are not stored. Confirm the production Netlify env does not set `DEBUG_PROMPTS` before answering that prompts are never retained.
 
-6. **90-day deletion of insight free text is not implemented in this repository.** The in-app copy and <https://kidsit.ai/en/privacy> both state it, and the policy says counts may be kept longer and that one anonymous row cannot be deleted without the parent quoting the text. Do not treat this repo as proof that the job runs. There is no insights function under `netlify/functions/`.
-
-7. **`DEBUG_PROMPTS` can log a guidance prompt**, which includes the story and profile notes, to the function log. It is off unless that env var is set. The public policy says prompts are not stored. Confirm the production Netlify env does not set `DEBUG_PROMPTS` before answering that prompts are never retained.
-
-8. **Insert Affiliate is unused in the checked-in env and is not part of the answers above.** A store build that sets `VITE_IA_COMPANY_CODE` would write an affiliate id onto the RevenueCat subscriber. Check the binary’s env before submitting. This repo cannot.
+6. **Insert Affiliate is unused in the checked-in env and is not part of the answers above.** A store build that sets `VITE_IA_COMPANY_CODE` would write an affiliate id onto the RevenueCat subscriber. Check the binary’s env before submitting. This repo cannot.

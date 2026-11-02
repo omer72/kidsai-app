@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { tokens, fs } from '../theme';
 import { useHardwareBack } from '../backbutton';
@@ -8,7 +8,7 @@ import {
   moveLabel,
   situationLabel,
 } from '../digest';
-import { APP_VERSION, postInsights } from '../insights';
+import { fallbackAppVersion, postInsights, resolveAppVersion } from '../insights';
 
 function sheetButtonStyle(disabled) {
   return {
@@ -123,6 +123,15 @@ export function InsightsShare({
   const [showJson, setShowJson] = useState(false);
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState('');
+  const [appVersion, setAppVersion] = useState(fallbackAppVersion);
+
+  useEffect(() => {
+    let live = true;
+    resolveAppVersion().then((version) => {
+      if (live && version) setAppVersion(version);
+    });
+    return () => { live = false; };
+  }, []);
 
   useHardwareBack(() => {
     if (!open) return false;
@@ -130,14 +139,14 @@ export function InsightsShare({
     return true;
   }, 130);
 
-  const built = useMemo(() => buildInsightsPayload({
+  const payloadFor = (version) => buildInsightsPayload({
     history,
     kidId: kid?.id,
     cadence,
     now,
     lang: i18n.language,
     platform: storePlatform(),
-    appVersion: APP_VERSION,
+    appVersion: version,
     rating: includeRating ? rating : null,
     freeText: includeText ? text : '',
     kids,
@@ -145,8 +154,10 @@ export function InsightsShare({
     includeMoves,
     includeRating,
     includeFreeText: includeText,
-  }), [
-    history, kid, cadence, now, i18n.language, rating, text, kids,
+  });
+
+  const built = useMemo(() => payloadFor(appVersion), [
+    history, kid, cadence, now, i18n.language, rating, text, kids, appVersion,
     includeSituations, includeMoves, includeRating, includeText,
   ]);
 
@@ -174,9 +185,11 @@ export function InsightsShare({
     setStatus('sending');
     setError('');
     try {
-      await postInsights(payload);
+      const version = (await resolveAppVersion()) || appVersion;
+      const sending = payloadFor(version).payload;
+      await postInsights(sending);
       setStatus('sent');
-      onSent(payload.period_key);
+      onSent(sending.period_key);
     } catch (err) {
       setStatus('idle');
       setError(err?.message || t('insights.error'));

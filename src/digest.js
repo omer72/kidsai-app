@@ -399,7 +399,7 @@ export function buildInsightsPayload({
   now = new Date(),
   lang = 'en',
   platform = 'web',
-  appVersion = '0.1.0',
+  appVersion = '',
   rating = null,
   freeText = '',
   kids = [],
