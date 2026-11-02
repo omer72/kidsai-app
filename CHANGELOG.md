@@ -16,6 +16,23 @@ Each App Store version maps to `MARKETING_VERSION` in `ios/App/App.xcodeproj/pro
 
 ---
 
+## [1.0.13] — 2026-11-02
+
+iOS **1.0.13 (9)**. Android **1.0.13 (17)**. Android's previous store version was 1.0.11 (16), so the Play build also carries the 1.0.12 changes already listed below. This entry is only what landed after iOS 1.0.12 (`45dd015`).
+
+### Added
+- **On-device summary.** Each child gets a weekly or daily digest built on the device from the moments already stored there. It counts situation types and which approaches helped or did not. There is no model call on this path.
+- **Optional reminder.** A local notification can point at that summary. The text is a fixed template and does not include a child's name.
+- **Optional anonymous insights.** Off until the parent turns it on, and each send still has to be confirmed from a preview. Native apps only. The post goes to `https://kidsit.ai/api/insights` with no auth header, no cookies, and no RevenueCat id. The parent can include situation counts, approach counts, a 1–5 rating, and a short note. The note is scrubbed of names, emails, phones, ID numbers, links, and dates before send. Stories, guidance text, age, gender, and profile notes are not in the payload.
+
+### Changed
+- **Guidance request.** A request now carries only the open child's profile and up to eight of that child's recent moments. Other children's names, profiles, and history are not sent. The server drops them again if an older client still posts them. The consent copy matches that.
+- **Insights stay off the web.** The summary still opens in the browser, but the share controls are hidden and the send path never posts.
+- **Name scrubbing follows the note's language.** English and Spanish use their own placeholder. Hebrew keeps attached prefixes on the Hebrew placeholder.
+- **Insights app version.** The anonymous payload's `app_version` is the installed version at major.minor. On the phone that is `App.getInfo().version`. In the browser it is the store version injected at build time. It is not the `package.json` version.
+
+---
+
 ## [1.0.12] — 2026-10-20
 
 iOS **1.0.12 (8)**.

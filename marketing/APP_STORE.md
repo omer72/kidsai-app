@@ -132,40 +132,43 @@ This produces a **4+** rating with the medical-info disclosure logged, which mat
 
 ## App Privacy ("Nutrition Label")
 
-In ASC → **App Privacy → Data Types → Edit**, declare:
+In ASC → **App Privacy → Data Types → Edit**, declare the same answers as `docs/store-privacy-labels.md`. Guidance and transcription send the RevenueCat app user id in the `X-RC-User` header with the content. That links those types to the user. None of them are used for tracking. Anonymous insights do not send that header.
+
+### Identifiers — User ID
+- **Used for:** App Functionality
+- **Linked to user:** Yes
+- **Used for tracking:** No
+- *The RevenueCat app user id. Sent as `X-RC-User` on guidance and transcription so the server can check the subscription. Not sent with anonymous insights.*
 
 ### User Content — Audio Data
 - **Used for:** App Functionality
-- **Linked to user:** No
+- **Linked to user:** Yes
 - **Used for tracking:** No
-- *Reason: parent's voice is sent to OpenAI Whisper for transcription via our server; not stored, not linked to identity.*
+- *The recording is posted with `X-RC-User` for transcription. Not used for tracking.*
 
-### User Content — Other User Content (typed story / kid names / history)
-- **Used for:** App Functionality
-- **Linked to user:** No
+### User Content — Other User Content
+The guidance story, the open child's profile and recent moments, and the optional insight note.
+- **Used for:** App Functionality and Analytics
+- **Linked to user:** Yes
 - **Used for tracking:** No
+- *The guidance body includes the child's name and travels with `X-RC-User`, so this type is linked. Analytics is only the optional insight note. The note itself has no identifier, but the type-level answer follows the guidance content.*
 
 ### Purchases
 - **Used for:** App Functionality
-- **Linked to user:** No
+- **Linked to user:** Yes
 - **Used for tracking:** No
+- *Purchase state is stored on the RevenueCat app user id.*
 
 ### Product Interaction (optional anonymous insights)
-Declare this even though a product-improvement program can be optional. The share toggle is off by default, each send is confirmed, and nothing is linked to an identity.
-- **Data type:** Usage Data → Product Interaction (counts by situation, optional 1–5 rating)
+The share toggle is off by default, each send is confirmed, and the request has no `X-RC-User`, no cookies, and no account id.
+- **Data type:** Usage Data → Product Interaction (counts by situation, approach counts, optional 1–5 rating, language, platform, major.minor app version, ISO week)
 - **Used for:** Analytics
 - **Linked to user:** No
 - **Used for tracking:** No
 
-### Other User Content (optional free text on an insight)
-Already declared for stories. If a parent opts in and adds a note, also mark Analytics. Free text is deleted after 90 days. Do not link it to a user.
-- **Used for:** App Functionality and Analytics
-- **Linked to user:** No
-- **Used for tracking:** No
+**Not collected by the digest:** child names, stories, AI replies, age, gender, or the RevenueCat id. The weekly/daily summary is built on device. The optional insight note is the Other User Content row above, not a second unlinked row.
 
-**Not collected by the digest:** child names, stories, AI replies, age, gender, or the RevenueCat id. The weekly/daily summary is built on device.
-
-**Everything else:** No data collected. No identifiers used for tracking. No third-party analytics.
+**Everything else:** No data collected. No device ID. No advertising data. No third-party analytics in the app.
 
 ---
 
@@ -278,7 +281,7 @@ Both products need a **Display Name** and **Description** for the App Store list
 - [ ] Paste subtitle, promotional text, description, keywords
 - [ ] Pick categories (Lifestyle primary, Education secondary)
 - [ ] Fill Age Rating questionnaire (everything No except Medical/Treatment → Infrequent/Mild)
-- [ ] Fill App Privacy data types (User Content × 2 + Purchases, all App Functionality + Not Linked)
+- [ ] Fill App Privacy from `docs/store-privacy-labels.md` (Audio, Other User Content, User ID, and Purchases are linked via `X-RC-User` and not used for tracking; Product Interaction is analytics, not linked, not tracking)
 - [ ] Add Privacy + Terms + Support URLs
 - [ ] Paste Reviewer Notes
 - [ ] Fill IAP Display Name + Description on both products

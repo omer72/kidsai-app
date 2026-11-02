@@ -9,13 +9,14 @@ import {
   capacitorWeekday,
   digestConfig,
   isoWeekKey,
+  minorVersion,
   notificationBody,
   renderPoint,
   scrubPII,
   selectPoints,
 } from '../src/digest.js';
-import { APP_VERSION, insightsRequest, resolveInsightsUrl } from '../src/insights.js';
-import pkg from '../package.json' with { type: 'json' };
+import { fallbackAppVersion, insightsRequest, resolveAppVersion, resolveInsightsUrl } from '../src/insights.js';
+import { readStoreVersion } from '../scripts/store-version.mjs';
 import { classifySituation, normalizeGuidance } from '../src/taxonomy.js';
 import en from '../src/i18n/en.json' with { type: 'json' };
 import es from '../src/i18n/es.json' with { type: 'json' };
@@ -286,7 +287,7 @@ test('payload matches the v1 schema and drops identifiers', () => {
     now: NOW,
     lang: 'he-IL',
     platform: 'ios',
-    appVersion: '0.1.0',
+    appVersion: '1.0.13',
     rating: 4,
     freeText: 'הסיכום עזר לי לראות את ונועה. מייל a@b.co טלפון 052-1234567',
     kids,
@@ -301,7 +302,7 @@ test('payload matches the v1 schema and drops identifiers', () => {
   assert.equal(payload.period_key, isoWeekKey(NOW));
   assert.equal(payload.lang, 'he');
   assert.equal(payload.platform, 'ios');
-  assert.equal(payload.app_version, '0.1');
+  assert.equal(payload.app_version, '1.0');
   assert.equal(payload.rating, 4);
   assert.equal(payload.free_text_scrubbed, true);
   assert.equal(payload.free_text.includes('נועה'), false);
@@ -351,8 +352,43 @@ test('optional payload parts can be removed, and counts can be emptied', () => {
   assert.equal('free_text_scrubbed' in payload, false);
 });
 
-test('app version sent with insights matches package.json at minor precision', () => {
-  assert.equal(APP_VERSION, pkg.version);
+test('insights app version is the installed version, major.minor only', async () => {
+  assert.equal(readStoreVersion(), '1.0.13');
+  const fromNative = await resolveAppVersion({
+    native: true,
+    getInfo: async () => ({ version: '1.0.13', build: '9' }),
+    buildVersion: '9.9.9',
+  });
+  assert.equal(fromNative, '1.0.13');
+  assert.equal(minorVersion(fromNative), '1.0');
+
+  let called = false;
+  const fromBrowser = await resolveAppVersion({
+    native: false,
+    getInfo: async () => { called = true; return { version: '9.9.9' }; },
+    buildVersion: '1.0.13',
+  });
+  assert.equal(called, false);
+  assert.equal(fromBrowser, '1.0.13');
+
+  const fromFailedPlugin = await resolveAppVersion({
+    native: true,
+    getInfo: async () => { throw new Error('bridge down'); },
+    buildVersion: '1.0.13',
+  });
+  assert.equal(fromFailedPlugin, '1.0.13');
+
+  const emptyNative = await resolveAppVersion({
+    native: true,
+    getInfo: async () => ({ version: '   ' }),
+    buildVersion: '1.0.13',
+  });
+  assert.equal(emptyNative, '1.0.13');
+
+  const { payload } = buildInsightsPayload({ appVersion: fromNative });
+  assert.equal(payload.app_version, '1.0');
+  assert.equal(Object.hasOwn(payload, 'build'), false);
+  assert.equal(fallbackAppVersion() === '' || fallbackAppVersion() === '1.0.13', true);
 });
 
 test('insights request carries no auth header and the URL is configurable', () => {
