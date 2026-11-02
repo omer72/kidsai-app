@@ -1,8 +1,11 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { applyTheme, applyFontSize, tokens, fs } from './theme';
-import { loadSettings, saveSettings, loadKids, saveKids, loadHistory, appendHistory, updateHistoryEntry, clearAll, kidAgeYears } from './storage';
+import { loadSettings, saveSettings, loadKids, saveKids, loadHistory, appendHistory, updateHistoryEntry, clearAll, loadDigestMeta, saveDigestMeta } from './storage';
 import { getGuidance, hasApiKey } from './openai';
+import { normalizeGuidance } from './taxonomy';
+import { aggregateDigest, digestConfig, noteDigestOpened } from './digest';
+import { cancelDigestNotification } from './notifications';
 import { initBilling, offUpdate, refreshEntitlement, billingAvailable } from './billing';
 import { InAppReview } from '@capacitor-community/in-app-review';
 import { demoResponse } from './constants';
@@ -22,6 +25,7 @@ import { KidsScreen } from './components/Kids';
 import { SettingsScreen } from './components/Settings';
 import { SubscriptionScreen } from './components/TrialScreens';
 import { AIConsentModal } from './components/AIConsent';
+import { DigestBanner, DigestScreen } from './components/Digest';
 
 import { INSET_TOP_MIN } from './platform';
 import { useHardwareBack } from './backbutton';
@@ -51,7 +55,7 @@ function useViewport() {
   return v;
 }
 
-function MainApp({ settings, setSettings, kids, setKids, history, setHistory, setEntryFeedback, onClearData, fullscreen, billing, onBillingChange }) {
+function MainApp({ settings, setSettings, kids, setKids, history, setHistory, setEntryFeedback, onClearData, fullscreen, billing, onBillingChange, digestMeta, setDigestMeta }) {
   const { t, i18n } = useTranslation();
   const [tab, setTab] = useState(() => (kids.length === 0 ? 'kids' : 'home'));
   const [activeKidId, setActiveKidId] = useState(kids[0]?.id || null);
@@ -60,6 +64,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
   const [subscriptionOpen, setSubscriptionOpen] = useState(false);
   const [firstKidPending, setFirstKidPending] = useState(false); // intake open for a just-added first kid
   const [consentRequest, setConsentRequest] = useState(null); // resolver for an in-flight consent ask
+  const [digestOpen, setDigestOpen] = useState(false);
 
   const entitled = !!billing?.entitled;
   const inTrial = !!billing?.inTrial;
@@ -91,15 +96,10 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
     try {
       let response;
       if (hasApiKey()) {
-        // siblings come from the full kids list (incl. paywall-locked ones —
-        // they're still real family members) so the model can read birth order
-        const siblings = kids
-          .filter((k) => k.id !== activeKid?.id)
-          .map((k) => ({ name: k.name, age: kidAgeYears(k), birthdate: k.birthdate, gender: k.gender }));
-        response = await getGuidance({ story, ctx, kid: activeKid, siblings, history });
+        response = normalizeGuidance(await getGuidance({ story, ctx, kid: activeKid, history }));
       } else {
         await new Promise((r) => setTimeout(r, 1800));
-        response = demoResponse(i18n.language);
+        response = normalizeGuidance(demoResponse(i18n.language));
       }
       setFlowState((s) => ({ ...s, stage: 'response', response }));
     } catch (err) {
@@ -114,6 +114,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
     if (consentRequest) { consentRequest.resolve(false); setConsentRequest(null); return true; }
     if (paywallOpen) { setPaywallOpen(false); return true; }
     if (subscriptionOpen) { setSubscriptionOpen(false); return true; }
+    if (digestOpen) { setDigestOpen(false); return true; }
     return false;
   }, 100);
   useHardwareBack(() => {
@@ -125,13 +126,17 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
 
   const closeMoment = (feedback = null) => {
     if (flowState.response && !flowState.error) {
+      const response = normalizeGuidance(flowState.response);
       const entry = {
         kidId: activeKid?.id,
-        title: flowState.response.title || 'Moment',
+        title: response.title || 'Moment',
         story: flowState.story,
         where: flowState.ctx?.location,
         mood: flowState.ctx?.mood,
-        response: flowState.response,
+        involved: flowState.ctx?.involved || null,
+        urgency: flowState.ctx?.urgency || null,
+        situation: response.situation || 'other',
+        response,
         when: new Date().toLocaleString([], { weekday: 'short', hour: 'numeric', minute: '2-digit' }),
         feedback: feedback?.rating || null,
         note: feedback?.note || null,
@@ -169,13 +174,50 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
           kid={activeKid}
           onFollowup={goFollowup}
           onDone={closeMoment}
+          onSituation={(situation) => setFlowState((s) => ({
+            ...s,
+            response: s.response ? { ...s.response, situation } : s.response,
+          }))}
         />
       );
     } else if (flowState.stage === 'followup') {
       content = <FollowupScreen kid={activeKid} onDone={closeMoment}/>;
-    } else {
+    } else if (digestOpen && activeKid) {
       content = (
-        <FlowComponent
+        <DigestScreen
+          kid={activeKid}
+          kids={kids}
+          history={history}
+          settings={settings}
+          setSettings={setSettings}
+          digestMeta={digestMeta}
+          setDigestMeta={setDigestMeta}
+          onBack={() => setDigestOpen(false)}
+        />
+      );
+    } else {
+      const digest = digestConfig(settings);
+      const digestAgg = activeKid
+        ? aggregateDigest(history, { kidId: activeKid.id, cadence: digest.cadence })
+        : null;
+      content = (
+        <>
+          {digest.enabled && activeKid && digestAgg && (
+            <div style={{ padding: '8px 20px 0', maxWidth: '100%' }}>
+              <DigestBanner
+                kidName={activeKid.name}
+                cadence={digest.cadence}
+                empty={digestAgg.total === 0}
+                isNew={digestMeta.lastShownPeriod?.[activeKid.id] !== digestAgg.windowKey}
+                onOpen={() => {
+                  const noted = noteDigestOpened(digestMeta, activeKid.id, digestAgg.windowKey);
+                  if (noted.openedNew) setDigestMeta(noted.meta);
+                  setDigestOpen(true);
+                }}
+              />
+            </div>
+          )}
+          <FlowComponent
           key={settings.flow}
           kids={visibleKids}
           activeKid={activeKidId}
@@ -184,6 +226,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
           onAddKid={() => setTab('kids')}
           ensureConsent={ensureConsent}
         />
+        </>
       );
     }
   } else if (tab === 'history') {
@@ -263,7 +306,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
     }}>
       {topBar}
       <div data-kb-scroll style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>{content}</div>
-      <TabBar current={tab} onChange={setTab}/>
+      <TabBar current={tab} onChange={(next) => { setDigestOpen(false); setTab(next); }}/>
       {paywallOpen && (
         <div style={{ position: 'absolute', inset: 0, zIndex: 100, background: tokens.bg }}>
           <PaywallScreen
@@ -296,6 +339,7 @@ export function App() {
   const [settings, setSettingsState] = useState(() => loadSettings());
   const [kids, setKidsState] = useState(() => loadKids());
   const [history, setHistory] = useState(() => loadHistory());
+  const [digestMeta, setDigestMetaState] = useState(() => loadDigestMeta());
   const [phase, setPhase] = useState(settings.onboarded ? 'app' : 'welcome');
   const [billing, setBilling] = useState(() => settings.billing || { entitled: false });
 
@@ -335,6 +379,10 @@ export function App() {
       offUpdate(applyBilling);
     };
   }, [applyBilling]);
+  const setDigestMeta = (next) => {
+    setDigestMetaState(next);
+    saveDigestMeta(next);
+  };
   const setKids = (next) => {
     setKidsState(next);
     saveKids(next);
@@ -346,10 +394,12 @@ export function App() {
   const confirmClearData = () => {
     setClearConfirmOpen(false);
     clearAll();
+    cancelDigestNotification();
     const fresh = loadSettings();
     setSettingsState(fresh);
     setKidsState(loadKids());
     setHistory(loadHistory());
+    setDigestMetaState(loadDigestMeta());
     setPhase('welcome');
   };
 
@@ -410,6 +460,7 @@ export function App() {
         onClearData={onClearData}
         fullscreen={fullscreen}
         billing={billing} onBillingChange={applyBilling}
+        digestMeta={digestMeta} setDigestMeta={setDigestMeta}
       />
     );
   }

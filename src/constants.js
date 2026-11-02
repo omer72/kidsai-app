@@ -38,6 +38,7 @@ export const URGENCY = [
 
 // Fallback response used when no API key is set, or as a placeholder.
 export const DEMO_RESPONSE = {
+  situation: 'transitions',
   title: 'A need for control, not defiance',
   summary: 'Two-year-olds often melt down when a good moment has to end. She is likely tired and trying to hold on, not trying to disobey.',
   sections: [
@@ -55,9 +56,9 @@ export const DEMO_RESPONSE = {
       kind: 'try',
       label: 'What to try next time',
       items: [
-        { icon: '🎯', h: 'Signal transitions early', b: 'Give two short warnings before leaving, then let her pick the last thing she does.' },
-        { icon: '❤️', h: 'Name the feeling first', b: '"You were having so much fun. It’s really hard to stop." Don’t fix, just name it.' },
-        { icon: '🤝', h: 'Offer a small choice', b: '"Do you want to walk to the car holding my hand, or hopping?" Control returns, meltdown softens.' },
+        { icon: '🎯', h: 'Signal transitions early', b: 'Give two short warnings before leaving, then let her pick the last thing she does.', move: 'choice' },
+        { icon: '❤️', h: 'Name the feeling first', b: '"You were having so much fun. It’s really hard to stop." Don’t fix, just name it.', move: 'name_feeling' },
+        { icon: '🤝', h: 'Offer a small choice', b: '"Do you want to walk to the car holding my hand, or hopping?" Control returns, meltdown softens.', move: 'acknowledge' },
       ],
     },
     {
@@ -69,6 +70,7 @@ export const DEMO_RESPONSE = {
 };
 
 const DEMO_RESPONSE_HE = {
+  situation: 'transitions',
   title: 'צורך בשליטה, לא התרסה',
   summary: 'בגיל שנתיים התפרקות היא דבר נפוץ כשרגע טוב נגמר. הפעוטה כנראה עייפה ומנסה להיאחז, לא מנסה שלא לציית.',
   sections: [
@@ -86,9 +88,9 @@ const DEMO_RESPONSE_HE = {
       kind: 'try',
       label: 'מה לנסות בפעם הבאה',
       items: [
-        { icon: '🎯', h: 'סמנו מעבר מוקדם', b: 'שתי אזהרות קצרות לפני שעוזבים, ואז היא בוחרת את הדבר האחרון שעושים.' },
-        { icon: '❤️', h: 'קודם נותנים שם לרגש', b: '״היה לך כל כך כיף. קשה מאוד לעצור.״ בלי לתקן, רק לתת שם.' },
-        { icon: '🤝', h: 'הציעו בחירה קטנה', b: '״רוצה ללכת לאוטו יד ביד, או לקפוץ?״ כשהשליטה חוזרת, ההתפרקות מתרככת.' },
+        { icon: '🎯', h: 'סמנו מעבר מוקדם', b: 'שתי אזהרות קצרות לפני שעוזבים, ואז היא בוחרת את הדבר האחרון שעושים.', move: 'choice' },
+        { icon: '❤️', h: 'קודם נותנים שם לרגש', b: '״היה לך כל כך כיף. קשה מאוד לעצור.״ בלי לתקן, רק לתת שם.', move: 'name_feeling' },
+        { icon: '🤝', h: 'הציעו בחירה קטנה', b: '״רוצה ללכת לאוטו יד ביד, או לקפוץ?״ כשהשליטה חוזרת, ההתפרקות מתרככת.', move: 'acknowledge' },
       ],
     },
     {

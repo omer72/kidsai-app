@@ -4,6 +4,8 @@ import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
 import { Avatar, Card, Segmented } from './primitives';
 import { MOODS, LOCATIONS } from '../constants';
+import { classifySituation } from '../taxonomy';
+import { SituationPicker } from './Digest';
 
 export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
   const { t } = useTranslation();
@@ -124,6 +126,13 @@ export function HistoryScreen({ kids, history, activeKid, onFeedback }) {
                       </div>
                     ))}
 
+                    <div style={{ marginTop: 6, marginBottom: 14 }}>
+                      <SituationPicker
+                        label={t('history.situationLabel')}
+                        value={classifySituation(h)}
+                        onChange={(situation) => onFeedback?.(h.id, { situation })}
+                      />
+                    </div>
                     <div style={{ marginTop: 6, paddingTop: 14, borderTop: `1px solid ${tokens.line}` }}>
                       <div style={{ fontFamily: tokens.sans, fontSize: fs(10), fontWeight: 700, color: tokens.ink3, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 8 }}>{t('history.feedbackPrompt')}</div>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>

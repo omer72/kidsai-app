@@ -165,7 +165,7 @@ For future releases (versionCode 2+), switch to a bulleted changelog format.
 | Government app | No |
 | Financial features | No |
 | Health | No (unless you reposition as wellness) |
-| Data safety | Declare: parenting moments are stored on-device. The story text, and voice when the parent records, is sent to the guidance service to produce the answer and is not sold. A user-supplied OpenAI key, if present, stays on-device. If you later add analytics, crash reporting, or Sentry, update this. |
+| Data safety | Declare: parenting moments are stored on-device. The story text, and voice when the parent records, is sent to the guidance service to produce the answer and is not sold. A user-supplied OpenAI key, if present, stays on-device. If you later add analytics, crash reporting, or Sentry, update this. Optional anonymous insights (off by default): App activity → App interactions (situation counts and rating) and Other user-generated content (free text), collected, not shared, optional, purpose Analytics. Encrypted in transit (HTTPS). Deletion: mark Yes — free text is removed automatically after 90 days, and a specific anonymous submission cannot be looked up. Do not declare the digest itself; it stays on the device. |
 
 ## 8. Upload to Internal Testing first
 

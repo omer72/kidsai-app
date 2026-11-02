@@ -7,6 +7,7 @@ const KEYS = {
   settings: 'kidai.settings.v1',
   kids: 'kidai.kids.v1',
   history: 'kidai.history.v1',
+  digest: 'kidai.digest.v1',
 };
 
 function read(key, fallback) {
@@ -36,6 +37,15 @@ export function loadSettings() {
   // Positive closes only (Helped / Really helped). A didn't-help rating
   // does not increment this and does not reset it.
   if (typeof s.reviewUses !== 'number' || s.reviewUses < 0) s.reviewUses = 0;
+  if (!s.digest || typeof s.digest !== 'object') {
+    s.digest = { enabled: false, cadence: 'week', weekday: 5, hour: 9 };
+  } else {
+    if (typeof s.digest.enabled !== 'boolean') s.digest.enabled = false;
+    if (s.digest.cadence !== 'day' && s.digest.cadence !== 'week') s.digest.cadence = 'week';
+    if (typeof s.digest.weekday !== 'number') s.digest.weekday = 5;
+    if (typeof s.digest.hour !== 'number') s.digest.hour = 9;
+  }
+  if (typeof s.shareInsights !== 'boolean') s.shareInsights = false;
   return s;
 }
 
@@ -79,6 +89,27 @@ export function updateHistoryEntry(id, patch) {
   const next = items.map((h) => (h.id === id ? { ...h, ...patch } : h));
   write(KEYS.history, next);
   return next;
+}
+
+const EMPTY_DIGEST_META = {
+  lastShownPeriod: {},
+  sentPeriods: [],
+  digestsOpened: 0,
+  sharePrompted: false,
+};
+
+export function loadDigestMeta() {
+  const meta = read(KEYS.digest, EMPTY_DIGEST_META);
+  return {
+    lastShownPeriod: meta?.lastShownPeriod && typeof meta.lastShownPeriod === 'object' ? meta.lastShownPeriod : {},
+    sentPeriods: Array.isArray(meta?.sentPeriods) ? meta.sentPeriods : [],
+    digestsOpened: typeof meta?.digestsOpened === 'number' && meta.digestsOpened > 0 ? meta.digestsOpened : 0,
+    sharePrompted: !!meta?.sharePrompted,
+  };
+}
+
+export function saveDigestMeta(meta) {
+  write(KEYS.digest, meta);
 }
 
 export function clearAll() {

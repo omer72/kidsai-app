@@ -1,3 +1,13 @@
+// One gate for native-only behavior. Prefer Capacitor.isNativePlatform().
+// If that function is missing, fall back to getPlatform() !== 'web'.
+export function isNativeApp() {
+  const cap = typeof globalThis !== 'undefined' ? globalThis.window?.Capacitor : undefined;
+  if (!cap) return false;
+  if (typeof cap.isNativePlatform === 'function') return cap.isNativePlatform() === true;
+  if (typeof cap.getPlatform === 'function') return cap.getPlatform() !== 'web';
+  return false;
+}
+
 export function storePlatform() {
   const name = typeof window !== 'undefined' ? window.Capacitor?.getPlatform?.() : '';
   if (name === 'android' || name === 'ios') return name;

@@ -1,5 +1,7 @@
 import OpenAI from 'openai';
 import { LOCATIONS, MOODS, INVOLVED, URGENCY, INTAKE_QUESTIONS } from '../../src/constants.js';
+import { buildGuidanceRequest, recentGuidanceHistory } from '../../src/guidanceRequest.js';
+import { normalizeGuidance } from '../../src/taxonomy.js';
 import { requireEntitlement } from '../lib/entitlement.js';
 
 const MODEL = 'gpt-4o-mini';
@@ -102,28 +104,6 @@ function describeChild(kid) {
   return `Child: ${kid?.name || 'unspecified'}, ${bits.join(', ')}.`;
 }
 
-function describeFamily(kid, siblings) {
-  if (!Array.isArray(siblings) || siblings.length === 0) return '';
-  const lines = siblings.map((s) => {
-    const a = kidAgeYears(s);
-    const age = a == null ? null : a < 1 ? `age ${Math.max(1, Math.floor(a * 12))} months` : `age ${Math.floor(a)}`;
-    const bits = [age, s.gender || null].filter(Boolean);
-    return `${s.name || 'a sibling'}${bits.length ? ` (${bits.join(', ')})` : ''}`;
-  });
-  let rank = '';
-  const myAge = kidAgeYears(kid);
-  const sibAges = siblings.map(kidAgeYears);
-  if (myAge != null && sibAges.every((a) => a != null)) {
-    const total = siblings.length + 1;
-    const older = sibAges.filter((a) => a > myAge).length;
-    const younger = sibAges.filter((a) => a < myAge).length;
-    rank = older === 0 && younger > 0 ? ` ${kid?.name || 'The child'} is the oldest of ${total} children.`
-      : younger === 0 && older > 0 ? ` ${kid?.name || 'The child'} is the youngest of ${total} children.`
-      : ` ${kid?.name || 'The child'} is a middle child of ${total}.`;
-  }
-  return `Siblings: ${lines.join(', ')}.${rank}`;
-}
-
 // The "Get to Know Your Child" intake the parent filled in on the kid profile.
 function describeIntake(kid) {
   const it = kid?.intake;
@@ -158,11 +138,10 @@ const INTAKE_LABELS = {
   notes: 'anything else the parent wanted us to know',
 };
 
-function describeProfile(kid, siblings) {
+function describeProfile(kid) {
   const lines = [
     describeChild(kid),
     describeIntake(kid),
-    describeFamily(kid, siblings),
     kid?.newSibling ? 'A new baby joined the family in recent months.' : '',
     kid?.notes?.trim() ? `How the parent describes this child: """${kid.notes.trim().slice(0, 800)}"""` : '',
   ].filter(Boolean);
@@ -242,15 +221,16 @@ function buildSystemPrompt(language) {
   ].join('\n');
 }
 
-function buildUserPrompt({ story, ctx, kid, siblings, history }) {
+function buildUserPrompt({ story, ctx, kid, history }) {
   const loc = labelFor(LOCATIONS, ctx?.location);
   const mood = labelFor(MOODS, ctx?.mood);
   const involved = labelFor(INVOLVED, ctx?.involved);
   const urgency = labelFor(URGENCY, ctx?.urgency);
+  const ownHistory = recentGuidanceHistory(history, kid?.id);
   return [
-    describeProfile(kid, siblings),
+    describeProfile(kid),
     `Location: ${loc || 'unspecified'}. Parent's mood right now: ${mood || 'unspecified'}. Who else was there: ${involved || 'unspecified'}. Urgency: ${urgency || 'low'}.`,
-    summarizePastMoments(history, kid?.id, story),
+    summarizePastMoments(ownHistory, kid?.id, story),
     '',
     `What the parent said happened (this is the new moment):`,
     story?.trim() ? `"""${story.trim()}"""` : '(parent did not describe the moment in words)',
@@ -259,23 +239,54 @@ function buildUserPrompt({ story, ctx, kid, siblings, history }) {
     '',
     'Schema (use this exact shape, all keys present):',
     `{
+  "situation": "one id from the closed list below",
   "title": "short title naming the need or pattern under the surface behavior — NOT the behavior itself",
   "summary": "1-2 sentences. A warm, non-judgmental reframe a tired parent can absorb in one breath. No advice yet.",
   "sections": [
     { "kind": "what", "label": "What happened", "body": "2-3 sentences. Plain-language recap of the parent's story, in the parent's own register. No interpretation yet." },
     { "kind": "why", "label": "Why it happened", "body": "3-4 sentences. The developmental + emotional read. Name the unmet need, the brain state, and the age-appropriate reality. Surface the second interpretation here." },
     { "kind": "try", "label": "What to try next time", "items": [
-      { "h": "imperative phrase (3-6 words)", "b": "1-2 sentence concrete script or action. If a sentence is meant to be spoken to the child, put it in quotes." },
-      { "h": "...", "b": "..." },
-      { "h": "...", "b": "..." }
+      { "h": "imperative phrase (3-6 words)", "b": "1-2 sentence concrete script or action. If a sentence is meant to be spoken to the child, put it in quotes.", "move": "choice" },
+      { "h": "...", "b": "...", "move": "name_feeling" },
+      { "h": "...", "b": "...", "move": "describe" }
     ]},
     { "kind": "tonight", "label": "If you want to reconnect tonight", "body": "ONE warm sentence the parent could say at bedtime — quote it. No teaching. Pure connection." }
   ]
 }`,
     '',
+    'situation must be exactly one of: transitions, bedtime_sleep, screens, homework_tasks, limits_cooperation, tantrum_anger, siblings, social_friends, fears_anxiety, eating, other. Pick the single best fit for THIS moment. Use other if none fit. Do not invent a value.',
+    'Each try item\'s move must be exactly one of: acknowledge, name_feeling, fantasy, choice, describe, give_info, one_word, own_feeling, note, amends, problem_solving, hint, overhear, co_regulate, connect, other. The move is the toolkit technique that item uses. Do not invent a value.',
+    '',
     'Constraints on the items array: exactly 3 items. Each item must be actionable in the next 60 seconds of a real moment. At least one item must be a literal sentence the parent can say. No item may recommend threats, punishments, bribery, or trait-praise.',
     'VARIETY CONSTRAINT: when past moments list "advice given", at least 2 of the 3 items must use a DIFFERENT toolkit move than anything previously given — pick from: describe what you see, give information, say it in ONE word, say your own feeling, grant the wish in fantasy, a playful written note, make amends, joint problem-solving, a hint instead of a takeover, let the child overhear something positive. "Acknowledge the feeling / offer a choice / give a hug" is your default trio — if any of those appear in "advice given", do not lead with them again.',
   ].join('\n');
+}
+
+// Drops every other child's history, name, and profile before the prompt is
+// built, including when an older client still posts them.
+export function prepareGuidance(body) {
+  const scoped = buildGuidanceRequest({
+    story: body?.story,
+    ctx: body?.ctx,
+    kid: body?.kid,
+    history: body?.history,
+    language: body?.language,
+  });
+  return { language: scoped.language, userPrompt: buildUserPrompt(scoped) };
+}
+
+export function guidancePromptFromBody(body) {
+  return prepareGuidance(body).userPrompt;
+}
+
+function coerceGuidanceJson(text) {
+  try {
+    const parsed = JSON.parse(text);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return text;
+    return JSON.stringify(normalizeGuidance(parsed));
+  } catch {
+    return text;
+  }
 }
 
 const CORS = {
@@ -303,9 +314,8 @@ export default async function handler(req) {
   }
   try {
     const body = await req.json();
-    const { story, ctx, kid, siblings, history, language } = body || {};
     const client = new OpenAI({ apiKey: key });
-    const userPrompt = buildUserPrompt({ story, ctx, kid, siblings, history });
+    const { language, userPrompt } = prepareGuidance(body);
     // ponytail: logs include kid stories/health notes — unset DEBUG_PROMPTS when done debugging
     const debug = !!process.env.DEBUG_PROMPTS;
     if (debug) console.log('--- PROMPT ---\n' + userPrompt);
@@ -313,15 +323,16 @@ export default async function handler(req) {
       model: MODEL,
       response_format: { type: 'json_object' },
       temperature: 0.7,
-      max_completion_tokens: 700,
+      max_completion_tokens: 1200,
       messages: [
         { role: 'system', content: buildSystemPrompt(language) },
         { role: 'user', content: userPrompt },
       ],
     });
     const text = resp.choices?.[0]?.message?.content ?? '{}';
-    if (debug) console.log('--- RESPONSE ---\n' + text);
-    return new Response(text, {
+    const safe = coerceGuidanceJson(text);
+    if (debug) console.log('--- RESPONSE ---\n' + safe);
+    return new Response(safe, {
       status: 200,
       headers: { ...CORS, 'Content-Type': 'application/json' },
     });
