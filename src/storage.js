@@ -1,3 +1,4 @@
+import { normalizeReviewState } from './reviewPrompt.js';
 // Thin localStorage wrappers. Values are JSON-encoded. Reads return `fallback`
 // when the key is missing or the stored value is malformed.
 
@@ -33,10 +34,8 @@ export function loadSettings() {
   if (!s.billing) s.billing = DEFAULT_BILLING;
   if (typeof s.aiConsent !== 'boolean') s.aiConsent = false;
   if (!s.fontSize) s.fontSize = 'small';
-  if (typeof s.askedForReview !== 'boolean') s.askedForReview = false;
-  // Positive closes only (Helped / Really helped). A didn't-help rating
-  // does not increment this and does not reset it.
-  if (typeof s.reviewUses !== 'number' || s.reviewUses < 0) s.reviewUses = 0;
+  // Review-prompt state (see src/reviewPrompt.js); migrates askedForReview.
+  Object.assign(s, normalizeReviewState(s));
   if (!s.digest || typeof s.digest !== 'object') {
     s.digest = { enabled: false, cadence: 'week', weekday: 5, hour: 9 };
   } else {

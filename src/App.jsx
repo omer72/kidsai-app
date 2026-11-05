@@ -8,6 +8,7 @@ import { aggregateDigest, digestConfig, noteDigestOpened } from './digest';
 import { cancelDigestNotification } from './notifications';
 import { initBilling, offUpdate, refreshEntitlement, billingAvailable } from './billing';
 import { InAppReview } from '@capacitor-community/in-app-review';
+import { evaluateReviewPrompt, isPositiveRating, PROMPT_DELAY_MS } from './reviewPrompt.js';
 import { demoResponse } from './constants';
 import { Icon } from './components/Icons';
 import { IOSDevice } from './components/IOSFrame';
@@ -142,19 +143,25 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
         note: feedback?.note || null,
       };
       setHistory(appendHistory(entry));
-      // Only Helped / Really helped count. Close-for-now and the hardware
-      // back button pass no rating, so they do not count. A didn't-help
-      // rating (worse / same) does not count and does not reset the total:
-      // the prompt is three positive saves, not a streak. One shot, no retry.
+      // Native review prompt: only after Helped / Really helped. Rules live in
+      // src/reviewPrompt.js (>=2 positives, 60-day cooldown, max 3 prompts).
+      // Close-for-now, back button, and didn't-help never trigger it.
       const rating = typeof feedback?.rating === 'string' ? feedback.rating : null;
-      const positive = rating === 'better' || rating === 'great';
-      const reviewUses = (settings.reviewUses || 0) + (positive ? 1 : 0);
       const native = !!(window.Capacitor?.isNativePlatform?.());
-      const shouldAsk = positive && reviewUses >= 3 && !settings.askedForReview && native;
-      if (reviewUses !== (settings.reviewUses || 0) || shouldAsk) {
-        setSettings({ ...settings, reviewUses, askedForReview: settings.askedForReview || shouldAsk });
+      const { next: review, shouldAsk } = evaluateReviewPrompt(settings, rating, { native });
+      if (isPositiveRating(rating) || review.reviewPromptCount !== settings.reviewPromptCount) {
+        setSettings({ ...settings, ...review });
       }
-      if (shouldAsk) InAppReview.requestReview().catch(() => {});
+      if (shouldAsk) {
+        console.debug('[review] requesting native review prompt', review);
+        setTimeout(() => {
+          try {
+            InAppReview.requestReview().catch((e) => console.debug('[review] failed', e));
+          } catch (e) { console.debug('[review] failed', e); }
+        }, PROMPT_DELAY_MS);
+      } else if (isPositiveRating(rating)) {
+        console.debug('[review] skipped', { native, ...review });
+      }
     }
     setFlowState({ stage: 'compose', story: '', ctx: null, response: null, error: null });
   };
