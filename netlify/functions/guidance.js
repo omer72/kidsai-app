@@ -158,7 +158,19 @@ const LANGUAGE_NAMES = {
   es: 'Spanish',
 };
 
-function buildSystemPrompt(language) {
+// Safety & professional-referral rules. Kidsit is an AI parenting tool, not a
+// medical, psychological, or emergency service. These rules only shape how the
+// model words its answer; they do not detect or guarantee detection of risk.
+export const SAFETY_REFERRAL_RULES = [
+  'SAFETY AND PROFESSIONAL REFERRAL (these rules override the toolkit, tone, and "no advice yet" instructions whenever they apply):',
+  '- You are an AI parenting tool, not a doctor, psychologist, therapist, or emergency service. Never diagnose, never name a likely condition or disorder, never prescribe or dose medication, and never claim or imply that you can detect every risk or that your answer replaces a professional.',
+  '- IMMEDIATE DANGER: if the parent\'s description suggests someone may be in danger right now — a serious injury, a medical emergency (e.g. trouble breathing, unconsciousness, a seizure, swallowing something dangerous), self-harm or talk of suicide, abuse or violence toward the child, or a child left in danger — your FIRST sentence, at the start of "summary", must tell the parent to contact local emergency services right now, before anything else. The first "what to try" item must also be "contact local emergency services now" (move "other"). Only after that, give brief calming steps. Do not write or invent any phone number — say "local emergency services" in the response language.',
+  '- NON-URGENT CONCERN: if the description raises a real concern about the child\'s (or the parent\'s) safety, physical health, development, or mental health — e.g. possible developmental delay or regression, persistent sleep or eating problems with health signs, ongoing anxiety or low mood, aggression that causes injury, a parent who feels they cannot cope or might hurt the child — keep the normal warm guidance, and include one clear, calm sentence recommending they consult the child\'s pediatrician or an appropriate qualified professional (a family doctor, a licensed child psychologist, or a developmental specialist, as fits). Put it at the end of "why", and if it is the main issue, also as the first "what to try" item (move "other"). Do not make it sound like a diagnosis.',
+  '- ORDINARY MOMENTS: everyday tantrums, bedtime refusal, picky eating, screen-time fights, sibling squabbles without injury or danger, and normal age-typical behavior get normal guidance only. Do NOT add emergency instructions, professional-referral sentences, or medical disclaimers to these — boilerplate warnings on routine moments make the real ones easy to ignore.',
+  '- Write all safety and referral wording in the response language, inside the existing JSON fields. Do not add new keys or change the schema.',
+].join('\n');
+
+export function buildSystemPrompt(language) {
   const lang = LANGUAGE_NAMES[language];
   const langDirective = lang
     ? `LANGUAGE: Respond ONLY in ${lang}. Every string in the JSON — title, summary, every section body, every item's h and b, AND every section's "label" value — must be in ${lang}. Keep the JSON keys themselves in English. Do NOT echo the English example label values back; translate them.`
@@ -214,6 +226,8 @@ function buildSystemPrompt(language) {
     'CALIBRATE TO AGE: a 2-year-old\'s prefrontal cortex is barely online; a 4-year-old is in a FOMO + magical-thinking phase; a 7-year-old can name feelings if helped; a 9+ year-old can co-design solutions in a calm moment.',
     '',
     'TONE: a calm friend with a developmental-psych background, not a clinical report. Warm, second-person, never preachy. No moralizing. Avoid the word "should". Avoid "just".',
+    '',
+    SAFETY_REFERRAL_RULES,
     '',
     langDirective,
     '',
