@@ -47,6 +47,8 @@ export async function initBilling(onUpdate) {
   if (!configured) {
     await Purchases.setLogLevel({ level: LOG_LEVEL.WARN });
     await Purchases.configure({ apiKey: platformKey() });
+    // Apple Search Ads attribution (AdServices, no ATT prompt). iOS 14.3+; a failure must not block billing.
+    if (platform() === 'ios') Purchases.enableAdServicesAttributionTokenCollection().catch(() => {});
     Purchases.addCustomerInfoUpdateListener((info) => {
       const next = entitlementFromCustomerInfo(info);
       listeners.forEach((cb) => cb(next));
