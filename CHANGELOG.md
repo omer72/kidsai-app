@@ -8,6 +8,9 @@ Each App Store version maps to `MARKETING_VERSION` in `ios/App/App.xcodeproj/pro
 
 ## [Unreleased]
 
+### Changed
+- **OpenAI models.** Guidance now uses `gpt-6-luna` (`reasoning_effort: none`) instead of `gpt-4o-mini`, which shuts down on 14 January 2027. Transcription now uses `gpt-transcribe` instead of `whisper-1`, which shuts down on 26 February 2027. Both IDs can be overridden with env vars (`OPENAI_GUIDANCE_MODEL`, `OPENAI_TRANSCRIBE_MODEL`) without changing the function code again.
+
 ### Added
 - **"Restore" link on the Welcome screen** for returning subscribers who reinstalled. Replaces the old non-functional "Sign in" text. Tapping calls RevenueCat's `restorePurchases()`; if an active subscription is found, the app skips Onboarding + Paywall and drops straight into the home tab. Standard App Review pattern.
 

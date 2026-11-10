@@ -4,7 +4,90 @@ import { buildGuidanceRequest, recentGuidanceHistory } from '../../src/guidanceR
 import { normalizeGuidance } from '../../src/taxonomy.js';
 import { requireEntitlement } from '../lib/entitlement.js';
 
-const MODEL = 'gpt-4o-mini';
+export const DEFAULT_GUIDANCE_MODEL = 'gpt-6-luna';
+export const DEFAULT_GUIDANCE_REASONING_EFFORT = 'none';
+export const DEFAULT_GUIDANCE_MAX_COMPLETION_TOKENS = 2500;
+export const GUIDANCE_REASONING_EFFORTS = Object.freeze([
+  'none', 'low', 'medium', 'high', 'xhigh', 'max',
+]);
+
+export function getGuidanceModel(env = process.env) {
+  const raw = String(env.OPENAI_GUIDANCE_MODEL || '').trim();
+  return raw || DEFAULT_GUIDANCE_MODEL;
+}
+
+export function getGuidanceReasoningEffort(env = process.env) {
+  const raw = String(env.OPENAI_GUIDANCE_REASONING_EFFORT || '').trim().toLowerCase();
+  return GUIDANCE_REASONING_EFFORTS.includes(raw)
+    ? raw
+    : DEFAULT_GUIDANCE_REASONING_EFFORT;
+}
+
+// GPT-6 / GPT-5 / o-series accept reasoning_effort. Legacy chat models
+// such as gpt-4o-mini reject or ignore it, so a rollback via
+// OPENAI_GUIDANCE_MODEL must not send the field.
+export function modelSupportsReasoningEffort(model) {
+  return /^(gpt-5|gpt-6|o[1-9])/.test(String(model || '').toLowerCase());
+}
+
+export function buildGuidanceCompletionParams({ language, userPrompt, env = process.env }) {
+  const model = getGuidanceModel(env);
+  const params = {
+    model,
+    response_format: { type: 'json_object' },
+    max_completion_tokens: DEFAULT_GUIDANCE_MAX_COMPLETION_TOKENS,
+    messages: [
+      { role: 'system', content: buildSystemPrompt(language) },
+      { role: 'user', content: userPrompt },
+    ],
+  };
+  if (modelSupportsReasoningEffort(model)) {
+    const effort = getGuidanceReasoningEffort(env);
+    params.reasoning_effort = effort;
+    // Official GPT-6 guide: temperature is only accepted when effort is "none".
+    if (effort === 'none') params.temperature = 0.7;
+  } else {
+    params.temperature = 0.7;
+  }
+  return params;
+}
+
+export function readGuidanceCompletion(resp) {
+  const choice = resp?.choices?.[0];
+  const text = typeof choice?.message?.content === 'string'
+    ? choice.message.content.trim()
+    : '';
+  const finishReason = choice?.finish_reason ?? null;
+  if (!text) {
+    const truncated = finishReason === 'length';
+    const err = new Error(
+      truncated
+        ? 'guidance truncated: the model used up its token cap before finishing the JSON'
+        : 'guidance empty: the model returned no content',
+    );
+    err.code = truncated ? 'truncated' : 'empty';
+    err.finish_reason = finishReason;
+    throw err;
+  }
+  if (finishReason === 'length') {
+    try {
+      JSON.parse(text);
+    } catch {
+      const err = new Error('guidance truncated: the JSON was cut off before it was complete');
+      err.code = 'truncated';
+      err.finish_reason = 'length';
+      throw err;
+    }
+  }
+  return text;
+}
+
+export async function completeGuidance(client, { language, userPrompt, env = process.env }) {
+  const resp = await client.chat.completions.create(
+    buildGuidanceCompletionParams({ language, userPrompt, env }),
+  );
+  return readGuidanceCompletion(resp);
+}
 
 function labelFor(list, id) {
   return list.find((x) => x.id === id)?.label ?? '';
@@ -333,17 +416,7 @@ export default async function handler(req) {
     // ponytail: logs include kid stories/health notes — unset DEBUG_PROMPTS when done debugging
     const debug = !!process.env.DEBUG_PROMPTS;
     if (debug) console.log('--- PROMPT ---\n' + userPrompt);
-    const resp = await client.chat.completions.create({
-      model: MODEL,
-      response_format: { type: 'json_object' },
-      temperature: 0.7,
-      max_completion_tokens: 1200,
-      messages: [
-        { role: 'system', content: buildSystemPrompt(language) },
-        { role: 'user', content: userPrompt },
-      ],
-    });
-    const text = resp.choices?.[0]?.message?.content ?? '{}';
+    const text = await completeGuidance(client, { language, userPrompt });
     const safe = coerceGuidanceJson(text);
     if (debug) console.log('--- RESPONSE ---\n' + safe);
     return new Response(safe, {
@@ -351,8 +424,9 @@ export default async function handler(req) {
       headers: { ...CORS, 'Content-Type': 'application/json' },
     });
   } catch (err) {
+    const status = err?.code === 'truncated' || err?.code === 'empty' ? 502 : 500;
     return new Response(JSON.stringify({ error: err?.message || 'server error' }), {
-      status: 500, headers: { ...CORS, 'Content-Type': 'application/json' },
+      status, headers: { ...CORS, 'Content-Type': 'application/json' },
     });
   }
 }
