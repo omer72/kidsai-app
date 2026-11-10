@@ -20,7 +20,7 @@
 
 ## Features
 
-- **Press-and-hold mic** records the parent's story, transcribes with Whisper, and sends to GPT.
+- **Press-and-hold mic** records the parent's story, transcribes it, and sends it to GPT.
 - **Structured guidance** in four parts — *What happened · Why · What to try · Tonight* — generated under a tight system prompt rooted in Ginott / Faber-Mazlish parenting principles.
 - **Per-kid memory** — every moment lives in local history. Past moments for the same child are scored (recency + keyword overlap + feedback signal) and fed back into the prompt so the model learns what works for this family.
 - **"Did it work?" feedback** — four-way rating after each response (got worse / same / helped / really helped); failed advice is weighted heaviest so the next answer doesn't repeat it.
@@ -35,7 +35,7 @@
 | ----- | ---- |
 | UI | React 18 + Vite |
 | Native shell | Capacitor 8 (iOS only) |
-| LLM | OpenAI `gpt-4o-mini` (responses), `whisper-1` (transcription) |
+| LLM | OpenAI `gpt-6-luna` (responses), `gpt-transcribe` (transcription) |
 | Subscriptions | RevenueCat + Apple StoreKit 2 |
 | Storage | localStorage (settings, kids, history) |
 | Type system | None (intentional — plain JS) |

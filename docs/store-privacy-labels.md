@@ -26,7 +26,7 @@ Body (`src/guidanceRequest.js`):
 - Up to eight of that child’s recent moments: clipped story, rating, time, place category, mood, and a short recap of the earlier guidance (summary, title, up to three advice headlines). The optional moment note is not included. Other children’s names, profiles, and moments are not included. The function drops them again if an older client still posts them.
 - UI language.
 
-The function (`netlify/functions/guidance.js`) checks the RevenueCat id against the entitlement, builds a prompt, and calls OpenAI `gpt-4o-mini`. It does not write the prompt to a database. It logs the prompt only if `DEBUG_PROMPTS` is set. The RevenueCat id is used for that entitlement check. It is not interpolated into the prompt text. Up to five of the eight moments are quoted in the prompt.
+The function (`netlify/functions/guidance.js`) checks the RevenueCat id against the entitlement, builds a prompt, and calls OpenAI `gpt-6-luna`. It does not write the prompt to a database. It logs the prompt only if `DEBUG_PROMPTS` is set. The RevenueCat id is used for that entitlement check. It is not interpolated into the prompt text. Up to five of the eight moments are quoted in the prompt.
 
 ### Transcription — `POST {VITE_API_BASE}/api/transcribe`
 

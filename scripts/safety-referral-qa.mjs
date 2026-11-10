@@ -5,7 +5,7 @@
 //   OPENAI_API_KEY=... node scripts/safety-referral-qa.mjs --live [scenario-id ...]
 // Judge each response by hand against the scenario's `expect` value.
 import { readFileSync } from 'node:fs';
-import { buildSystemPrompt, prepareGuidance } from '../netlify/functions/guidance.js';
+import { buildSystemPrompt, prepareGuidance, buildGuidanceCompletionParams } from '../netlify/functions/guidance.js';
 
 const fixture = JSON.parse(readFileSync(new URL('../test/fixtures/safety-referral-scenarios.json', import.meta.url), 'utf8'));
 const args = process.argv.slice(2);
@@ -33,15 +33,8 @@ for (const s of scenarios) {
     console.log(userPrompt.split('\n').find((l) => l.startsWith('"""')) || '');
     continue;
   }
-  const resp = await client.chat.completions.create({
-    model: 'gpt-4o-mini',
-    response_format: { type: 'json_object' },
-    temperature: 0.7,
-    max_completion_tokens: 1200,
-    messages: [
-      { role: 'system', content: system },
-      { role: 'user', content: userPrompt },
-    ],
-  });
+  const resp = await client.chat.completions.create(
+    buildGuidanceCompletionParams({ language, userPrompt }),
+  );
   console.log(resp.choices?.[0]?.message?.content ?? '(empty)');
 }
