@@ -93,7 +93,7 @@ Describe what just happened, or what's coming up. Kidsit AI replies with calm, p
 WHAT YOU CAN DO
 • Describe a moment in your own words, by text or voice
 • Get calm, practical guidance for tantrums, transitions, sleep, screens, sibling conflict, and more
-• One child is free, with no time limit. Premium adds unlimited children
+• Your first 3 answers are free. Premium adds unlimited children and starts with a 7-day free trial for new subscribers
 • Past moments with that child inform the next answer
 • Moments are stored on this device
 
@@ -104,7 +104,7 @@ PRIVACY
 Moments are stored on this device. The story you send is used to write the answer. We don't sell your data. Kidsit AI is designed for parents — not children — and never asks for your child's personal information.
 
 SUBSCRIPTION
-One child is free, with no time limit. Premium is for unlimited children, billed monthly or yearly through Google Play. Cancel anytime in your Google Play account.
+Your first 3 guidance answers are free, with one child and no account. After that, new guidance needs Premium, billed monthly or yearly through Google Play, which also adds unlimited children. Premium starts with a 7-day free trial for new subscribers. Cancel anytime in your Google Play account.
 
 QUESTIONS OR FEEDBACK
 Email us at omer+support@kidsit.ai. We read every message.

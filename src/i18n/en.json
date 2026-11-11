@@ -115,7 +115,7 @@
     "autoRenewDisclosure": "{{price}}, auto-renewing. Cancel anytime at least 24 hours before the period ends via your Apple ID account settings. Any unused portion of a free trial is forfeited when you purchase a subscription.",
     "autoRenewDisclosureAndroid": "{{price}}, auto-renewing. Cancel anytime at least 24 hours before the period ends via <store>Google Play › Payments & subscriptions</store>. Any unused portion of a free trial is forfeited when you purchase a subscription.",
     "autoRenewDisclosureWeb": "{{price}}, auto-renewing. Cancel anytime at least 24 hours before the period ends. Any unused portion of a free trial is forfeited when you purchase a subscription.",
-    "maybeLater": "Maybe later — try with 1 kid free",
+    "maybeLater": "Maybe later",
     "productsLoading": "Subscription products are still loading. Try again in a moment.",
     "purchaseFailed": "Purchase did not complete.",
     "genericError": "Something went wrong.",
@@ -129,7 +129,10 @@
     "redeemWaiting": "Give your code a moment…",
     "redeemInProgress": "Hang on — give your last code a moment to register. If nothing happens, close this screen and reopen it before trying again.",
     "promoCodeUnavailable": "Promo codes can only be redeemed in the App Store build.",
-    "promoCodeUnavailableWeb": "Promo codes can be redeemed in the iOS or Android app."
+    "promoCodeUnavailableWeb": "Promo codes can be redeemed in the iOS or Android app.",
+    "notice": {
+      "freeLimit": "You've used your free answers. Choose a plan to keep going."
+    }
   },
   "flowA": {
     "greeting": {
@@ -361,9 +364,9 @@
   "aiConsent": {
     "title": "Sharing your story with AI",
     "body1": "To give you guidance, Kidsit AI sends the following to our server, and from there to OpenAI:",
-    "bullet1": "Audio you record, transcribed to text by OpenAI Whisper.",
+    "bullet1": "Audio you record, transcribed to text by OpenAI (gpt-transcribe).",
     "bullet2": "The story text, the context you pick (location, your mood, who else was there, and how urgent it feels), this child's profile only (name, birth date, gender, intake answers, notes, and whether a new baby recently joined the family), and this child's recent history only (recent stories, short summaries of earlier guidance, and your ratings). Names, profiles, and history of other children are not sent.",
-    "body2": "OpenAI (Whisper and GPT-4o-mini) processes this under OpenAI's API data policy. It is not used to train models. Profiles and history are also kept on this device.",
+    "body2": "OpenAI (gpt-transcribe and gpt-6-luna) processes this under OpenAI's API data policy. It is not used to train models. Profiles and history are also kept on this device.",
     "body3": "By tapping Agree below, you consent to this processing. You can revoke this at any time in Settings.",
     "agree": "I agree — start using Kidsit AI",
     "decline": "Not now",
@@ -577,5 +580,8 @@
     "humanRating": "Rating {{rating}}",
     "nudgeTitle": "Share an anonymous summary?",
     "nudgeBody": "One ask. Counts only, unless you add a rating or a note. You can say no and we won't ask again."
+  },
+  "free": {
+    "left": "Free answers left: {{count}}"
   }
 }

@@ -2,7 +2,7 @@ import OpenAI from 'openai';
 import { LOCATIONS, MOODS, INVOLVED, URGENCY, INTAKE_QUESTIONS } from '../../src/constants.js';
 import { buildGuidanceRequest, recentGuidanceHistory } from '../../src/guidanceRequest.js';
 import { normalizeGuidance } from '../../src/taxonomy.js';
-import { requireEntitlement } from '../lib/entitlement.js';
+import { FREE_REMAINING_HEADER, checkAccess, freeRemaining, recordFreeUse } from '../lib/entitlement.js';
 
 export const DEFAULT_GUIDANCE_MODEL = 'gpt-6-luna';
 export const DEFAULT_GUIDANCE_REASONING_EFFORT = 'none';
@@ -390,6 +390,7 @@ const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, X-RC-User',
+  'Access-Control-Expose-Headers': FREE_REMAINING_HEADER,
 };
 
 export default async function handler(req) {
@@ -401,7 +402,7 @@ export default async function handler(req) {
       status: 405, headers: { ...CORS, 'Content-Type': 'application/json' },
     });
   }
-  const denied = await requireEntitlement(req, CORS);
+  const { denied, grant } = await checkAccess(req, CORS);
   if (denied) return denied;
   const key = process.env.OPENAI_API_KEY;
   if (!key) {
@@ -419,10 +420,11 @@ export default async function handler(req) {
     const text = await completeGuidance(client, { language, userPrompt });
     const safe = coerceGuidanceJson(text);
     if (debug) console.log('--- RESPONSE ---\n' + safe);
-    return new Response(safe, {
-      status: 200,
-      headers: { ...CORS, 'Content-Type': 'application/json' },
-    });
+    // Only a produced answer counts against the free allowance.
+    const remaining = freeRemaining(await recordFreeUse(grant));
+    const headers = { ...CORS, 'Content-Type': 'application/json' };
+    if (remaining !== null) headers[FREE_REMAINING_HEADER] = String(remaining);
+    return new Response(safe, { status: 200, headers });
   } catch (err) {
     const status = err?.code === 'truncated' || err?.code === 'empty' ? 502 : 500;
     return new Response(JSON.stringify({ error: err?.message || 'server error' }), {

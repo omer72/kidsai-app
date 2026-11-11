@@ -9,6 +9,14 @@ Each App Store version maps to `MARKETING_VERSION` in `ios/App/App.xcodeproj/pro
 ## [Unreleased]
 
 ### Changed
+- **First paywall moved.** Onboarding is now Welcome → Onboarding → AI consent → app. The paywall no longer appears before the app has shown anything; it opens once, after the first finished moment, and again when the free answers run out. It still opens from "Add another child" and Settings.
+- **Free answers instead of an error.** The functions give each install `FREE_MOMENTS` answers (default 3) before a subscription is required, counted on the RevenueCat subscriber (`free_moments_used`). The answer carries `X-Free-Remaining`, the home screen shows what is left, and at zero the paywall opens before the parent records or types. A 403 from the server opens the paywall too, instead of showing "Guidance request failed (403)". Only takes effect with `AUTH_ENFORCE=true`.
+- **Review prompt after the first "Helped".** Was three. It never shares a moment with the first paywall: when both are due the review waits for the next positive save.
+- **Paywall "Maybe later"** no longer promises "1 kid free".
+
+### Added
+- **Anonymous funnel counts.** Eight steps (`onboarding_done` … `purchase`), each posted once per install to `https://kidsit.ai/api/funnel` with platform, language, major.minor version and install source. No RevenueCat id, no device id, no child data. Installs that onboarded on an earlier version report nothing. `VITE_FUNNEL_URL=off` disables it. See `docs/store-privacy-labels.md`; the store labels and the privacy policy need the matching update before release.
+- **Android install attribution.** A small native plugin reads the Play install referrer once; the `utm_*` values go to RevenueCat as `$mediaSource`, `$campaign`, `$adGroup`, `$creative`. Click ids are dropped.
 - **OpenAI models.** Guidance now uses `gpt-6-luna` (`reasoning_effort: none`) instead of `gpt-4o-mini`, which shuts down on 14 January 2027. Transcription now uses `gpt-transcribe` instead of `whisper-1`, which shuts down on 26 February 2027. Both IDs can be overridden with env vars (`OPENAI_GUIDANCE_MODEL`, `OPENAI_TRANSCRIBE_MODEL`) without changing the function code again.
 
 ### Added

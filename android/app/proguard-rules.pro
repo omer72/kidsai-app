@@ -33,3 +33,6 @@
     @android.webkit.JavascriptInterface <methods>;
 }
 -keep class com.getcapacitor.** { *; }
+
+# App-local Capacitor plugin (no AAR, so no consumer rules of its own).
+-keep class ai.kidsit.app.InstallReferrerPlugin { *; }

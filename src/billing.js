@@ -3,6 +3,7 @@
 
 import { Purchases, LOG_LEVEL } from '@revenuecat/purchases-capacitor';
 import { attachAffiliateToRevenueCat } from './affiliate';
+import { readInstallReferrer, referrerAttributes } from './installReferrer';
 
 const IOS_API_KEY = (import.meta.env.VITE_RC_IOS_KEY || '').trim();
 const ANDROID_API_KEY = (import.meta.env.VITE_RC_ANDROID_KEY || '').trim();
@@ -30,6 +31,20 @@ export function billingAvailable() {
   return isNative() && !!platformKey();
 }
 
+// Android: copy the Play install referrer (utm_* only) onto the RevenueCat
+// subscriber as $mediaSource / $campaign, so customers stop showing as
+// "No Attribution". Setting the same values again on later launches is a no-op.
+async function attachInstallReferrer() {
+  try {
+    const attributes = referrerAttributes(await readInstallReferrer());
+    if (!Object.keys(attributes).length) return;
+    await Purchases.getCustomerInfo(); // subscriber must exist before setAttributes
+    await Purchases.setAttributes(attributes);
+  } catch (err) {
+    console.log('[referrer] setAttributes failed', err?.message || String(err));
+  }
+}
+
 function entitlementFromCustomerInfo(info) {
   const active = info?.entitlements?.active?.[ENTITLEMENT_ID];
   if (!active) return { entitled: false, productId: null, expiresAt: null, inTrial: false, willRenew: false };
@@ -55,6 +70,7 @@ export async function initBilling(onUpdate) {
     });
     configured = true;
     attachAffiliateToRevenueCat();
+    attachInstallReferrer();
   }
   if (onUpdate) listeners.add(onUpdate);
   const { customerInfo } = await Purchases.getCustomerInfo();

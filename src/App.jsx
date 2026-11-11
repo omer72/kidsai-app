@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { applyTheme, applyFontSize, tokens, fs } from './theme';
 import { loadSettings, saveSettings, loadKids, saveKids, loadHistory, appendHistory, updateHistoryEntry, clearAll, loadDigestMeta, saveDigestMeta } from './storage';
-import { getGuidance, hasApiKey } from './openai';
+import { AccessError, getGuidance, hasApiKey } from './openai';
 import { normalizeGuidance } from './taxonomy';
 import { aggregateDigest, digestConfig, noteDigestOpened } from './digest';
 import { cancelDigestNotification } from './notifications';
@@ -29,6 +29,10 @@ import { DigestBanner, DigestScreen } from './components/Digest';
 
 import { INSET_TOP_MIN } from './platform';
 import { useHardwareBack } from './backbutton';
+import { flushFunnel, initFunnel, markFunnel, setFunnelContext } from './funnel';
+
+// Positive closes (Helped / Really helped) before the store review prompt.
+const REVIEW_AFTER_POSITIVE = 1;
 
 const FRAME_W = 402;
 const FRAME_H = 874;
@@ -61,6 +65,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
   const [activeKidId, setActiveKidId] = useState(kids[0]?.id || null);
   const [flowState, setFlowState] = useState({ stage: 'compose', story: '', ctx: null, response: null, error: null });
   const [paywallOpen, setPaywallOpen] = useState(false);
+  const [paywallNotice, setPaywallNotice] = useState(null);
   const [subscriptionOpen, setSubscriptionOpen] = useState(false);
   const [firstKidPending, setFirstKidPending] = useState(false); // intake open for a just-added first kid
   const [consentRequest, setConsentRequest] = useState(null); // resolver for an in-flight consent ask
@@ -90,19 +95,61 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
     return new Promise((resolve) => setConsentRequest({ resolve }));
   };
 
+  // Free answers left, as last reported by the server. Null when unknown
+  // (subscriber, first run, or the server gate is not enforced).
+  const freeRemaining = typeof settings.freeRemaining === 'number' ? settings.freeRemaining : null;
+
+  const openPaywall = (source) => {
+    setPaywallNotice(source === 'free_limit' ? 'freeLimit' : null);
+    setPaywallOpen(true);
+    markFunnel('paywall_shown');
+  };
+  const closePaywall = () => {
+    setPaywallOpen(false);
+    markFunnel('paywall_dismissed');
+  };
+
+  // Free answers used up: open the paywall before the parent records or
+  // types a story the server would turn away.
+  const ensureAccess = () => {
+    if (entitled || freeRemaining !== 0) return true;
+    openPaywall('free_limit');
+    return false;
+  };
+
+  // The server said "subscription required" (403).
+  const accessDenied = () => {
+    if (freeRemaining !== 0) setSettings((prev) => ({ ...prev, freeRemaining: 0 }));
+    openPaywall('free_limit');
+  };
+
   const submit = async ({ story, ctx }) => {
+    if (!ensureAccess()) return;
     if (!(await ensureConsent())) return;
     setFlowState({ stage: 'thinking', story, ctx, response: null, error: null });
+    markFunnel('moment_sent');
     try {
       let response;
       if (hasApiKey()) {
-        response = normalizeGuidance(await getGuidance({ story, ctx, kid: activeKid, history }));
+        const result = await getGuidance({ story, ctx, kid: activeKid, history });
+        response = normalizeGuidance(result.guidance);
+        if (result.freeRemaining !== freeRemaining) {
+          setSettings((prev) => ({ ...prev, freeRemaining: result.freeRemaining }));
+        }
       } else {
         await new Promise((r) => setTimeout(r, 1800));
         response = normalizeGuidance(demoResponse(i18n.language));
       }
+      markFunnel('answer_received');
       setFlowState((s) => ({ ...s, stage: 'response', response }));
     } catch (err) {
+      if (err instanceof AccessError) {
+        // Subscription required: not an error to show. Back to compose, with
+        // the paywall on top.
+        setFlowState({ stage: 'compose', story: '', ctx: null, response: null, error: null });
+        accessDenied();
+        return;
+      }
       console.error('OpenAI error:', err);
       setFlowState((s) => ({ ...s, stage: 'response', error: err.message || 'Something went wrong' }));
     }
@@ -112,7 +159,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
   // non-home tab returns home. Unhandled presses minimize the app (backbutton.js).
   useHardwareBack(() => {
     if (consentRequest) { consentRequest.resolve(false); setConsentRequest(null); return true; }
-    if (paywallOpen) { setPaywallOpen(false); return true; }
+    if (paywallOpen) { closePaywall(); return true; }
     if (subscriptionOpen) { setSubscriptionOpen(false); return true; }
     if (digestOpen) { setDigestOpen(false); return true; }
     return false;
@@ -145,16 +192,29 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
       // Only Helped / Really helped count. Close-for-now and the hardware
       // back button pass no rating, so they do not count. A didn't-help
       // rating (worse / same) does not count and does not reset the total:
-      // the prompt is three positive saves, not a streak. One shot, no retry.
+      // the prompt follows REVIEW_AFTER_POSITIVE positive saves, not a streak.
+      // One shot, no retry.
       const rating = typeof feedback?.rating === 'string' ? feedback.rating : null;
+      if (rating) markFunnel('moment_rated');
       const positive = rating === 'better' || rating === 'great';
       const reviewUses = (settings.reviewUses || 0) + (positive ? 1 : 0);
       const native = !!(window.Capacitor?.isNativePlatform?.());
-      const shouldAsk = positive && reviewUses >= 3 && !settings.askedForReview && native;
-      if (reviewUses !== (settings.reviewUses || 0) || shouldAsk) {
-        setSettings({ ...settings, reviewUses, askedForReview: settings.askedForReview || shouldAsk });
+      // The first paywall now comes after the first finished moment, not
+      // before the app has shown anything. Once per install, never for a
+      // subscriber, and never stacked on the review prompt: when both are
+      // due the paywall goes first and the review waits for a later save.
+      const showIntroPaywall = !entitled && !settings.introPaywallShown;
+      const shouldAsk = positive && reviewUses >= REVIEW_AFTER_POSITIVE && !settings.askedForReview && native && !showIntroPaywall;
+      if (reviewUses !== (settings.reviewUses || 0) || shouldAsk || showIntroPaywall) {
+        setSettings((prev) => ({
+          ...prev,
+          reviewUses,
+          askedForReview: prev.askedForReview || shouldAsk,
+          introPaywallShown: prev.introPaywallShown || showIntroPaywall,
+        }));
       }
       if (shouldAsk) InAppReview.requestReview().catch(() => {});
+      if (showIntroPaywall) openPaywall('first_moment');
     }
     setFlowState({ stage: 'compose', story: '', ctx: null, response: null, error: null });
   };
@@ -217,6 +277,12 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
               />
             </div>
           )}
+          {!entitled && freeRemaining !== null && freeRemaining > 0 && (
+            <div data-free-left style={{
+              padding: '8px 20px 0', textAlign: 'center',
+              fontFamily: tokens.sans, fontSize: fs(12), color: tokens.ink3,
+            }}>{t('free.left', { count: freeRemaining })}</div>
+          )}
           <FlowComponent
           key={settings.flow}
           kids={visibleKids}
@@ -225,6 +291,8 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
           onSubmit={submit}
           onAddKid={() => setTab('kids')}
           ensureConsent={ensureConsent}
+          ensureAccess={ensureAccess}
+          onAccessDenied={accessDenied}
         />
         </>
       );
@@ -239,6 +307,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
       const firstKidAdded = kids.length === 0 && next.length > 0;
       setKids(next);
       if (firstKidAdded) {
+        markFunnel('child_added');
         setActiveKidId(next[0].id);
         setFirstKidPending(true);
       }
@@ -251,7 +320,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
         entitled={entitled}
         lockedKidCount={lockedKidCount}
         onIntakeClose={() => { if (firstKidPending) { setFirstKidPending(false); setTab('home'); } }}
-        onRequestUpgrade={() => setPaywallOpen(true)}
+        onRequestUpgrade={() => openPaywall('add_child')}
       />
     );
   } else {
@@ -272,7 +341,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
           settings={settings} setSettings={setSettings} onClearData={onClearData}
           billing={billing} inTrial={inTrial}
           onOpenSubscription={() => setSubscriptionOpen(true)}
-          onOpenUpgrade={() => setPaywallOpen(true)}
+          onOpenUpgrade={() => openPaywall('settings')}
         />
       );
     }
@@ -311,9 +380,10 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
         <div style={{ position: 'absolute', inset: 0, zIndex: 100, background: tokens.bg }}>
           <PaywallScreen
             fullscreen={fullscreen}
-            onClose={() => setPaywallOpen(false)}
-            onStart={() => setPaywallOpen(false)}
-            onPurchased={(next) => { onBillingChange(next); setPaywallOpen(false); }}
+            notice={paywallNotice ? t(`paywall.notice.${paywallNotice}`) : null}
+            onClose={closePaywall}
+            onStart={closePaywall}
+            onPurchased={(next) => { markFunnel('purchase'); onBillingChange(next); setPaywallOpen(false); }}
           />
         </div>
       )}
@@ -343,14 +413,24 @@ export function App() {
   const [phase, setPhase] = useState(settings.onboarded ? 'app' : 'welcome');
   const [billing, setBilling] = useState(() => settings.billing || { entitled: false });
 
+  // Funnel counts start with installs that onboard on this version. An
+  // install that was already past onboarding would report later steps without
+  // the earlier ones, so it reports nothing.
+  useState(() => initFunnel({ existingInstall: !!settings.onboarded }));
+
   applyTheme(settings.theme);
   applyFontSize(settings.fontSize);
 
   const { fullscreen, scale } = useViewport();
 
+  // Accepts a value or an updater. Use the updater after an await, where the
+  // `settings` captured by the closure may already be stale.
   const setSettings = (next) => {
-    setSettingsState(next);
-    saveSettings(next);
+    setSettingsState((prev) => {
+      const value = typeof next === 'function' ? next(prev) : next;
+      saveSettings(value);
+      return value;
+    });
   };
 
   const applyBilling = useCallback((next) => {
@@ -388,7 +468,11 @@ export function App() {
     saveKids(next);
   };
   const setEntryFeedback = (id, patch) => setHistory(updateHistoryEntry(id, patch));
-  const { t: tApp } = useTranslation();
+  const { t: tApp, i18n: i18nApp } = useTranslation();
+  useEffect(() => {
+    setFunnelContext({ lang: i18nApp.language });
+    flushFunnel().catch(() => {});
+  }, [i18nApp.language]);
   const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
   const onClearData = () => setClearConfirmOpen(true);
   const confirmClearData = () => {
@@ -406,14 +490,14 @@ export function App() {
   useHardwareBack(() => {
     if (clearConfirmOpen) { setClearConfirmOpen(false); return true; }
     if (phase === 'onboarding') { setPhase('welcome'); return true; }
-    if (phase === 'consent') { setPhase('paywall'); return true; } // same as "not now"
+    if (phase === 'consent') { finishOnboarding(); return true; } // same as "not now"
     return false;
   }, 80);
 
-  const finishOnboarding = () => {
-    const next = { ...settings, onboarded: true };
-    setSettings(next);
+  const finishOnboarding = (patch = {}) => {
+    setSettings((prev) => ({ ...prev, ...patch, onboarded: true }));
     setPhase('app');
+    markFunnel('onboarding_done');
   };
 
   let inner;
@@ -426,28 +510,17 @@ export function App() {
       />
     );
   } else if (phase === 'onboarding') {
-    inner = <OnboardingScreen onDone={() => setPhase(settings.aiConsent ? 'paywall' : 'consent')} fullscreen={fullscreen}/>;
+    // No paywall here: the first one comes after the first finished moment
+    // (closeMoment in MainApp), once the parent has seen a real answer.
+    inner = <OnboardingScreen onDone={() => (settings.aiConsent ? finishOnboarding() : setPhase('consent'))} fullscreen={fullscreen}/>;
   } else if (phase === 'consent') {
     inner = (
       <AIConsentModal
         fullscreen={fullscreen}
-        onAgree={() => {
-          setSettings({ ...settings, aiConsent: true });
-          setPhase('paywall');
-        }}
+        onAgree={() => finishOnboarding({ aiConsent: true })}
         // "Not now" shouldn't dead-end onboarding — continue without consent;
         // the first AI-touching action re-asks via ensureConsent.
-        onDecline={() => setPhase('paywall')}
-      />
-    );
-  } else if (phase === 'paywall') {
-    inner = (
-      <PaywallScreen
-        mode="upgrade"
-        fullscreen={fullscreen}
-        onClose={finishOnboarding}
-        onStart={finishOnboarding}
-        onPurchased={(next) => { applyBilling(next); finishOnboarding(); }}
+        onDecline={() => finishOnboarding()}
       />
     );
   } else {
