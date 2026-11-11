@@ -364,9 +364,9 @@
   "aiConsent": {
     "title": "Sharing your story with AI",
     "body1": "To give you guidance, Kidsit AI sends the following to our server, and from there to OpenAI:",
-    "bullet1": "Audio you record, transcribed to text by OpenAI Whisper.",
+    "bullet1": "Audio you record, transcribed to text by OpenAI (gpt-transcribe).",
     "bullet2": "The story text, the context you pick (location, your mood, who else was there, and how urgent it feels), this child's profile only (name, birth date, gender, intake answers, notes, and whether a new baby recently joined the family), and this child's recent history only (recent stories, short summaries of earlier guidance, and your ratings). Names, profiles, and history of other children are not sent.",
-    "body2": "OpenAI (Whisper and GPT-4o-mini) processes this under OpenAI's API data policy. It is not used to train models. Profiles and history are also kept on this device.",
+    "body2": "OpenAI (gpt-transcribe and gpt-6-luna) processes this under OpenAI's API data policy. It is not used to train models. Profiles and history are also kept on this device.",
     "body3": "By tapping Agree below, you consent to this processing. You can revoke this at any time in Settings.",
     "agree": "I agree — start using Kidsit AI",
     "decline": "Not now",

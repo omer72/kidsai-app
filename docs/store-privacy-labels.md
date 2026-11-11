@@ -30,7 +30,7 @@ The function (`netlify/functions/guidance.js`) checks the RevenueCat id against 
 
 ### Transcription — `POST {VITE_API_BASE}/api/transcribe`
 
-The recording, the UI language, and the same `X-RC-User` header. The function forwards the file to OpenAI Whisper and returns text. It does not store the file in this repo.
+The recording, the UI language, and the same `X-RC-User` header. The function forwards the file to OpenAI `gpt-transcribe` and returns text. It does not store the file in this repo.
 
 ### Anonymous insights — `POST https://kidsit.ai/api/insights`
 
@@ -188,7 +188,7 @@ Play has no separate “linked” toggle. Use the table in “Linked to the user
 - **App Store, iOS install source:** nothing to declare. The install referrer is Android only.
 - **Play → App activity → App interactions:** now required, not optional: funnel steps and the free-answers counter are always collected. Insights stay optional. The Android install campaign (`utm_*` values on the RevenueCat subscriber) is declared here too, as campaign attribution for Analytics. It is not a device or advertising id, so "Do not declare … device or other IDs" stays true.
 - **Privacy policy (kidsit.ai/privacy, both languages):** the section "App usage counts, install source and free answers" covers all three.
-- **In-app AI consent text** is unchanged: none of this goes to OpenAI.
+- **In-app AI consent text:** only the model names changed (`gpt-transcribe` for voice, `gpt-6-luna` for guidance). None of the new data goes to OpenAI.
 
 ## Discrepancies
 

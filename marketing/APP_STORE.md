@@ -190,8 +190,8 @@ Reviewer notes:
 
 2. The microphone button on the Home tab is press-and-hold. Hold
    it for at least one second to record. Audio is sent to a server
-   for transcription (OpenAI Whisper), then text + context is sent
-   for guidance (OpenAI GPT-4o-mini). All API keys are server-side;
+   for transcription (OpenAI gpt-transcribe), then text + context is sent
+   for guidance (OpenAI gpt-6-luna). All API keys are server-side;
    the IPA contains no third-party credentials.
 
 3. Subscription products: kidsit_monthly ($9.99/mo, 7-day free
