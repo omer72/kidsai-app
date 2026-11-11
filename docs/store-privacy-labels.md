@@ -1,6 +1,6 @@
-# Store privacy labels — 1.0.13
+# Store privacy labels — 1.0.14
 
-`docs/store-privacy-labels.md` was not in the tree at `8780b5ad`. This file is the 1.0.13 questionnaire. Older write-ups that this replaces for the forms are `marketing/APP_STORE.md` (“App Privacy”) and `ANDROID_RELEASE.md` section 7 (“Data safety”). Discrepancies with those pages, with the public privacy policy, and with the code are at the bottom.
+`docs/store-privacy-labels.md` was not in the tree at `8780b5ad`. This file was the 1.0.13 questionnaire and is updated for 1.0.14 (see “What changed in 1.0.14”). Older write-ups that this replaces for the forms are `marketing/APP_STORE.md` (“App Privacy”) and `ANDROID_RELEASE.md` section 7 (“Data safety”). Discrepancies with those pages, with the public privacy policy, and with the code are at the bottom.
 
 Checked against the app at that commit plus the 1.0.13 version bump. The insights server is not in this repository. It is `https://kidsit.ai/api/insights`. What that server stores is taken from the published policy at <https://kidsit.ai/en/privacy> (last updated 1 Nov 2026) and is marked as such when the app repo cannot prove it.
 
@@ -55,7 +55,7 @@ Body (`buildInsightsPayload` in `src/digest.js`):
 
 Not in the body: child id, names, stories, guidance text, age, birth date, gender, profile notes, moment notes, device id, install id, RevenueCat id.
 
-### Anonymous funnel counts — `POST https://kidsit.ai/api/funnel` (unreleased)
+### Anonymous funnel counts — `POST https://kidsit.ai/api/funnel` (1.0.14)
 
 Native only. Not optional and not behind a toggle, unlike insights: each of eight steps (`onboarding_done`, `child_added`, `moment_sent`, `answer_received`, `moment_rated`, `paywall_shown`, `paywall_dismissed`, `purchase`) is posted once per install (`src/funnel.js`). An install that finished onboarding on an earlier version posts nothing. A build with `VITE_FUNNEL_URL=off` posts nothing.
 
@@ -65,11 +65,11 @@ Body: `v`, `step`, `platform` (`ios`/`android`), `lang` (`en`/`he`/`es`), `app_v
 
 Not in the body: RevenueCat id, device or install id, child data, story or guidance text, timestamps.
 
-### Install referrer (Android, unreleased)
+### Install referrer (Android, 1.0.14)
 
 `InstallReferrerPlugin` reads the Play install referrer string once. `src/installReferrer.js` keeps only `utm_source`, `utm_medium`, `utm_campaign`, `utm_content` (click ids such as `gclid` are dropped) and `src/billing.js` writes them to the RevenueCat subscriber as `$mediaSource`, `$campaign`, `$adGroup`, `$creative`. That makes the install campaign **linked** to the RevenueCat id. iOS has no equivalent.
 
-### Free answers counter (server, unreleased)
+### Free answers counter (server, 1.0.14)
 
 `netlify/lib/entitlement.js` keeps `free_moments_used` (a number) on the RevenueCat subscriber and returns what is left in the `X-Free-Remaining` response header.
 
@@ -94,6 +94,9 @@ Apple’s “linked” question means the data is associated with an identity (a
 | RevenueCat app user id | **Yes.** It is the identifier. | **No.** |
 | Purchase status | **Yes.** It is stored on that RevenueCat id. | **No.** |
 | Anonymous insights (counts, approaches, rating, note, language, platform, app version `"1.0"`, ISO week) | **No.** No identifier is sent. `credentials` is `omit`. | **No.** Purpose is to improve Kidsit. Not ads. |
+| Funnel steps (step, platform, language, major.minor version, Android `utm_source`) | **No.** No identifier is sent, and the server keeps only daily counters. | **No.** First-party product analytics. |
+| Android install campaign (`utm_*` on the RevenueCat subscriber) | **Yes.** It is stored on the RevenueCat id. | **No.** It measures Kidsit’s own channels and is not combined with other companies’ data. |
+| Free-answers counter (`free_moments_used`) | **Yes.** It is stored on the RevenueCat id. | **No.** |
 
 The public policy says guidance prompts are not stored, recordings are not kept, and the RevenueCat id is not part of the text sent to the model. That is what `netlify/functions/guidance.js` does, apart from an optional `DEBUG_PROMPTS` log. It does not de-identify the request before Kidsit’s function receives it, so the App Store answer for those types is still **linked: Yes**.
 
@@ -135,27 +138,29 @@ The RevenueCat app user id.
 
 ### Usage Data → Product Interaction
 
-Optional insights: situation counts, approach counts, the 1–5 rating, language, platform, the coarse version string, and the ISO week. The digest itself is on device and is not this type.
+Optional insights: situation counts, approach counts, the 1–5 rating, language, platform, the coarse version string, and the ISO week. The funnel steps (always sent, no identifier). The free-answers counter on the RevenueCat subscriber. The digest itself is on device and is not this type.
 
-- Used for: **Analytics**
-- Linked to the user’s identity: **No**
+- Used for: **Analytics** and **App Functionality** (the free-answers counter decides when the paywall is required)
+- Linked to the user’s identity: **Yes** (insights and funnel steps by themselves are not; the counter is, and the type-level answer follows the linked use)
 - Used for tracking: **No**
 
 ## Google Play Data safety — answers to enter
 
 **Does the app collect or share any of the required user data types?** Yes.
 
-**Is all of the user data collected by your app encrypted in transit?** Yes. Guidance, transcription, insights, and RevenueCat use HTTPS.
+**Is all of the user data collected by your app encrypted in transit?** Yes. Guidance, transcription, insights, funnel counts, and RevenueCat use HTTPS.
 
 **Do you provide a way for users to request that their data is deleted?** Yes, with the limits below. Do not claim that one anonymous submission can be looked up.
 
 - On the device: Settings → Clear all data, and uninstalling the app.
 - Guidance and recordings: the functions in this repo do not store them.
-- Anonymous insights: the published policy says the row is stored under a random id, so one submission cannot be found from an account. It also says free text is deleted after 90 days, counts may be kept longer, and a parent can email and quote a note that is still inside those 90 days. That deletion job is not in this repository. Use <https://kidsit.ai/en/privacy> as the policy URL. Support address already used by the app: `omer+support@kidsit.ai`.
+- Anonymous insights: the published policy says the row is stored under a random id, so one submission cannot be found from an account. It also says free text is deleted after 90 days, counts may be kept longer, and a parent can email and quote a note that is still inside those 90 days. That deletion job is not in this repository. Use <https://kidsit.ai/en/privacy> as the policy URL.
+- Funnel counts: daily counters with no identifier, so there is nothing to look up or delete for one person.
+- Android install campaign and the free-answers counter: attributes on the RevenueCat subscriber. Deleting that RevenueCat customer removes them. Support address already used by the app: `omer+support@kidsit.ai`.
 
 **Account creation:** the app has no account. The RevenueCat id is created by the SDK.
 
-**Data shared:** No, for the types below, using Play’s service-provider exception. OpenAI processes voice and guidance for the answer. Netlify hosts those two functions. RevenueCat processes the app user id and purchases. The public policy says Vercel hosts the insights endpoint and Neon stores the anonymous rows. Those are processors for the purpose below, not sold, and not used for ads.
+**Data shared:** No, for the types below, using Play’s service-provider exception. OpenAI processes voice and guidance for the answer. Netlify hosts those two functions. RevenueCat processes the app user id and purchases. The public policy says Vercel hosts the insights and funnel endpoints and Neon stores the anonymous rows and the daily funnel counters. Those are processors for the purpose below, not sold, and not used for ads.
 
 If the store binary sets `VITE_IA_COMPANY_CODE`, say so before submitting. This repo cannot see that env var. When it is set, an affiliate id can be written onto the RevenueCat subscriber after an affiliate link. It is not part of the insights body. The empty example env means the answers below do not declare Insert Affiliate.
 
@@ -164,26 +169,25 @@ If the store binary sets `VITE_IA_COMPANY_CODE`, say so before submitting. This 
 | Personal info → Name | Yes (the open child’s name, on a guidance request) | No | The parent can decline AI consent. Guidance does not run without this send. | App functionality |
 | Personal info → User IDs | Yes (RevenueCat app user id) | No | Sent when native billing is configured | App functionality |
 | Personal info → Other info | Yes (birth date, age, gender, new-sibling flag, profile notes, intake) | No | Same consent gate as guidance | App functionality |
-| Financial info → Purchase history | Yes (subscription state via RevenueCat and the store) | No | A subscription is optional. One child stays free. | App functionality |
+| Financial info → Purchase history | Yes (subscription state via RevenueCat and the store) | No | A subscription is optional. The first 3 answers are free. | App functionality |
 | Audio → Voice or sound recordings | Yes | No | The parent can type instead of recording | App functionality |
-| App activity → App interactions | Yes (optional insight counts, approach counts, 1–5 rating) | No | Off by default. Each send is confirmed. | Analytics |
+| App activity → App interactions | Yes (funnel steps without an identifier; the free-answers counter and the Android install campaign `utm_*` values on the RevenueCat subscriber; optional insight counts, approach counts, 1–5 rating) | No | Required. Funnel steps and the free-answers counter are always collected (a build with `VITE_FUNNEL_URL=off` sends no funnel steps). Insights stay off by default, and each send is confirmed. | App functionality (free-answers counter), Analytics (funnel steps, install campaign, insights) |
 | App activity → Other user-generated content | Yes (story, recent-moment text, and the optional insight note) | No | Guidance is consent-gated. The note is off unless the parent includes it. | App functionality, and Analytics for the insight note |
 
 Do not declare: location, photos, contacts, SMS, device or other IDs, crash logs, diagnostics, health, or advertising data. The place and mood on a moment are categories the parent picks, not device location.
 
 Do not declare the on-device digest as collected. It does not leave the phone. Local notification permission (`POST_NOTIFICATIONS`, plus `RECEIVE_BOOT_COMPLETED` and `WAKE_LOCK` from the plugin) does not send data. The app manifest removes `SCHEDULE_EXACT_ALARM`.
 
-Play has no separate “linked” toggle. Use the table in “Linked to the user?” above if a reviewer asks. Insights are not linked. Guidance, audio, the RevenueCat id, and purchases are linked.
+Play has no separate “linked” toggle. Use the table in “Linked to the user?” above if a reviewer asks. Insights and funnel steps are not linked. Guidance, audio, the RevenueCat id, purchases, the Android install campaign, and the free-answers counter are linked.
 
-## To re-answer before the release that ships the funnel and the referrer
+## What changed in 1.0.14
 
-These are not reflected in the answers above yet.
+1.0.14 ships the funnel counts, the Android install referrer, and the free-answers counter. The answers above already include them:
 
-- **App Store → Usage Data → Product Interaction:** now also the funnel steps. Still Analytics, not linked, not tracking — but no longer only "optional insights".
-- **App Store → Usage Data → Advertising Data / Other:** nothing on iOS; the referrer is Android only.
-- **Play → App activity → App interactions:** change "Optional: Off by default" to say funnel steps are always collected, without an identifier; insights stay optional.
-- **Play → install campaign:** the `utm_*` values are stored against the RevenueCat app user id (linked). Decide the Play type with the form in front of you (it is campaign attribution, not a device id), and keep "Do not declare … device or other IDs" true: no advertising id is read.
-- **Privacy policy (kidsit.ai/privacy, both languages):** add the funnel counts, the Android install source, and the free-answers counter.
+- **App Store → Usage Data → Product Interaction:** now also the funnel steps and the free-answers counter. Purposes Analytics and App Functionality. Linked **Yes**, because the free-answers counter sits on the RevenueCat id and Apple takes one linked answer per type (same reasoning as discrepancy 2). Still not tracking.
+- **App Store, iOS install source:** nothing to declare. The install referrer is Android only.
+- **Play → App activity → App interactions:** now required, not optional: funnel steps and the free-answers counter are always collected. Insights stay optional. The Android install campaign (`utm_*` values on the RevenueCat subscriber) is declared here too, as campaign attribution for Analytics. It is not a device or advertising id, so "Do not declare … device or other IDs" stays true.
+- **Privacy policy (kidsit.ai/privacy, both languages):** the section "App usage counts, install source and free answers" covers all three.
 - **In-app AI consent text** is unchanged: none of this goes to OpenAI.
 
 ## Discrepancies

@@ -17,7 +17,7 @@ AI parenting coach for the hardest 10 minutes of your day
 ### Description (260 chars max)
 
 ```
-Press and hold a mic, tell Kidsit AI what just happened with your kid, and get back 3 specific things to try — including the exact words to say. Grounded in Ginott / Faber-Mazlish parenting research. No lectures. iOS. Free to try with 1 kid.
+Press and hold a mic, tell Kidsit AI what just happened with your kid, and get back 3 specific things to try — including the exact words to say. Grounded in Ginott / Faber-Mazlish parenting research. No lectures. iOS. First 3 answers free.
 ```
 
 (238 chars.)
@@ -76,9 +76,9 @@ Three things I want to be honest about:
 3. Your kid data is stored on your device. We don't sell it. We don't
    train models on it.
 
-Free to use with 1 kid, no time limit. Premium is for unlimited
-children. Past moments with that child inform the next answer.
-7-day free trial on both plans.
+Your first 3 answers are free. After that, Premium keeps the
+guidance coming and adds unlimited children. Past moments with that
+child inform the next answer. 7-day free trial for new subscribers.
 
 For parents reading this — what's the 6 PM moment of your day you
 wish you had this for? Tell me and I'll respond to everyone.
@@ -175,9 +175,9 @@ the park, the meltdown about socks, the bedtime negotiation gone sideways.
 Your kid data is stored on your device. We don't sell it. The AI provider
 processes the text under its API data policy, and nothing is used for training.
 
-Free to try with 1 kid (no time limit). Premium is for unlimited
-children. Past moments with that child inform the next answer.
-7 days free, $9.99/mo or $59.99/yr.
+Your first 3 answers are free. Then Premium: 7 days free for new
+subscribers, then $9.99/mo or $59.99/yr. Past moments with that
+child inform the next answer.
 ```
 
 ### Tweet 7 — the CTA

@@ -65,8 +65,8 @@ FEATURES
 • Two flow styles: guided (one question at a time) or dense (all on one page)
 • Three themes: warm cream, clinical blue, dusk navy
 
-START FREE — TRY WITH ONE CHILD
-You can use Kidsit AI free with one child, no time limit. Premium adds unlimited children. Start your free trial inside the app.
+START FREE — YOUR FIRST 3 ANSWERS
+Your first 3 guidance answers are free, with one child and no account. After that, new guidance needs Premium, which also adds unlimited children. Premium starts with a 7-day free trial for new subscribers.
 
 SUBSCRIPTION
 • Kidsit AI Premium Yearly — $59.99/year (7-day free trial for new subscribers)
@@ -180,12 +180,13 @@ In ASC → **App Information → Notes** (free-text field shown to the reviewer)
 Reviewer notes:
 
 1. No account creation is required to test. On first launch the app
-   goes Welcome → Onboarding → Paywall. The paywall offers a 7-day
-   free trial on BOTH plans (Monthly and Yearly) — whichever the
-   reviewer picks, the IAP sheet shows the introductory offer
-   ("Free for 1 week, then $X/month or year"). You can also tap
-   "Maybe later — try with 1 kid free" to enter the free tier and
-   test most functionality without subscribing.
+   goes Welcome → Onboarding → AI consent → Home, with no paywall.
+   The first 3 guidance answers are free. The paywall opens once
+   after the first finished moment (tap "Maybe later" to keep
+   going) and again when the free answers are used up. It offers a
+   7-day free trial on BOTH plans (Monthly and Yearly) — whichever
+   the reviewer picks, the IAP sheet shows the introductory offer
+   ("Free for 1 week, then $X/month or year").
 
 2. The microphone button on the Home tab is press-and-hold. Hold
    it for at least one second to record. Audio is sent to a server
@@ -241,7 +242,7 @@ Reviewer notes:
 | 2 | Home (kid selector + mic, mid-recording ideal) | Whisper what just happened. | Voice in. Clarity out. About 10 seconds. |
 | 3 | Response screen (full structured guidance) | A kinder ***second look.*** | Not a lecture. Not a label. Three things you can actually try. |
 | 4 | History tab (logged moments) | The next answer ***remembers.*** | Every moment makes the next answer fit your child better. |
-| 5 | Paywall (plan picker + trial CTA) | Start free. ***Cancel anytime.*** | Free for one child, no time limit. 7-day Premium trial. |
+| 5 | Paywall (plan picker + trial CTA) | Start free. ***Cancel anytime.*** | Your first 3 answers free. 7-day Premium trial. |
 
 ---
 
