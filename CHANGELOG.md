@@ -8,6 +8,18 @@ Each App Store version maps to `MARKETING_VERSION` in `ios/App/App.xcodeproj/pro
 
 ## [Unreleased]
 
+### Added
+- **"Restore" link on the Welcome screen** for returning subscribers who reinstalled. Replaces the old non-functional "Sign in" text. Tapping calls RevenueCat's `restorePurchases()`; if an active subscription is found, the app skips Onboarding + Paywall and drops straight into the home tab. Standard App Review pattern.
+
+### Internal
+- Welcome screen no longer advertises a sign-in flow that doesn't exist (Guideline 2.3.1 hygiene).
+
+---
+
+## [1.0.14] — 2026-11-11
+
+iOS **1.0.14 (10)**. Android **1.0.14 (18)**. Everything since 1.0.13 (`23d0d1f`). The free-answers limit is enforced by the server only once `AUTH_ENFORCE=true`; until then every answer stays free.
+
 ### Changed
 - **First paywall moved.** Onboarding is now Welcome → Onboarding → AI consent → app. The paywall no longer appears before the app has shown anything; it opens once, after the first finished moment, and again when the free answers run out. It still opens from "Add another child" and Settings.
 - **Free answers instead of an error.** The functions give each install `FREE_MOMENTS` answers (default 3) before a subscription is required, counted on the RevenueCat subscriber (`free_moments_used`). The answer carries `X-Free-Remaining`, the home screen shows what is left, and at zero the paywall opens before the parent records or types. A 403 from the server opens the paywall too, instead of showing "Guidance request failed (403)". Only takes effect with `AUTH_ENFORCE=true`.
@@ -15,15 +27,13 @@ Each App Store version maps to `MARKETING_VERSION` in `ios/App/App.xcodeproj/pro
 - **Paywall "Maybe later"** no longer promises "1 kid free".
 
 ### Added
-- **Anonymous funnel counts.** Eight steps (`onboarding_done` … `purchase`), each posted once per install to `https://kidsit.ai/api/funnel` with platform, language, major.minor version and install source. No RevenueCat id, no device id, no child data. Installs that onboarded on an earlier version report nothing. `VITE_FUNNEL_URL=off` disables it. See `docs/store-privacy-labels.md`; the store labels and the privacy policy need the matching update before release.
+- **Anonymous funnel counts.** Eight steps (`onboarding_done` … `purchase`), each posted once per install to `https://kidsit.ai/api/funnel` with platform, language, major.minor version and install source. No RevenueCat id, no device id, no child data. Installs that onboarded on an earlier version report nothing. `VITE_FUNNEL_URL=off` disables it. See `docs/store-privacy-labels.md` (1.0.14 answers) and the privacy policy on kidsit.ai (updated 11 Nov 2026).
 - **Android install attribution.** A small native plugin reads the Play install referrer once; the `utm_*` values go to RevenueCat as `$mediaSource`, `$campaign`, `$adGroup`, `$creative`. Click ids are dropped.
 - **OpenAI models.** Guidance now uses `gpt-6-luna` (`reasoning_effort: none`) instead of `gpt-4o-mini`, which shuts down on 14 January 2027. Transcription now uses `gpt-transcribe` instead of `whisper-1`, which shuts down on 26 February 2027. Both IDs can be overridden with env vars (`OPENAI_GUIDANCE_MODEL`, `OPENAI_TRANSCRIBE_MODEL`) without changing the function code again.
 
-### Added
-- **"Restore" link on the Welcome screen** for returning subscribers who reinstalled. Replaces the old non-functional "Sign in" text. Tapping calls RevenueCat's `restorePurchases()`; if an active subscription is found, the app skips Onboarding + Paywall and drops straight into the home tab. Standard App Review pattern.
-
-### Internal
-- Welcome screen no longer advertises a sign-in flow that doesn't exist (Guideline 2.3.1 hygiene).
+### Changed (store)
+- AI consent text names the current models (`gpt-transcribe`, `gpt-6-luna`).
+- Store listing copy, reviewer notes and screenshot 05 describe the 3-free-answers model. Paste-ready notes: `docs/release-notes-1.0.14.md`.
 
 ---
 

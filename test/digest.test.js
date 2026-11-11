@@ -353,7 +353,7 @@ test('optional payload parts can be removed, and counts can be emptied', () => {
 });
 
 test('insights app version is the installed version, major.minor only', async () => {
-  assert.equal(readStoreVersion(), '1.0.13');
+  assert.equal(readStoreVersion(), '1.0.14');
   const fromNative = await resolveAppVersion({
     native: true,
     getInfo: async () => ({ version: '1.0.13', build: '9' }),
