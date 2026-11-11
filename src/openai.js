@@ -9,6 +9,31 @@ async function authHeaders() {
   return uid ? { 'X-RC-User': uid } : {};
 }
 
+// A 403 from the backend means "subscription required": the free answers are
+// used up, or the caller has no entitlement. It is not a failure to show as an
+// error; the app opens the paywall instead.
+export class AccessError extends Error {
+  constructor(code) {
+    super('subscription required');
+    this.name = 'AccessError';
+    this.code = code || 'not_entitled';
+  }
+}
+
+async function accessErrorFrom(r) {
+  let code = '';
+  try { code = (await r.json())?.code || ''; } catch { code = ''; }
+  return new AccessError(code);
+}
+
+// Free answers left, from the X-Free-Remaining header. Null when the server
+// did not say (subscriber, or the gate is not enforced).
+export function parseFreeRemaining(value) {
+  if (value === null || value === undefined || String(value).trim() === '') return null;
+  const n = Number.parseInt(value, 10);
+  return Number.isFinite(n) && n >= 0 ? n : null;
+}
+
 export function hasApiKey() {
   return !!API_BASE;
 }
@@ -21,11 +46,12 @@ export async function getGuidance({ story, ctx, kid, history }) {
     headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
     body: JSON.stringify(buildGuidanceRequest({ story, ctx, kid, history, language })),
   });
+  if (r.status === 403) throw await accessErrorFrom(r);
   if (!r.ok) {
     const t = await r.text().catch(() => '');
     throw new Error(`Guidance request failed (${r.status}): ${t.slice(0, 200)}`);
   }
-  return r.json();
+  return { guidance: await r.json(), freeRemaining: parseFreeRemaining(r.headers.get('X-Free-Remaining')) };
 }
 
 export async function transcribeAudio(blob) {
@@ -38,6 +64,7 @@ export async function transcribeAudio(blob) {
   const r = await fetch(`${API_BASE}/api/transcribe`, {
     method: 'POST', headers: await authHeaders(), body: form,
   });
+  if (r.status === 403) throw await accessErrorFrom(r);
   if (!r.ok) {
     const t = await r.text().catch(() => '');
     throw new Error(`Transcription failed (${r.status}): ${t.slice(0, 200)}`);

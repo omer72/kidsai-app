@@ -119,7 +119,7 @@
     "autoRenewDisclosure": "{{price}}, con renovación automática. Cancela al menos 24 horas antes del final del período en los ajustes de tu Apple ID. La parte no usada de una prueba gratuita se pierde al comprar una suscripción.",
     "autoRenewDisclosureAndroid": "{{price}}, con renovación automática. Cancela al menos 24 horas antes del final del período en <store>Google Play › Pagos y suscripciones</store>. La parte no usada de una prueba gratuita se pierde al comprar una suscripción.",
     "autoRenewDisclosureWeb": "{{price}}, con renovación automática. Cancela al menos 24 horas antes del final del período. La parte no usada de una prueba gratuita se pierde al comprar una suscripción.",
-    "maybeLater": "Quizá más tarde — prueba con 1 hijo gratis",
+    "maybeLater": "Quizá más tarde",
     "productsLoading": "Los productos de suscripción aún se están cargando. Inténtalo en un momento.",
     "purchaseFailed": "La compra no se completó.",
     "genericError": "Algo salió mal.",
@@ -133,7 +133,10 @@
     "redeemWaiting": "Dale un momento al código…",
     "redeemInProgress": "Un momento — deja que tu código anterior se registre. Si no pasa nada, cierra esta pantalla y vuelve a abrirla antes de intentarlo otra vez.",
     "promoCodeUnavailable": "Los códigos promocionales solo pueden canjearse en la versión de App Store.",
-    "promoCodeUnavailableWeb": "Los códigos promocionales se canjean en la app de iOS o Android."
+    "promoCodeUnavailableWeb": "Los códigos promocionales se canjean en la app de iOS o Android.",
+    "notice": {
+      "freeLimit": "Ya usaste tus respuestas gratis. Elige un plan para continuar."
+    }
   },
   "flowA": {
     "greeting": {
@@ -581,5 +584,8 @@
     "humanRating": "Valoración {{rating}}",
     "nudgeTitle": "¿Compartir un resumen anónimo?",
     "nudgeBody": "Una sola pregunta. Solo recuentos, salvo que añadas una valoración o una nota. Puedes decir que no y no volveremos a preguntar."
+  },
+  "free": {
+    "left": "Respuestas gratis restantes: {{count}}"
   }
 }

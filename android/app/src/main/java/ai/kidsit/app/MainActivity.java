@@ -19,6 +19,9 @@ import com.getcapacitor.BridgeActivity;
 public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // App-local plugins must be registered before super.onCreate builds the bridge.
+        registerPlugin(InstallReferrerPlugin.class);
+
         // Must come after super.onCreate: touching the window before it
         // inflates the decor with the launch (splash) theme, which drags in a
         // title bar and the splash drawable as the window background.

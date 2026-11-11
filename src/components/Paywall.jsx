@@ -8,7 +8,7 @@ import { billingAvailable, getOfferings, introOfferPeriod, onBillingUpdate, pres
 
 const REDEEM_COOLDOWN_MS = 20000;
 
-export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart, fullscreen, onPurchased }) {
+export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart, fullscreen, onPurchased, notice = null }) {
   const { t } = useTranslation();
   const isTrialStart = mode === 'trialStart';
   const [plan, setPlan] = useState('yearly');
@@ -185,6 +185,15 @@ export function PaywallScreen({ mode = 'upgrade', onStart, onClose, onTrialStart
             <Icon.Sparkle s={26} c="#fff"/>
           </div>
         </div>}
+
+        {notice && (
+          <div data-paywall-notice role="status" style={{
+            fontFamily: tokens.sans, fontSize: fs(13), fontWeight: 600, color: tokens.ink,
+            textAlign: 'center', lineHeight: 1.35,
+            background: tokens.surface || '#fff', borderRadius: 14,
+            padding: '10px 14px', margin: dense ? '0 auto 8px' : '0 auto 12px', maxWidth: 320,
+          }}>{notice}</div>
+        )}
 
         <div data-paywall-headline style={{
           fontFamily: tokens.serif, fontSize: fs(dense ? 22 : snug ? 26 : 28), lineHeight: 1.08, color: tokens.ink,

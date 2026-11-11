@@ -55,6 +55,24 @@ Body (`buildInsightsPayload` in `src/digest.js`):
 
 Not in the body: child id, names, stories, guidance text, age, birth date, gender, profile notes, moment notes, device id, install id, RevenueCat id.
 
+### Anonymous funnel counts — `POST https://kidsit.ai/api/funnel` (unreleased)
+
+Native only. Not optional and not behind a toggle, unlike insights: each of eight steps (`onboarding_done`, `child_added`, `moment_sent`, `answer_received`, `moment_rated`, `paywall_shown`, `paywall_dismissed`, `purchase`) is posted once per install (`src/funnel.js`). An install that finished onboarding on an earlier version posts nothing. A build with `VITE_FUNNEL_URL=off` posts nothing.
+
+Request: `credentials: 'omit'`, `cache: 'no-store'`, header `Content-Type: application/json` only. No `X-RC-User`, no cookies.
+
+Body: `v`, `step`, `platform` (`ios`/`android`), `lang` (`en`/`he`/`es`), `app_version` (major.minor), and on Android `source` (the `utm_source` of the Play install referrer, a short lowercase token). The server adds the UTC day and increments one counter per combination; it stores no row per request.
+
+Not in the body: RevenueCat id, device or install id, child data, story or guidance text, timestamps.
+
+### Install referrer (Android, unreleased)
+
+`InstallReferrerPlugin` reads the Play install referrer string once. `src/installReferrer.js` keeps only `utm_source`, `utm_medium`, `utm_campaign`, `utm_content` (click ids such as `gclid` are dropped) and `src/billing.js` writes them to the RevenueCat subscriber as `$mediaSource`, `$campaign`, `$adGroup`, `$creative`. That makes the install campaign **linked** to the RevenueCat id. iOS has no equivalent.
+
+### Free answers counter (server, unreleased)
+
+`netlify/lib/entitlement.js` keeps `free_moments_used` (a number) on the RevenueCat subscriber and returns what is left in the `X-Free-Remaining` response header.
+
 ### Purchases and affiliate
 
 RevenueCat (`@revenuecat/purchases-capacitor`) holds an anonymous app user id and the subscription. The app does not see the card number.
@@ -156,6 +174,17 @@ Do not declare: location, photos, contacts, SMS, device or other IDs, crash logs
 Do not declare the on-device digest as collected. It does not leave the phone. Local notification permission (`POST_NOTIFICATIONS`, plus `RECEIVE_BOOT_COMPLETED` and `WAKE_LOCK` from the plugin) does not send data. The app manifest removes `SCHEDULE_EXACT_ALARM`.
 
 Play has no separate “linked” toggle. Use the table in “Linked to the user?” above if a reviewer asks. Insights are not linked. Guidance, audio, the RevenueCat id, and purchases are linked.
+
+## To re-answer before the release that ships the funnel and the referrer
+
+These are not reflected in the answers above yet.
+
+- **App Store → Usage Data → Product Interaction:** now also the funnel steps. Still Analytics, not linked, not tracking — but no longer only "optional insights".
+- **App Store → Usage Data → Advertising Data / Other:** nothing on iOS; the referrer is Android only.
+- **Play → App activity → App interactions:** change "Optional: Off by default" to say funnel steps are always collected, without an identifier; insights stay optional.
+- **Play → install campaign:** the `utm_*` values are stored against the RevenueCat app user id (linked). Decide the Play type with the form in front of you (it is campaign attribution, not a device id), and keep "Do not declare … device or other IDs" true: no advertising id is read.
+- **Privacy policy (kidsit.ai/privacy, both languages):** add the funnel counts, the Android install source, and the free-answers counter.
+- **In-app AI consent text** is unchanged: none of this goes to OpenAI.
 
 ## Discrepancies
 

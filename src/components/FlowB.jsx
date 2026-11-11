@@ -6,10 +6,10 @@ import { Avatar, Card, Chip, ConfirmDialog, Label, LiveWaveform, MicButton, Prim
 import { isStoryThin } from '../story';
 import { LOCATIONS, MOODS, INVOLVED, URGENCY } from '../constants';
 import { startRecording, stopRecording, cancelRecording } from '../recorder';
-import { transcribeAudio, hasApiKey } from '../openai';
+import { AccessError, transcribeAudio, hasApiKey } from '../openai';
 import { useHardwareBack } from '../backbutton';
 
-export function FlowB({ kids, activeKid, setActiveKid, onSubmit, ensureConsent }) {
+export function FlowB({ kids, activeKid, setActiveKid, onSubmit, ensureConsent, ensureAccess, onAccessDenied }) {
   const { t } = useTranslation();
   const [recording, setRecording] = useState(false);
   const [transcribing, setTranscribing] = useState(false);
@@ -40,6 +40,9 @@ export function FlowB({ kids, activeKid, setActiveKid, onSubmit, ensureConsent }
 
   const handleMicStart = async () => {
     setRecError('');
+    // Free answers used up: the paywall opens instead of recording a story
+    // the server would turn away.
+    if (ensureAccess && !ensureAccess()) return;
     // Consent gates recording itself — voice is transcribed by OpenAI, so it
     // must never start without the user's OK.
     if (ensureConsent && !(await ensureConsent())) {
@@ -76,6 +79,11 @@ export function FlowB({ kids, activeKid, setActiveKid, onSubmit, ensureConsent }
       setStory((prev) => (prev.trim() ? `${prev.trim()} ${text.trim()}` : text.trim()));
       setHasRecording(true);
     } catch (err) {
+      if (err instanceof AccessError) {
+        // Subscription required: the paywall opens; nothing to show as an error.
+        onAccessDenied?.();
+        return;
+      }
       console.error('transcribe failed:', err);
       setRecError(err.friendly ? err.message : t('flowA.errors.transcriptionFailed'));
     } finally {

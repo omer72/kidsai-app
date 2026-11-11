@@ -6,7 +6,7 @@ import { Avatar, Card, Chip, ConfirmDialog, GhostButton, LiveWaveform, MicButton
 import { isStoryThin } from '../story';
 import { LOCATIONS, MOODS, INVOLVED, URGENCY } from '../constants';
 import { startRecording, stopRecording, cancelRecording } from '../recorder';
-import { transcribeAudio, hasApiKey } from '../openai';
+import { AccessError, transcribeAudio, hasApiKey } from '../openai';
 import { kidAgeYears } from '../storage';
 import { useHardwareBack } from '../backbutton';
 
@@ -32,7 +32,7 @@ function kidYearsKey(kid) {
   return 'flowA.kidYears';
 }
 
-export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensureConsent }) {
+export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensureConsent, ensureAccess, onAccessDenied }) {
   const { t } = useTranslation();
   const tier = useScreenTier();
   const tight = tier !== 'regular';
@@ -74,6 +74,9 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
 
   const handleMicStart = async () => {
     setRecError('');
+    // Free answers used up: the paywall opens instead of recording a story
+    // the server would turn away.
+    if (ensureAccess && !ensureAccess()) return;
     // Consent gates recording itself — voice is transcribed by OpenAI, so it
     // must never start without the user's OK.
     if (ensureConsent && !(await ensureConsent())) {
@@ -117,6 +120,12 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
       if (!txt) setRecError(t('flowA.errors.couldNotHear'));
       setStage('recorded');
     } catch (err) {
+      if (err instanceof AccessError) {
+        // Subscription required: the paywall opens; nothing to show as an error.
+        setStage('idle');
+        onAccessDenied?.();
+        return;
+      }
       console.error('transcribe failed:', err);
       // Raw server/network errors go to the console, not the user.
       setRecError(err.friendly ? err.message : t('flowA.errors.transcriptionFailed'));
@@ -318,7 +327,7 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
           <div style={{ marginTop: tight ? 8 : 16, fontFamily: tokens.sans, fontSize: fs(13), color: tokens.ink3, fontWeight: 500 }}>
             {stage === 'recording' ? t('flowA.releaseWhenDone') : stage === 'transcribing' ? t('common.working') : t('flowA.pressAndHold')}
           </div>
-          <button data-type-link onClick={() => setStage('recorded')} disabled={noKid || stage === 'transcribing'} style={{
+          <button data-type-link onClick={() => { if (!ensureAccess || ensureAccess()) setStage('recorded'); }} disabled={noKid || stage === 'transcribing'} style={{
             marginTop: tight ? 6 : 14, background: 'transparent', border: 'none',
             cursor: noKid || stage === 'transcribing' ? 'not-allowed' : 'pointer',
             fontFamily: tokens.sans, fontSize: fs(13), color: tokens.primary, fontWeight: 600,
