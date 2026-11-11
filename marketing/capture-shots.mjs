@@ -241,9 +241,10 @@ async function capture(browser, lang, size) {
   }
 
   if (wantShot('05')) {
-  await load(page, lang, { 'kidai.settings.v1': settings(false) });
-  await clickText(page, lang === 'he' ? 'נסו את הרגע הראשון' : 'Try your first moment');
-  await clickText(page, lang === 'he' ? 'דלג' : 'Skip');
+  // Onboarding no longer ends on the paywall; open it from Settings → Subscribe.
+  await load(page, lang, { 'kidai.settings.v1': settings(true), 'kidai.kids.v1': [kid(lang)] });
+  await clickTab(page, 3);
+  await clickText(page, lang === 'he' ? 'פתחו את כל מה ש-Kidsit AI' : 'Unlock everything Kidsit AI');
   await page.waitForTimeout(300);
   await framePaywall(page);
   const close = await assertBox(page, '[data-paywall-close]', 'paywall close');
