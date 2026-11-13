@@ -97,6 +97,7 @@ export function FlowA({ kids, activeKid, setActiveKid, onSubmit, onAddKid, ensur
     if (stage !== 'recording') { setStage('idle'); return; }
     if (elapsed < 0.4) {
       cancelRecording();
+      setRecError(t('flowA.errors.tooShort')); // a tap, not a hold: say so instead of doing nothing
       setStage('idle');
       return;
     }

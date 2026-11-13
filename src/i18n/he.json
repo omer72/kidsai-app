@@ -270,6 +270,7 @@
   "kids": {
     "title": "ילדים",
     "addChild": "הוסיפו ילד",
+    "addFirstHint": "קודם הוסיפו את הילד שלכם. אחר כך תוכלו להקליט או לכתוב מה קרה.",
     "addAnotherUnlock": "הוסיפו ילד נוסף — לפתיחה",
     "editKid": "עריכת ילד",
     "namePlaceholder": "שם הילד",

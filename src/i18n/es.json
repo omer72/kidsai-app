@@ -266,6 +266,7 @@
   "kids": {
     "title": "Hijos",
     "addChild": "Añadir un hijo",
+    "addFirstHint": "Primero añade a tu hijo. Después podrás grabar o escribir lo que pasó.",
     "addAnotherUnlock": "Añadir otro hijo — desbloquear",
     "editKid": "Editar hijo",
     "namePlaceholder": "Nombre del hijo",

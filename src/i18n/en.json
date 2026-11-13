@@ -262,6 +262,7 @@
   "kids": {
     "title": "Kids",
     "addChild": "Add a child",
+    "addFirstHint": "Add your child first. Then you can record or type what happened.",
     "addAnotherUnlock": "Add another child — unlock",
     "editKid": "Edit kid",
     "namePlaceholder": "Child's name",

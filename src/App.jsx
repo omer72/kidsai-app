@@ -11,7 +11,7 @@ import { InAppReview } from '@capacitor-community/in-app-review';
 import { demoResponse } from './constants';
 import { Icon } from './components/Icons';
 import { IOSDevice } from './components/IOSFrame';
-import { TabBar, ConfirmDialog } from './components/primitives';
+import { TabBar, ConfirmDialog, PrimaryButton } from './components/primitives';
 import { WelcomeScreen } from './components/Welcome';
 import { OnboardingScreen } from './components/Onboarding';
 import { PaywallScreen } from './components/Paywall';
@@ -282,6 +282,14 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
               padding: '8px 20px 0', textAlign: 'center',
               fontFamily: tokens.sans, fontSize: fs(12), color: tokens.ink3,
             }}>{t('free.left', { count: freeRemaining })}</div>
+          )}
+          {kids.length === 0 && (
+            // The compose controls are disabled without a kid: say why, and
+            // give the way out (App Review 2.1(a): "no further action").
+            <div data-add-kid-first style={{ padding: '12px 20px 0' }}>
+              <div style={{ fontFamily: tokens.sans, fontSize: fs(14), color: tokens.ink2, marginBottom: 10 }}>{t('kids.addFirstHint')}</div>
+              <PrimaryButton full onClick={() => setTab('kids')}>{t('kids.addChild')}</PrimaryButton>
+            </div>
           )}
           <FlowComponent
           key={settings.flow}

@@ -16,6 +16,16 @@ Each App Store version maps to `MARKETING_VERSION` in `ios/App/App.xcodeproj/pro
 
 ---
 
+## [1.0.15] — 2026-11-13
+
+iOS **1.0.15 (11)**. Android **1.0.15 (19)**. Answers the App Review 2.1(a) rejection of 1.0.14 (10): "Microphone and typing on Home do nothing" on iPad.
+
+### Fixed
+- **Home with no child no longer looks dead.** The mic and "or type it out" are disabled until a child exists, and nothing said why. Home now shows a hint and an "Add a child" button that opens the Kids tab (`kids.addFirstHint`, en/he/es).
+- **A tap on the hold-to-record mic** (guided flow) now shows the "hold the mic while you speak" message instead of cancelling silently.
+
+---
+
 ## [1.0.14] — 2026-11-11
 
 iOS **1.0.14 (10)**. Android **1.0.14 (18)**. Everything since 1.0.13 (`23d0d1f`). The free-answers limit is enforced by the server only once `AUTH_ENFORCE=true`; until then every answer stays free.
