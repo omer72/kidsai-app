@@ -8,7 +8,7 @@ import { KidIntake } from './KidIntake';
 
 const COLORS = ['#2E5BFF', '#7C5BE8', '#4AAE8C', '#E5A64B', '#D94A5C', '#5B48D4'];
 
-const EMPTY_FORM = { name: '', birthdate: '', gender: '', newSibling: false, notes: '' };
+export const EMPTY_FORM = { name: '', birthdate: '', gender: '', newSibling: false, notes: '' };
 
 // The intake asks for age too — keep `kid.age` in sync so kids added without a
 // birthdate still get an age into the guidance prompt. Null when unusable.
@@ -18,6 +18,24 @@ function intakeAge(intake) {
   if (id === 'under1') return 0;
   const n = Number(id === 'older' ? intake.other?.age : id);
   return Number.isFinite(n) && n > 0 && n < 100 ? Math.floor(n) : null;
+}
+
+const profileFields = (f) => ({
+  birthdate: f.birthdate || '',
+  gender: f.gender || '',
+  newSibling: !!f.newSibling,
+  notes: f.notes.trim(),
+});
+
+// `form` needs only a name; the rest of the profile can be filled in later.
+export function newKid(form, count) {
+  const name = form.name.trim();
+  return {
+    id: name.toLowerCase().replace(/[^a-z0-9]/g, '') + '-' + Date.now().toString(36),
+    name, color: COLORS[count % COLORS.length], initials: name[0].toUpperCase(),
+    age: kidAgeYears({ birthdate: form.birthdate }),
+    ...profileFields(form),
+  };
 }
 
 function formFromKid(k) {
@@ -131,26 +149,12 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
     setAdding(true);
   };
 
-  const profileFields = (f) => ({
-    birthdate: f.birthdate || '',
-    gender: f.gender || '',
-    newSibling: !!f.newSibling,
-    notes: f.notes.trim(),
-  });
-
   const addKid = () => {
-    const trimmed = form.name.trim();
-    if (!trimmed) return;
-    const id = trimmed.toLowerCase().replace(/[^a-z0-9]/g, '') + '-' + Date.now().toString(36);
-    const color = COLORS[kids.length % COLORS.length];
-    const kid = {
-      id, name: trimmed, color, initials: trimmed[0].toUpperCase(),
-      age: kidAgeYears({ birthdate: form.birthdate }),
-      ...profileFields(form),
-    };
+    if (!form.name.trim()) return;
+    const kid = newKid(form, kids.length);
     setKids([...kids, kid]);
     setForm(EMPTY_FORM); setAdding(false);
-    setIntakeId(id);
+    setIntakeId(kid.id);
   };
 
   const startEdit = (k) => {

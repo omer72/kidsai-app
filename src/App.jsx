@@ -21,7 +21,7 @@ import { ThinkingScreen } from './components/Thinking';
 import { ResponseScreen } from './components/Response';
 import { FollowupScreen } from './components/Followup';
 import { HistoryScreen } from './components/History';
-import { KidsScreen } from './components/Kids';
+import { KidsScreen, newKid, EMPTY_FORM } from './components/Kids';
 import { SettingsScreen } from './components/Settings';
 import { SubscriptionScreen } from './components/TrialScreens';
 import { AIConsentModal } from './components/AIConsent';
@@ -61,7 +61,8 @@ function useViewport() {
 
 function MainApp({ settings, setSettings, kids, setKids, history, setHistory, setEntryFeedback, onClearData, fullscreen, billing, onBillingChange, digestMeta, setDigestMeta }) {
   const { t, i18n } = useTranslation();
-  const [tab, setTab] = useState(() => (kids.length === 0 ? 'kids' : 'home'));
+  const [tab, setTab] = useState('home');
+  const [firstKid, setFirstKid] = useState({ name: '', age: '' });
   const [activeKidId, setActiveKidId] = useState(kids[0]?.id || null);
   const [flowState, setFlowState] = useState({ stage: 'compose', story: '', ctx: null, response: null, error: null });
   const [paywallOpen, setPaywallOpen] = useState(false);
@@ -220,6 +221,23 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
   };
 
 
+  // First kid from the home screen: name and age (what the guidance needs) are enough to start. The intake
+  // questionnaire stays optional, under Kids > edit.
+  const firstKidInput = {
+    padding: 12, borderRadius: 10, border: `1px solid ${tokens.line}`,
+    fontFamily: tokens.sans, fontSize: fs(15), outline: 'none',
+    background: tokens.surface, color: tokens.ink, width: '100%', boxSizing: 'border-box',
+  };
+  const firstKidReady = !!firstKid.name.trim() && firstKid.age !== '';
+  const addFirstKid = () => {
+    if (!firstKidReady) return;
+    const kid = { ...newKid({ ...EMPTY_FORM, name: firstKid.name }, 0), age: Number(firstKid.age) };
+    setKids([kid]);
+    markFunnel('child_added');
+    setActiveKidId(kid.id);
+    setFirstKid({ name: '', age: '' });
+  };
+
   const goFollowup = () => setFlowState((s) => ({ ...s, stage: 'followup' }));
 
   let content;
@@ -288,7 +306,24 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
             // give the way out (App Review 2.1(a): "no further action").
             <div data-add-kid-first style={{ padding: '12px 20px 0' }}>
               <div style={{ fontFamily: tokens.sans, fontSize: fs(14), color: tokens.ink2, marginBottom: 10 }}>{t('kids.addFirstHint')}</div>
-              <PrimaryButton full onClick={() => setTab('kids')}>{t('kids.addChild')}</PrimaryButton>
+              <form onSubmit={(e) => { e.preventDefault(); addFirstKid(); }} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <input
+                  value={firstKid.name} onChange={(e) => setFirstKid({ ...firstKid, name: e.target.value })}
+                  placeholder={t('kids.namePlaceholder')}
+                  style={firstKidInput}
+                />
+                <select
+                  value={firstKid.age} onChange={(e) => setFirstKid({ ...firstKid, age: e.target.value })}
+                  style={{ ...firstKidInput, height: 45, color: firstKid.age === '' ? tokens.ink3 : tokens.ink }}
+                >
+                  <option value="" disabled>{t('intake.q.age.otherPlaceholder')}</option>
+                  {/* 0 = under 1, 13 = 13 or older; same labels as the intake. */}
+                  {['under1', ...Array.from({ length: 12 }, (_, n) => String(n + 1)), 'older'].map((id, n) => (
+                    <option key={id} value={n}>{t(`intake.q.age.${id}`)}</option>
+                  ))}
+                </select>
+                <PrimaryButton full disabled={!firstKidReady}>{t('kids.addChild')}</PrimaryButton>
+              </form>
             </div>
           )}
           <FlowComponent
