@@ -18,7 +18,11 @@ Each App Store version maps to `MARKETING_VERSION` in `ios/App/App.xcodeproj/pro
 
 ## [1.0.15] — 2026-11-13
 
-iOS **1.0.15 (11)**. Android **1.0.15 (19)**. Answers the App Review 2.1(a) rejection of 1.0.14 (10): "Microphone and typing on Home do nothing" on iPad.
+iOS **1.0.15 (12)**. Android **1.0.15 (20)**. Answers the App Review 2.1(a) rejection of 1.0.14 (10): "Microphone and typing on Home do nothing" on iPad.
+
+### Changed
+- **First child is added on Home.** New installs land on Home, not the empty Kids tab. A name and an age (same choices as the questionnaire: under 1, 1-12, 13 or older) are enough to start; the questionnaire is no longer opened automatically. This replaces the "Add a child" button that opened the Kids tab.
+- **Questionnaire suggested after the first answer.** Home shows a dismissible card ("Get answers that fit Noa") once a child has a logged moment and no questionnaire answers. It opens that child's questionnaire and returns to Home. Dismissal is stored in `settings.intakePromptDismissed`.
 
 ### Fixed
 - **Home with no child no longer looks dead.** The mic and "or type it out" are disabled until a child exists, and nothing said why. Home now shows a hint and an "Add a child" button that opens the Kids tab (`kids.addFirstHint`, en/he/es).
