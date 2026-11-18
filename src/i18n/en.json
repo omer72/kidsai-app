@@ -386,6 +386,11 @@
     "thanks": "Thank you — this helps us tailor the guidance to your family.",
     "start": "Get to know {{name}}",
     "retake": "Update what we know",
+    "prompt": {
+      "title": "Get answers that fit {{name}}",
+      "body": "{{count}} quick questions, about a minute. The more we know, the more focused and accurate the guidance.",
+      "cta": "Answer the questions"
+    },
     "q": {
       "age": {
         "1": "1",

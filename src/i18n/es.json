@@ -390,6 +390,11 @@
     "thanks": "Gracias — esto nos ayuda a adaptar la orientación a tu familia.",
     "start": "Conocer a {{name}}",
     "retake": "Actualizar lo que sabemos",
+    "prompt": {
+      "title": "Recibe respuestas a la medida de {{name}}",
+      "body": "{{count}} preguntas rápidas, cerca de un minuto. Cuanto más sepamos, más enfocada y precisa será la guía.",
+      "cta": "Responder las preguntas"
+    },
     "q": {
       "age": {
         "1": "1",

@@ -131,13 +131,13 @@ function KidFields({ form, setForm, autoFocus }) {
   );
 }
 
-export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, entitled = true, lockedKidCount = 0, onRequestUpgrade, onIntakeClose }) {
+export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, entitled = true, lockedKidCount = 0, onRequestUpgrade, onIntakeClose, initialIntakeId = null }) {
   const { t } = useTranslation();
   const [adding, setAdding] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState(EMPTY_FORM);
-  const [intakeId, setIntakeId] = useState(null);
+  const [intakeId, setIntakeId] = useState(initialIntakeId);
 
   const canAddFree = entitled || kids.length === 0;
 

@@ -8,7 +8,7 @@ import { aggregateDigest, digestConfig, noteDigestOpened } from './digest';
 import { cancelDigestNotification } from './notifications';
 import { initBilling, offUpdate, refreshEntitlement, billingAvailable } from './billing';
 import { InAppReview } from '@capacitor-community/in-app-review';
-import { demoResponse } from './constants';
+import { demoResponse, INTAKE_QUESTIONS } from './constants';
 import { Icon } from './components/Icons';
 import { IOSDevice } from './components/IOSFrame';
 import { TabBar, ConfirmDialog, PrimaryButton } from './components/primitives';
@@ -69,6 +69,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
   const [paywallNotice, setPaywallNotice] = useState(null);
   const [subscriptionOpen, setSubscriptionOpen] = useState(false);
   const [firstKidPending, setFirstKidPending] = useState(false); // intake open for a just-added first kid
+  const [intakeKidId, setIntakeKidId] = useState(null); // opens that kid's intake when the Kids tab mounts
   const [consentRequest, setConsentRequest] = useState(null); // resolver for an in-flight consent ask
   const [digestOpen, setDigestOpen] = useState(false);
 
@@ -301,6 +302,30 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
               fontFamily: tokens.sans, fontSize: fs(12), color: tokens.ink3,
             }}>{t('free.left', { count: freeRemaining })}</div>
           )}
+          {activeKid && !activeKid.intake && !settings.intakePromptDismissed && history.some((h) => h.kidId === activeKid.id) && (
+            // After the first answer: the intake makes the next ones more focused.
+            <div data-intake-prompt style={{
+              margin: '12px 20px 0', padding: 16, borderRadius: 18,
+              background: tokens.primarySoft, border: `1px solid ${tokens.primary}40`,
+            }}>
+              <div style={{ fontFamily: tokens.sans, fontSize: fs(15), fontWeight: 600, color: tokens.ink }}>
+                {t('intake.prompt.title', { name: activeKid.name })}
+              </div>
+              <div style={{ fontFamily: tokens.sans, fontSize: fs(13), color: tokens.ink2, lineHeight: 1.45, margin: '4px 0 12px' }}>
+                {t('intake.prompt.body', { count: INTAKE_QUESTIONS.length })}
+              </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <PrimaryButton onClick={() => { setIntakeKidId(activeKid.id); setFirstKidPending(true); setTab('kids'); }} style={{ flex: 1 }}>
+                  {t('intake.prompt.cta')}
+                </PrimaryButton>
+                <button onClick={() => setSettings((prev) => ({ ...prev, intakePromptDismissed: true }))} style={{
+                  padding: '14px 16px', borderRadius: 14, background: 'transparent',
+                  border: `1px solid ${tokens.line}`, cursor: 'pointer',
+                  fontFamily: tokens.sans, fontSize: fs(14), fontWeight: 500, color: tokens.ink2,
+                }}>{t('insights.notNow')}</button>
+              </div>
+            </div>
+          )}
           {kids.length === 0 && (
             // The compose controls are disabled without a kid: say why, and
             // give the way out (App Review 2.1(a): "no further action").
@@ -362,7 +387,8 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
         history={history}
         entitled={entitled}
         lockedKidCount={lockedKidCount}
-        onIntakeClose={() => { if (firstKidPending) { setFirstKidPending(false); setTab('home'); } }}
+        initialIntakeId={intakeKidId}
+        onIntakeClose={() => { setIntakeKidId(null); if (firstKidPending) { setFirstKidPending(false); setTab('home'); } }}
         onRequestUpgrade={() => openPaywall('add_child')}
       />
     );
@@ -418,7 +444,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
     }}>
       {topBar}
       <div data-kb-scroll style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>{content}</div>
-      <TabBar current={tab} onChange={(next) => { setDigestOpen(false); setTab(next); }}/>
+      <TabBar current={tab} onChange={(next) => { setDigestOpen(false); setIntakeKidId(null); setTab(next); }}/>
       {paywallOpen && (
         <div style={{ position: 'absolute', inset: 0, zIndex: 100, background: tokens.bg }}>
           <PaywallScreen
