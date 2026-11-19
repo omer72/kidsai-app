@@ -2,11 +2,14 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   FUNNEL_STEPS,
+  PAYWALL_ENTRIES,
   flushFunnel,
+  funnelAppVersion,
   funnelBody,
   initFunnel,
   markFunnel,
   normalizeFunnelSource,
+  normalizePaywallEntry,
   pendingFunnelSteps,
   planFunnelStep,
   resolveFunnelUrl,
@@ -41,10 +44,76 @@ test('a step is planned once', () => {
   assert.equal(planFunnelStep({ steps: {} }, 'not_a_step').changed, false);
 });
 
-test('the body carries no identifier', () => {
+test('the body carries no identifier and keeps the full store version', () => {
   const body = funnelBody({ step: 'answer_received', platform: 'ios', lang: 'he-IL', appVersion: '1.0.14', source: 'Kidsit.ai' });
-  assert.deepEqual(body, { v: 1, step: 'answer_received', platform: 'ios', lang: 'he', app_version: '1.0', source: 'kidsit.ai' });
+  assert.deepEqual(body, { v: 1, step: 'answer_received', platform: 'ios', lang: 'he', app_version: '1.0.14', source: 'kidsit.ai' });
+  assert.equal(body.entry, undefined);
   assert.deepEqual(funnelBody({ step: 'purchase', platform: 'web', lang: 'fr' }), { v: 1, step: 'purchase' });
+});
+
+test('app_version keeps a patch and still accepts major.minor', () => {
+  assert.equal(funnelAppVersion('1.0.14'), '1.0.14');
+  assert.equal(funnelAppVersion(' 1.0 '), '1.0');
+  assert.equal(funnelAppVersion('1.0.14.2'), '');
+  assert.equal(funnelAppVersion('v1.0.14'), '');
+  assert.equal(funnelBody({ step: 'moment_sent', appVersion: '1.0' }).app_version, '1.0');
+  assert.equal(funnelBody({ step: 'moment_sent', appVersion: 'nope' }).app_version, undefined);
+});
+
+test('paywall_shown names the screen and does not replace the install source', () => {
+  assert.deepEqual([...PAYWALL_ENTRIES], ['first_moment', 'free_limit', 'add_child', 'settings']);
+  assert.equal(normalizePaywallEntry(' First_Moment '), 'first_moment');
+  assert.equal(normalizePaywallEntry('onboarding'), null);
+  const shown = funnelBody({
+    step: 'paywall_shown', platform: 'android', lang: 'he', appVersion: '1.0.14',
+    source: 'kidsit.ai', entry: 'first_moment',
+  });
+  assert.equal(shown.source, 'kidsit.ai');
+  assert.equal(shown.entry, 'first_moment');
+  assert.equal(shown.app_version, '1.0.14');
+  const other = funnelBody({ step: 'purchase', source: 'kidsit.ai', entry: 'settings' });
+  assert.equal(other.entry, undefined);
+  assert.equal(other.source, 'kidsit.ai');
+});
+
+test('a flush keeps the install source and sends the screen only on paywall_shown', async () => {
+  const storage = memoryStorage({
+    'kidai.installReferrer.v1': JSON.stringify({ source: 'kidsit.ai' }),
+  });
+  initFunnel({ storage });
+  const { fetchImpl, calls } = recordingFetch();
+  await markFunnel('onboarding_done', { ...NATIVE, storage, fetchImpl });
+  await markFunnel('paywall_shown', { ...NATIVE, storage, fetchImpl, entry: 'free_limit' });
+  await markFunnel('paywall_shown', { ...NATIVE, storage, fetchImpl, entry: 'settings' });
+  const byStep = Object.fromEntries(calls.map((c) => [c.body.step, c.body]));
+  assert.equal(byStep.onboarding_done.app_version, '1.0.14');
+  assert.equal(byStep.onboarding_done.source, 'kidsit.ai');
+  assert.equal(byStep.onboarding_done.entry, undefined);
+  assert.equal(byStep.paywall_shown.app_version, '1.0.14');
+  assert.equal(byStep.paywall_shown.source, 'kidsit.ai');
+  assert.equal(byStep.paywall_shown.entry, 'free_limit');
+  assert.equal(calls.filter((c) => c.body.step === 'paywall_shown').length, 1);
+});
+
+test('a paywall screen is kept across an offline retry', async () => {
+  const storage = memoryStorage();
+  initFunnel({ storage });
+  const offline = async () => { throw new Error('offline'); };
+  await markFunnel('paywall_shown', { ...NATIVE, storage, fetchImpl: offline, entry: 'add_child' });
+  const { fetchImpl, calls } = recordingFetch();
+  await flushFunnel({ ...NATIVE, storage, fetchImpl });
+  assert.equal(calls[0].body.entry, 'add_child');
+  assert.equal(calls[0].body.app_version, '1.0.14');
+});
+
+test('an unknown paywall screen is omitted', async () => {
+  const storage = memoryStorage();
+  initFunnel({ storage });
+  const { fetchImpl, calls } = recordingFetch();
+  await markFunnel('paywall_shown', { ...NATIVE, storage, fetchImpl, entry: 'onboarding' });
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].body.entry, undefined);
+  assert.equal(calls[0].body.app_version, '1.0.14');
 });
 
 test('source is a short lowercase token or nothing', () => {

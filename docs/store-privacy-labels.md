@@ -61,7 +61,7 @@ Native only. Not optional and not behind a toggle, unlike insights: each of eigh
 
 Request: `credentials: 'omit'`, `cache: 'no-store'`, header `Content-Type: application/json` only. No `X-RC-User`, no cookies.
 
-Body: `v`, `step`, `platform` (`ios`/`android`), `lang` (`en`/`he`/`es`), `app_version` (major.minor), and on Android `source` (the `utm_source` of the Play install referrer, a short lowercase token). The server adds the UTC day and increments one counter per combination; it stores no row per request.
+Body: `v`, `step`, `platform` (`ios`/`android`), `lang` (`en`/`he`/`es`), `app_version` (the full store version, such as `1.0.14`, from `App.getInfo()` or the version baked in at build time), and on Android `source` (the `utm_source` of the Play install referrer, a short lowercase token). `paywall_shown` also sends `entry`, the screen that opened the paywall: `first_moment`, `free_limit`, `add_child`, or `settings`. The server adds the UTC day and increments one counter per combination; it stores no row per request.
 
 Not in the body: RevenueCat id, device or install id, child data, story or guidance text, timestamps.
 
@@ -94,7 +94,7 @@ Apple’s “linked” question means the data is associated with an identity (a
 | RevenueCat app user id | **Yes.** It is the identifier. | **No.** |
 | Purchase status | **Yes.** It is stored on that RevenueCat id. | **No.** |
 | Anonymous insights (counts, approaches, rating, note, language, platform, app version `"1.0"`, ISO week) | **No.** No identifier is sent. `credentials` is `omit`. | **No.** Purpose is to improve Kidsit. Not ads. |
-| Funnel steps (step, platform, language, major.minor version, Android `utm_source`) | **No.** No identifier is sent, and the server keeps only daily counters. | **No.** First-party product analytics. |
+| Funnel steps (step, platform, language, full store version, Android `utm_source`, and on `paywall_shown` the screen that opened it) | **No.** No identifier is sent, and the server keeps only daily counters. | **No.** First-party product analytics. |
 | Android install campaign (`utm_*` on the RevenueCat subscriber) | **Yes.** It is stored on the RevenueCat id. | **No.** It measures Kidsit’s own channels and is not combined with other companies’ data. |
 | Free-answers counter (`free_moments_used`) | **Yes.** It is stored on the RevenueCat id. | **No.** |
 
