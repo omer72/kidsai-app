@@ -7,9 +7,10 @@
 // www.kidsit.ai 308-redirects those files. Apple will not follow a redirect
 // for the AASA, so www is not an associated domain.
 //
-// There is no in-app blog. A blog post and /app both open Home, on the
-// compose screen (start a moment), unless a moment is already in progress.
-// They never skip onboarding.
+// There is no in-app blog. A cold launch from a blog post or /app opens Home
+// on the compose screen (start a moment). A link that arrives while the app
+// is already open only records attribution: it does not change tabs or clear
+// what the parent is typing. Links never skip onboarding.
 //
 // Attribution uses the existing funnel `source` field (a utm_source token).
 // l, p, ct, and the other utm_* values are stored on device. The funnel API
@@ -52,9 +53,27 @@ function utmFromSearch(params) {
   };
 }
 
+function decodedPath(pathname) {
+  try {
+    return decodeURIComponent(pathname).replace(/\/+$/, '') || '/';
+  } catch {
+    // A truncated % sequence throws URIError. Ignore the link.
+    return null;
+  }
+}
+
 // https://kidsit.ai/he/blog/<slug>, /en/blog/<slug>, or /app, plus query.
-// Returns null for anything the association files do not claim.
+// Returns null for anything the association files do not claim, or for a
+// URL that cannot be decoded. Never throws.
 export function parseAppLink(raw) {
+  try {
+    return parseAppLinkUnsafe(raw);
+  } catch {
+    return null;
+  }
+}
+
+function parseAppLinkUnsafe(raw) {
   let url;
   try { url = new URL(String(raw ?? '')); } catch { return null; }
   if (url.protocol !== 'https:') return null;
@@ -62,7 +81,8 @@ export function parseAppLink(raw) {
   if (url.port && url.port !== '443') return null;
   if (url.hostname.toLowerCase() !== APP_LINK_HOST) return null;
 
-  const path = decodeURIComponent(url.pathname).replace(/\/+$/, '') || '/';
+  const path = decodedPath(url.pathname);
+  if (!path) return null;
   let kind = null;
   let lang = null;
   let page = null;
@@ -93,15 +113,19 @@ export function parseAppLink(raw) {
   };
 }
 
-// Both claimed paths land on Home. The caller decides whether a moment that
-// is already on screen should stay.
+// Both claimed paths land on Home when a cold launch applies them.
 export function routeForAppLink(link) {
   if (!link) return null;
   return { tab: 'home', stage: 'compose' };
 }
 
-// A busy compose/answer stays put. An idle home screen starts a fresh moment.
-export function navigationForAppLink(flow) {
+// null means stay on the current screen and keep every field the parent has typed.
+// `live` is an appUrlOpen while the app is already open: attribution only.
+// `editingKid` is the Kids add / edit / intake form, whose text lives in that
+// screen and is discarded if the tab changes.
+// A cold launch still opens Home, and leaves an in-progress moment on screen.
+export function navigationForAppLink(flow, { live = false, editingKid = false } = {}) {
+  if (live || editingKid) return null;
   const stage = flow?.stage || 'compose';
   const story = typeof flow?.story === 'string' ? flow.story.trim() : '';
   const busy = stage === 'thinking'
@@ -161,15 +185,16 @@ export function captureAppLink(raw, storage = globalThis.localStorage) {
 // 1. An explicit setFunnelContext({ source }) wins. Nothing sets that today.
 // 2. A Play install-referrer source wins (first touch at install).
 // 3. Exception: the referrer source is the generic site token `kidsit.ai`
-//    AND the opened link carries a different utm_source. The link names the
-//    channel the site default does not, so it replaces the default.
-// 4. With no install source: the link's utm_source, else its ct (the App
-//    Store campaign token, only when the URL has no utm_source), else
-//    `kidsit.ai` for any recognized kidsit.ai link.
+//    and the link is more informative. A different utm_source replaces it.
+//    So does ct, when the link's own utm_source is `kidsit.ai` (the site
+//    default is less informative than the campaign token). ct alone does
+//    not replace an install-referrer source.
+// 4. With no install source: the link's utm_source, unless that value is
+//    `kidsit.ai` and the link also has ct, in which case ct wins. Else ct,
+//    else `kidsit.ai` for any recognized kidsit.ai link.
 //
 // l, p, utm_medium, utm_campaign, and utm_content never become `source`.
-// ct does not replace an install-referrer source. A non-generic install
-// source is not replaced by a later link.
+// A non-generic install source is not replaced by a later link.
 export function resolveFunnelSource({ explicit, install, link } = {}) {
   const explicitSrc = sourceToken(explicit);
   if (explicitSrc) return explicitSrc;
@@ -177,11 +202,15 @@ export function resolveFunnelSource({ explicit, install, link } = {}) {
   const installSrc = sourceToken(install);
   const linkUtm = channel(link);
   const linkCt = sourceToken(link?.ct);
+  // kidsit.ai as utm_source only says the tap came from our site. ct names
+  // the placement, so it is the better source when both are on the link.
+  const siteUtmWithCt = linkUtm === SITE_FUNNEL_SOURCE && !!linkCt;
+  const linkSrc = siteUtmWithCt ? linkCt : (linkUtm || linkCt);
+  const betterThanSite = (!!linkUtm && linkUtm !== SITE_FUNNEL_SOURCE) || siteUtmWithCt;
 
-  if (installSrc === SITE_FUNNEL_SOURCE && linkUtm && linkUtm !== SITE_FUNNEL_SOURCE) return linkUtm;
+  if (installSrc === SITE_FUNNEL_SOURCE && betterThanSite) return linkSrc;
   if (installSrc) return installSrc;
-  if (linkUtm) return linkUtm;
-  if (linkCt) return linkCt;
+  if (linkSrc) return linkSrc;
   if (link) return SITE_FUNNEL_SOURCE;
   return null;
 }

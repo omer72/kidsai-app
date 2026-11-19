@@ -10,10 +10,11 @@
 // opened the paywall. That screen is `entry`, and only on paywall_shown.
 // A kidsit.ai app link can also fill `source` (resolveFunnelSource in
 // appLinks.js). The Play install referrer stays first, unless it is the
-// generic site token and the link names a different utm_source. With no
-// install source, the link's utm_source is used, then its ct, then
-// `kidsit.ai`. l, p, and utm_medium / utm_campaign / utm_content stay on
-// device. They are not new body fields.
+// generic site token and the link is more informative (a different utm_source,
+// or ct when the link's utm_source is kidsit.ai). With no install source, the
+// link's utm_source is used, unless that value is kidsit.ai and the link also
+// has ct, in which case ct wins. l, p, and utm_medium / utm_campaign /
+// utm_content stay on device. They are not new body fields.
 // `app_version` is the full store version (1.0.14), from App.getInfo() or the
 // version baked in at build time. Insights stay major.minor.
 //

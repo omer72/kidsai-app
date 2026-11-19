@@ -73,21 +73,25 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
   const [intakeKidId, setIntakeKidId] = useState(null); // opens that kid's intake when the Kids tab mounts
   const [consentRequest, setConsentRequest] = useState(null); // resolver for an in-flight consent ask
   const [digestOpen, setDigestOpen] = useState(false);
+  const [kidsEditing, setKidsEditing] = useState(false);
   const appliedLink = useRef(0);
+  const onKidsEditing = useCallback((editing) => setKidsEditing(!!editing), []);
 
-  // A blog post or /app selects Home. An in-progress moment stays.
-  // Onboarding is a different phase. The paywall overlay and add-child state
-  // (intake id, first-kid fields) are left alone.
+  // Cold launch only. A link while the app is open does not bump appLinkSeq,
+  // and an open kid editor blocks even a late launch URL: its text is local
+  // to the Kids screen and a tab change would discard it. Paywall and a chat
+  // draft are left in place below.
   useEffect(() => {
     if (!appLinkSeq || appliedLink.current === appLinkSeq) return;
     appliedLink.current = appLinkSeq;
-    const next = navigationForAppLink(flowState);
+    const next = navigationForAppLink(flowState, { editingKid: kidsEditing });
+    if (!next) return;
     setTab(next.tab);
     if (next.flow) {
       setDigestOpen(false);
       setFlowState(next.flow);
     }
-  }, [appLinkSeq, flowState]);
+  }, [appLinkSeq, flowState, kidsEditing]);
 
   const entitled = !!billing?.entitled;
   const inTrial = !!billing?.inTrial;
@@ -404,6 +408,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
         entitled={entitled}
         lockedKidCount={lockedKidCount}
         initialIntakeId={intakeKidId}
+        onEditingChange={onKidsEditing}
         onIntakeClose={() => { setIntakeKidId(null); if (firstKidPending) { setFirstKidPending(false); setTab('home'); } }}
         onRequestUpgrade={() => openPaywall('add_child')}
       />
@@ -561,29 +566,39 @@ export function App() {
   }, [i18nApp.language]);
 
   // Universal Links / App Links. Attribution is recorded even during
-  // onboarding; the home route is applied only once MainApp is mounted.
+  // onboarding. Only the launch URL moves the UI; a later appUrlOpen keeps
+  // the parent on the screen they are typing on.
   useEffect(() => {
     if (!isNativeApp()) return undefined;
     let remove = () => {};
     let cancelled = false;
-    let lastUrl = '';
-    let lastAt = 0;
-    const open = (url) => {
-      if (!url) return;
-      const now = Date.now();
-      // getLaunchUrl and appUrlOpen both report the URL that opened the app.
-      if (url === lastUrl && now - lastAt < 1500) return;
-      lastUrl = url;
-      lastAt = now;
-      if (captureAppLink(url)) setAppLinkSeq((n) => n + 1);
+    let seenUrl = '';
+    let launchRequested = false;
+    const open = (url, { navigate }) => {
+      try {
+        if (!url) return;
+        if (url !== seenUrl) {
+          seenUrl = url;
+          if (!captureAppLink(url)) {
+            seenUrl = '';
+            return;
+          }
+        }
+        if (navigate && !launchRequested) {
+          launchRequested = true;
+          setAppLinkSeq((n) => n + 1);
+        }
+      } catch {
+        // A bad URL must not take down the listener. The next link still runs.
+      }
     };
     import('@capacitor/app').then(({ App: CapApp }) => {
       if (cancelled) return;
-      CapApp.addListener('appUrlOpen', (event) => open(event?.url)).then((handle) => {
+      CapApp.addListener('appUrlOpen', (event) => open(event?.url, { navigate: false })).then((handle) => {
         if (cancelled) handle.remove();
         else remove = () => handle.remove();
       }).catch(() => {});
-      CapApp.getLaunchUrl().then((launch) => { if (!cancelled) open(launch?.url); }).catch(() => {});
+      CapApp.getLaunchUrl().then((launch) => { if (!cancelled) open(launch?.url, { navigate: true }); }).catch(() => {});
     }).catch(() => {});
     return () => {
       cancelled = true;

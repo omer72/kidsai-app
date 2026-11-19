@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { tokens, fs } from '../theme';
 import { Icon } from './Icons';
@@ -131,7 +131,7 @@ function KidFields({ form, setForm, autoFocus }) {
   );
 }
 
-export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, entitled = true, lockedKidCount = 0, onRequestUpgrade, onIntakeClose, initialIntakeId = null }) {
+export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, entitled = true, lockedKidCount = 0, onRequestUpgrade, onIntakeClose, onEditingChange, initialIntakeId = null }) {
   const { t } = useTranslation();
   const [adding, setAdding] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
@@ -140,6 +140,13 @@ export function KidsScreen({ kids, setKids, activeKid, setActiveKid, history, en
   const [intakeId, setIntakeId] = useState(initialIntakeId);
 
   const canAddFree = entitled || kids.length === 0;
+
+  // Adding, editing, or the intake questionnaire. The text lives in this
+  // screen, so a link must not unmount it.
+  useEffect(() => {
+    onEditingChange?.(adding || editingId != null || intakeId != null);
+    return () => onEditingChange?.(false);
+  }, [adding, editingId, intakeId, onEditingChange]);
 
   const startAdd = () => {
     if (!canAddFree) {

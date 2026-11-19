@@ -96,6 +96,36 @@ test('l, p, ct, and utm_* are captured; query wins over the path', () => {
   assert.deepEqual(dropped.utm, { source: null, medium: null, campaign: null, content: null });
 });
 
+test('a link while editing a kid, or while the app is open, stays put', () => {
+  const editing = { stage: 'compose', story: '', tab: 'kids', editName: 'Noa' };
+  assert.equal(navigationForAppLink(editing, { editingKid: true }), null);
+  assert.equal(editing.tab, 'kids');
+  assert.equal(editing.editName, 'Noa');
+
+  const draft = { stage: 'compose', story: 'she hit her brother' };
+  assert.equal(navigationForAppLink(draft, { live: true }), null);
+  assert.equal(draft.story, 'she hit her brother');
+  assert.equal(navigationForAppLink({ stage: 'compose', story: '', paywallOpen: true }, { live: true }), null);
+  assert.equal(navigationForAppLink({ stage: 'compose', story: '' }, { live: true }), null);
+
+  assert.equal(navigationForAppLink({ stage: 'compose', story: '' }).tab, 'home');
+});
+
+test('a malformed encoding is ignored and the next valid link still works', () => {
+  const bad = 'https://kidsit.ai/he/blog/%E0%A4%A';
+  assert.doesNotThrow(() => parseAppLink(bad));
+  assert.equal(parseAppLink(bad), null);
+  assert.equal(parseAppLink('https://kidsit.ai/app/%'), null);
+  const storage = memoryStorage();
+  assert.equal(captureAppLink(bad, storage), null);
+  assert.equal(readAppLink(storage), null);
+  const next = captureAppLink('https://kidsit.ai/app?l=en&p=home', storage);
+  assert.deepEqual(next, { tab: 'home', stage: 'compose' });
+  assert.equal(readAppLink(storage).kind, 'app');
+  assert.equal(readAppLink(storage).page, 'home');
+  assert.equal(readAppLink(storage).lang, 'en');
+});
+
 test('routing stays on an in-progress moment and starts one otherwise', () => {
   assert.deepEqual(navigationForAppLink({ stage: 'compose', story: '' }), {
     tab: 'home',
@@ -140,6 +170,10 @@ test('funnel source precedence', () => {
   assert.equal(resolveFunnelSource({ install: 'Kidsit.AI', link: google }), 'google');
   assert.equal(resolveFunnelSource({ install: 'kidsit.ai', link: withCt }), 'kidsit.ai');
   assert.equal(resolveFunnelSource({ install: 'kidsit.ai', link: siteUtm }), 'kidsit.ai');
+  const siteAndCt = parseAppLink('https://kidsit.ai/app?utm_source=kidsit.ai&ct=en-home-qr&l=en&p=home');
+  assert.equal(resolveFunnelSource({ link: siteAndCt }), 'en-home-qr');
+  assert.equal(resolveFunnelSource({ install: 'kidsit.ai', link: siteAndCt }), 'en-home-qr');
+  assert.equal(resolveFunnelSource({ install: 'tiktok', link: siteAndCt }), 'tiktok');
   assert.equal(resolveFunnelSource({ link: generic }), SITE_FUNNEL_SOURCE);
   assert.equal(resolveFunnelSource({ link: withCt }), 'en-home-qr');
   assert.equal(resolveFunnelSource({ link: google }), 'google');
