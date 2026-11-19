@@ -1,10 +1,18 @@
 // Anonymous funnel counts. Each step is reported once per install, so the
 // stats page can show how many installs reach each step and where they stop.
 //
-// The body is { v, step, platform, lang, app_version, source }. No RevenueCat
-// id, no device or install id, no child data, no story text, no cookies. The
-// server adds the UTC day and keeps one counter per combination.
-// Web never sends.
+// The body is { v, step, platform, lang, app_version, source, entry? }.
+// No RevenueCat id, no device or install id, no child data, no story text,
+// no cookies. The server adds the UTC day and keeps one counter per
+// combination. Web never sends.
+//
+// `source` is the install campaign (Android utm_source). It is not the screen
+// that opened the paywall. That screen is `entry`, and only on paywall_shown.
+// `app_version` is the full store version (1.0.14), from App.getInfo() or the
+// version baked in at build time. Insights stay major.minor.
+//
+// kidsit.ai still accepts only major.minor and rejects unknown fields. A 400
+// is not retried, so this client must ship with that API change.
 
 import { isNativeApp, storePlatform } from './platform.js';
 import { resolveAppVersion } from './insights.js';
@@ -25,6 +33,16 @@ export const FUNNEL_STEPS = Object.freeze([
 
 const KEY = 'kidai.funnel.v1';
 const SOURCE_RE = /^[a-z0-9][a-z0-9_.-]{0,39}$/;
+// Two or three numeric parts. 1.0.14 stays 1.0.14; a two-part string still passes.
+const VERSION_RE = /^\d{1,3}\.\d{1,3}(\.\d{1,3})?$/;
+
+// Screens that open the paywall. First open in an install is the one recorded.
+export const PAYWALL_ENTRIES = Object.freeze([
+  'first_moment', // first finished moment, not subscribed
+  'free_limit', // free answers used up, or the server returned 403
+  'add_child', // another child, without an entitlement
+  'settings', // upgrade from Settings
+]);
 
 function readState(storage) {
   try {
@@ -54,11 +72,15 @@ export function initFunnel({ existingInstall = false, storage = globalThis.local
 }
 
 // Pure: marks `step` as pending unless it was already recorded.
-export function planFunnelStep(state, step) {
+// `extra.entry` is kept for paywall_shown. A later call does not replace it.
+export function planFunnelStep(state, step, extra) {
   if (state.legacy) return { state, changed: false };
   if (!FUNNEL_STEPS.includes(step)) return { state, changed: false };
   if (state.steps?.[step]) return { state, changed: false };
-  return { state: { ...state, steps: { ...state.steps, [step]: 'pending' } }, changed: true };
+  const next = { ...state, steps: { ...state.steps, [step]: 'pending' } };
+  const entry = step === 'paywall_shown' ? normalizePaywallEntry(extra?.entry) : null;
+  if (entry) next.entries = { ...(state.entries || {}), [step]: entry };
+  return { state: next, changed: true };
 }
 
 export function pendingFunnelSteps(state) {
@@ -71,16 +93,29 @@ export function normalizeFunnelSource(raw) {
   return SOURCE_RE.test(value) ? value : null;
 }
 
-export function funnelBody({ step, platform, lang, appVersion, source }) {
+export function normalizePaywallEntry(raw) {
+  const value = String(raw ?? '').trim().toLowerCase();
+  return PAYWALL_ENTRIES.includes(value) ? value : null;
+}
+
+export function funnelAppVersion(raw) {
+  const version = String(raw ?? '').trim();
+  return VERSION_RE.test(version) ? version : '';
+}
+
+export function funnelBody({ step, platform, lang, appVersion, source, entry }) {
   const body = { v: FUNNEL_SCHEMA_V, step };
   if (platform === 'ios' || platform === 'android') body.platform = platform;
   const short = String(lang || '').split('-')[0];
   if (short === 'he' || short === 'en' || short === 'es') body.lang = short;
-  // Major.minor only, like anonymous insights.
-  const version = String(appVersion || '').trim().split('.').slice(0, 2).join('.');
-  if (/^\d{1,3}\.\d{1,3}$/.test(version)) body.app_version = version;
+  const version = funnelAppVersion(appVersion);
+  if (version) body.app_version = version;
   const src = normalizeFunnelSource(source);
   if (src) body.source = src;
+  if (step === 'paywall_shown') {
+    const screen = normalizePaywallEntry(entry);
+    if (screen) body.entry = screen;
+  }
   return body;
 }
 
@@ -115,14 +150,22 @@ export async function flushFunnel({
   flushing = (async () => {
     const sent = [];
     const version = appVersion ?? await resolveAppVersion({ native });
-    for (const step of pendingFunnelSteps(readState(storage))) {
+    const pending = readState(storage);
+    for (const step of pendingFunnelSteps(pending)) {
       try {
         const response = await fetchImpl(url, {
           method: 'POST',
           credentials: 'omit',
           cache: 'no-store',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(funnelBody({ step, platform, lang: context.lang, appVersion: version, source: context.source || storedInstallSource(storage) })),
+          body: JSON.stringify(funnelBody({
+            step,
+            platform,
+            lang: context.lang,
+            appVersion: version,
+            source: context.source || storedInstallSource(storage),
+            entry: pending.entries?.[step],
+          })),
         });
         // 4xx will not succeed on retry (an older server, a bad body): drop it.
         if (!response.ok && response.status >= 500) continue;
@@ -143,7 +186,7 @@ export async function flushFunnel({
 export function markFunnel(step, options = {}) {
   const storage = options.storage ?? globalThis.localStorage;
   if (!storage) return Promise.resolve({ sent: [] });
-  const planned = planFunnelStep(readState(storage), step);
+  const planned = planFunnelStep(readState(storage), step, { entry: options.entry });
   if (planned.changed) writeState(storage, planned.state);
   return flushFunnel({ ...options, storage }).catch(() => ({ sent: [] }));
 }

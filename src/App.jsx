@@ -104,7 +104,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
   const openPaywall = (source) => {
     setPaywallNotice(source === 'free_limit' ? 'freeLimit' : null);
     setPaywallOpen(true);
-    markFunnel('paywall_shown');
+    markFunnel('paywall_shown', { entry: source });
   };
   const closePaywall = () => {
     setPaywallOpen(false);
