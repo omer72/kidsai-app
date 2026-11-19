@@ -15,6 +15,15 @@ test('parses the referrer the website builds', () => {
   });
 });
 
+test('blog and qr Play referrers keep utm_source and utm_content', () => {
+  const blog = parseInstallReferrer('utm_source=kidsit.ai&utm_medium=blog&utm_campaign=he-yeled-marbitz&utm_content=inline');
+  assert.deepEqual(blog, { source: 'kidsit.ai', medium: 'blog', campaign: 'he-yeled-marbitz', content: 'inline' });
+  const qr = parseInstallReferrer('utm_source=kidsit.ai&utm_medium=home&utm_campaign=he-home&utm_content=qr');
+  assert.equal(qr.source, 'kidsit.ai');
+  assert.equal(qr.content, 'qr');
+  assert.equal(qr.campaign, 'he-home');
+});
+
 test('organic Play installs are attributed too', () => {
   const parsed = parseInstallReferrer('utm_source=google-play&utm_medium=organic');
   assert.deepEqual(referrerAttributes(parsed), { $mediaSource: 'google-play', $adGroup: 'organic' });
