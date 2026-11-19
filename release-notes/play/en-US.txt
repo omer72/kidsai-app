@@ -1,0 +1,5 @@
+Add your first child on the home screen. A name and an age are enough to start, and the get-to-know-you questions no longer open before you begin.
+
+After the first answer, Home offers those questions so later answers fit that child. You can dismiss the offer.
+
+A short tap on the hold-to-record mic tells you to hold it while you speak.
