@@ -16,6 +16,15 @@ Each App Store version maps to `MARKETING_VERSION` in `ios/App/App.xcodeproj/pro
 
 ---
 
+## [1.0.17] — 2026-11-19
+
+iOS **1.0.17 (13)**. Android **1.0.17 (21)**. The parent-facing changes since 1.0.14 are already listed under 1.0.16 and 1.0.15; they did not get their own store text. Paste-ready notes: `docs/release-notes-1.0.17.md`. Play reads `release-notes/play/he-IL.txt` and `release-notes/play/en-US.txt`.
+
+### Internal
+- **Funnel version.** Each funnel post sends the full store version, and `paywall_shown` names the screen that opened the paywall. No name, story, or device id.
+
+---
+
 ## [1.0.16] — 2026-11-18
 
 iOS **1.0.16 (12)**. Android **1.0.16 (20)**. 1.0.15 was already approved on the App Store, so these changes ship as 1.0.16.
