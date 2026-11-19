@@ -1,5 +1,3 @@
-Add your first child on the home screen. A name and an age are enough to start, and the get-to-know-you questions no longer open before you begin.
+A link on kidsit.ai opens the app. A blog post or the app page opens Home, so you can record or type what happened.
 
-After the first answer, Home offers those questions so later answers fit that child. You can dismiss the offer.
-
-A short tap on the hold-to-record mic tells you to hold it while you speak.
+If the app is already open, you stay on the screen you were on.
