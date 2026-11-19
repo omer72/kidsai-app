@@ -21,6 +21,16 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- App Links. Same paths as assetlinks / the iOS AASA.
+                 www.kidsit.ai only redirects, so it is not a host. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="kidsit.ai" android:pathPrefix="/he/blog/" />
+                <data android:scheme="https" android:host="kidsit.ai" android:pathPrefix="/en/blog/" />
+                <data android:scheme="https" android:host="kidsit.ai" android:path="/app" />
+            </intent-filter>
         </activity>
 
         <provider

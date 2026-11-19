@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { applyTheme, applyFontSize, tokens, fs } from './theme';
 import { loadSettings, saveSettings, loadKids, saveKids, loadHistory, appendHistory, updateHistoryEntry, clearAll, loadDigestMeta, saveDigestMeta } from './storage';
@@ -27,9 +27,10 @@ import { SubscriptionScreen } from './components/TrialScreens';
 import { AIConsentModal } from './components/AIConsent';
 import { DigestBanner, DigestScreen } from './components/Digest';
 
-import { INSET_TOP_MIN } from './platform';
+import { INSET_TOP_MIN, isNativeApp } from './platform';
 import { useHardwareBack } from './backbutton';
 import { flushFunnel, initFunnel, markFunnel, setFunnelContext } from './funnel';
+import { captureAppLink, navigationForAppLink } from './appLinks';
 
 // Positive closes (Helped / Really helped) before the store review prompt.
 const REVIEW_AFTER_POSITIVE = 1;
@@ -59,7 +60,7 @@ function useViewport() {
   return v;
 }
 
-function MainApp({ settings, setSettings, kids, setKids, history, setHistory, setEntryFeedback, onClearData, fullscreen, billing, onBillingChange, digestMeta, setDigestMeta }) {
+function MainApp({ settings, setSettings, kids, setKids, history, setHistory, setEntryFeedback, onClearData, fullscreen, billing, onBillingChange, digestMeta, setDigestMeta, appLinkSeq = 0 }) {
   const { t, i18n } = useTranslation();
   const [tab, setTab] = useState('home');
   const [firstKid, setFirstKid] = useState({ name: '', age: '' });
@@ -72,6 +73,25 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
   const [intakeKidId, setIntakeKidId] = useState(null); // opens that kid's intake when the Kids tab mounts
   const [consentRequest, setConsentRequest] = useState(null); // resolver for an in-flight consent ask
   const [digestOpen, setDigestOpen] = useState(false);
+  const [kidsEditing, setKidsEditing] = useState(false);
+  const appliedLink = useRef(0);
+  const onKidsEditing = useCallback((editing) => setKidsEditing(!!editing), []);
+
+  // Cold launch only. A link while the app is open does not bump appLinkSeq,
+  // and an open kid editor blocks even a late launch URL: its text is local
+  // to the Kids screen and a tab change would discard it. Paywall and a chat
+  // draft are left in place below.
+  useEffect(() => {
+    if (!appLinkSeq || appliedLink.current === appLinkSeq) return;
+    appliedLink.current = appLinkSeq;
+    const next = navigationForAppLink(flowState, { editingKid: kidsEditing });
+    if (!next) return;
+    setTab(next.tab);
+    if (next.flow) {
+      setDigestOpen(false);
+      setFlowState(next.flow);
+    }
+  }, [appLinkSeq, flowState, kidsEditing]);
 
   const entitled = !!billing?.entitled;
   const inTrial = !!billing?.inTrial;
@@ -388,6 +408,7 @@ function MainApp({ settings, setSettings, kids, setKids, history, setHistory, se
         entitled={entitled}
         lockedKidCount={lockedKidCount}
         initialIntakeId={intakeKidId}
+        onEditingChange={onKidsEditing}
         onIntakeClose={() => { setIntakeKidId(null); if (firstKidPending) { setFirstKidPending(false); setTab('home'); } }}
         onRequestUpgrade={() => openPaywall('add_child')}
       />
@@ -481,6 +502,7 @@ export function App() {
   const [digestMeta, setDigestMetaState] = useState(() => loadDigestMeta());
   const [phase, setPhase] = useState(settings.onboarded ? 'app' : 'welcome');
   const [billing, setBilling] = useState(() => settings.billing || { entitled: false });
+  const [appLinkSeq, setAppLinkSeq] = useState(0);
 
   // Funnel counts start with installs that onboard on this version. An
   // install that was already past onboarding would report later steps without
@@ -542,6 +564,47 @@ export function App() {
     setFunnelContext({ lang: i18nApp.language });
     flushFunnel().catch(() => {});
   }, [i18nApp.language]);
+
+  // Universal Links / App Links. Attribution is recorded even during
+  // onboarding. Only the launch URL moves the UI; a later appUrlOpen keeps
+  // the parent on the screen they are typing on.
+  useEffect(() => {
+    if (!isNativeApp()) return undefined;
+    let remove = () => {};
+    let cancelled = false;
+    let seenUrl = '';
+    let launchRequested = false;
+    const open = (url, { navigate }) => {
+      try {
+        if (!url) return;
+        if (url !== seenUrl) {
+          seenUrl = url;
+          if (!captureAppLink(url)) {
+            seenUrl = '';
+            return;
+          }
+        }
+        if (navigate && !launchRequested) {
+          launchRequested = true;
+          setAppLinkSeq((n) => n + 1);
+        }
+      } catch {
+        // A bad URL must not take down the listener. The next link still runs.
+      }
+    };
+    import('@capacitor/app').then(({ App: CapApp }) => {
+      if (cancelled) return;
+      CapApp.addListener('appUrlOpen', (event) => open(event?.url, { navigate: false })).then((handle) => {
+        if (cancelled) handle.remove();
+        else remove = () => handle.remove();
+      }).catch(() => {});
+      CapApp.getLaunchUrl().then((launch) => { if (!cancelled) open(launch?.url, { navigate: true }); }).catch(() => {});
+    }).catch(() => {});
+    return () => {
+      cancelled = true;
+      remove();
+    };
+  }, []);
   const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
   const onClearData = () => setClearConfirmOpen(true);
   const confirmClearData = () => {
@@ -603,6 +666,7 @@ export function App() {
         fullscreen={fullscreen}
         billing={billing} onBillingChange={applyBilling}
         digestMeta={digestMeta} setDigestMeta={setDigestMeta}
+        appLinkSeq={appLinkSeq}
       />
     );
   }

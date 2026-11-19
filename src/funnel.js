@@ -6,8 +6,15 @@
 // no cookies. The server adds the UTC day and keeps one counter per
 // combination. Web never sends.
 //
-// `source` is the install campaign (Android utm_source). It is not the screen
-// that opened the paywall. That screen is `entry`, and only on paywall_shown.
+// `source` is the install campaign (a utm_source). It is not the screen that
+// opened the paywall. That screen is `entry`, and only on paywall_shown.
+// A kidsit.ai app link can also fill `source` (resolveFunnelSource in
+// appLinks.js). The Play install referrer stays first, unless it is the
+// generic site token and the link is more informative (a different utm_source,
+// or ct when the link's utm_source is kidsit.ai). With no install source, the
+// link's utm_source is used, unless that value is kidsit.ai and the link also
+// has ct, in which case ct wins. l, p, and utm_medium / utm_campaign /
+// utm_content stay on device. They are not new body fields.
 // `app_version` is the full store version (1.0.14), from App.getInfo() or the
 // version baked in at build time. Insights stay major.minor.
 //
@@ -17,6 +24,7 @@
 import { isNativeApp, storePlatform } from './platform.js';
 import { resolveAppVersion } from './insights.js';
 import { storedInstallSource } from './installReferrer.js';
+import { readAppLink, resolveFunnelSource, sourceToken } from './appLinks.js';
 
 export const FUNNEL_SCHEMA_V = 1;
 export const DEFAULT_FUNNEL_URL = 'https://kidsit.ai/api/funnel';
@@ -32,7 +40,6 @@ export const FUNNEL_STEPS = Object.freeze([
 ]);
 
 const KEY = 'kidai.funnel.v1';
-const SOURCE_RE = /^[a-z0-9][a-z0-9_.-]{0,39}$/;
 // Two or three numeric parts. 1.0.14 stays 1.0.14; a two-part string still passes.
 const VERSION_RE = /^\d{1,3}\.\d{1,3}(\.\d{1,3})?$/;
 
@@ -89,8 +96,7 @@ export function pendingFunnelSteps(state) {
 
 // Only a short lowercase token (a utm_source) is ever sent as the source.
 export function normalizeFunnelSource(raw) {
-  const value = String(raw ?? '').trim().toLowerCase();
-  return SOURCE_RE.test(value) ? value : null;
+  return sourceToken(raw);
 }
 
 export function normalizePaywallEntry(raw) {
@@ -163,7 +169,11 @@ export async function flushFunnel({
             platform,
             lang: context.lang,
             appVersion: version,
-            source: context.source || storedInstallSource(storage),
+            source: resolveFunnelSource({
+              explicit: context.source,
+              install: storedInstallSource(storage),
+              link: readAppLink(storage),
+            }),
             entry: pending.entries?.[step],
           })),
         });
